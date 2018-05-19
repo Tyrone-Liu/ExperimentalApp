@@ -7,10 +7,13 @@
     <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="27" />
 
     <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -22,9 +25,18 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".MessageDisplayActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_name_message_display">
+        </activity>
+
+        <activity android:name=".CameraViewActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/activity_name_camera_view">
         </activity>
     </application>
 
