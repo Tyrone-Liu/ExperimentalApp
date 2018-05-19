@@ -42,7 +42,8 @@
         <activity
             android:name=".CameraViewActivity"
             android:label="@string/activity_name_camera_view"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/CameraViewTheme" />
     </application>
 
 </manifest>

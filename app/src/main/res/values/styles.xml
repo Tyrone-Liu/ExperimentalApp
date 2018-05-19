@@ -6,4 +6,8 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="CameraViewTheme" parent="android:Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
 </resources>
