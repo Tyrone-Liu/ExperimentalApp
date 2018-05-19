@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
 
     public void messageSend(View view) {
         Intent intent = new Intent(this, MessageDisplayActivity.class);
-        EditText editText = findViewById(R.id.messageText);
+        EditText editText = (EditText) findViewById(R.id.messageText);
         String messageText = editText.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, messageText);
         startActivity(intent);
