@@ -4,10 +4,16 @@
     android:versionCode="1"
     android:versionName="0.1">
 
-    <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="27" />
+    <uses-sdk
+        android:minSdkVersion="23"
+        android:targetSdkVersion="27" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
-    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -25,19 +31,18 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".MessageDisplayActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/activity_name_message_display">
-        </activity>
-
-        <activity android:name=".CameraViewActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/activity_name_camera_view">
-        </activity>
+        <activity
+            android:name=".MessageDisplayActivity"
+            android:label="@string/activity_name_message_display"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".CameraViewActivity"
+            android:label="@string/activity_name_camera_view"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

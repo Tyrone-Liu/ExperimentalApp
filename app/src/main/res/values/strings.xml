@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Experimental App</string>
+    <string name="activity_name_camera_view">Camera View</string>
+    <string name="activity_name_message_display">Message Display</string>
 
     <string name="edit_text_hint">Message for MessageDisplay</string>
     <string name="button_message_send">Send Message</string>
+
     <string name="button_camera_view">Camera View</string>
-    <string name="activity_name_camera_view">Camera View</string>
-    <string name="activity_name_message_display">Message Display</string>
+    <string name="button_camera_characteristics">Camera Characteristics</string>
 </resources>
