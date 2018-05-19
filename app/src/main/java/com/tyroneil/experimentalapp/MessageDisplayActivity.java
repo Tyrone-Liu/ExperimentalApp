@@ -15,7 +15,7 @@ public class MessageDisplayActivity extends Activity {
         Intent intent = getIntent();
         String messageText = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
-        TextView textView = findViewById(R.id.messageDisplay);
-        textView.setText(messageText);
+        TextView messageDisplay = findViewById(R.id.messageDisplay);
+        messageDisplay.setText(messageText);
     }
 }
