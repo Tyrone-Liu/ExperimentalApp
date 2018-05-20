@@ -43,9 +43,9 @@ public class CameraViewActivity extends Activity {
                         + (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)).toString() + "\n"
                 );
 
-                messageText += repStr(" ", 4) + "SENSOR_INFO_EXPOSURE_TIME_RANGE:\n";
+                messageText += repStr(" ", 4) + "SENSOR_INFO_EXPOSURE_TIME_RANGE:";
                 if ((cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)) != null) {
-                    messageText += repStr(" ", 8) + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)).toString() + "\n";
+                    messageText += "\n" + repStr(" ", 8) + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)).toString() + "\n";
                 } else {
                     messageText += " null\n";
                 }
