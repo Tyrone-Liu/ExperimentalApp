@@ -33,15 +33,22 @@ public class CameraViewActivity extends Activity {
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
                 messageText += (
                         "Camera Id: " + cameraId + "\n"
-                                + repStr(" ", 4) + "LENS_FACING: "
-                                + (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING)).toString() + "\n"
-                                + repStr(" ", 4) + "SENSOR_INFO_PHYSICAL_SIZE: "
-                                + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)).toString() + "\n"
-                                + repStr(" ", 4) + "SENSOR_INFO_PIXEL_ARRAY_SIZE: "
-                                + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE)).toString() + "\n"
-                                + repStr(" ", 4) + "INFO_SUPPORTED_HARDWARE_LEVEL: "
-                                + (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)).toString() + "\n"
+                        + repStr(" ", 4) + "LENS_FACING: "
+                        + (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING)).toString() + "\n"
+                        + repStr(" ", 4) + "SENSOR_INFO_PHYSICAL_SIZE: "
+                        + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)).toString() + "\n"
+                        + repStr(" ", 4) + "SENSOR_INFO_PIXEL_ARRAY_SIZE: "
+                        + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE)).toString() + "\n"
+                        + repStr(" ", 4) + "INFO_SUPPORTED_HARDWARE_LEVEL: "
+                        + (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)).toString() + "\n"
                 );
+
+                messageText += repStr(" ", 4) + "SENSOR_INFO_EXPOSURE_TIME_RANGE:\n";
+                if ((cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)) != null) {
+                    messageText += repStr(" ", 8) + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)).toString() + "\n";
+                } else {
+                    messageText += " null\n";
+                }
 
                 messageText += repStr(" ", 4) + "REQUEST_AVAILABLE_CAPABILITIES:\n" + repStr(" ", 8) + "{";
                 int[] request_avaliable_capabilities = cameraCharacteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
@@ -51,14 +58,20 @@ public class CameraViewActivity extends Activity {
                 }
                 messageText += "}\n";
 
-                messageText += repStr(" ", 4) + "SENSOR_INFO_EXPOSURE_TIME_RANGE:\n" + repStr(" ", 8);
-                if ((cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)) != null) {
-                    messageText += (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)).toString() + "\n";
-                } else {
-                    messageText += "null\n";
-                }
+                messageText += repStr(" ", 4) + "SCALER_STREAM_CONFIGURATION_MAP:\n";
+                String scaler_stream_configuration_map = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).toString();
+                messageText += (
+                        repStr(" ", 8)
+                        + scaler_stream_configuration_map
+                                .replace("([", "(\n" + repStr(" ", 8) + " [")
+                                .replace("]), ", "]),\n\n" + repStr(" ", 8) + "")
+                                .replace("], [", "],\n" + repStr(" ", 8) + " [")
+                                .replace(", min_duration:", ",\n" + repStr(" ", 8) + "  min_duration:")
+                                .replace(", out:", ",\n" + repStr(" ", 8) + "  out:")
+                        + "\n"
+                );
 
-                messageText += "\n";
+                messageText += "\n\n";
             }
         } catch (CameraAccessException e) {
             messageText += "Exception!\nStack Trace:\n" + e.getStackTrace() + "\n";
