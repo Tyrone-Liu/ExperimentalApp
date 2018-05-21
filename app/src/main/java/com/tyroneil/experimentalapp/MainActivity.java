@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
         cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                creatCameraPreview();
+                createCameraPreview();
             }
             @Override
             public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void creatCameraPreview() {
+    private void createCameraPreview() {
     }
 
     private void takePhoto() {
