@@ -2,6 +2,7 @@ package com.tyroneil.experimentalapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -15,22 +16,67 @@ import java.util.Arrays;
 public class MainActivity extends Activity {
     public static final String EXTRA_MESSAGE = "com.tyroneil.experimentalapp.MESSAGE";
 
+    private TextureView cameraPreview;
+    private Button shoot;
+    private Button shutterParameters;
+    private Button cameraCharacteristics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button cameraCharacteristics = (Button) findViewById(R.id.cameraCharacteristics);
+        cameraPreview = (TextureView) findViewById(R.id.cameraPreview);
+        shoot = (Button) findViewById(R.id.shoot);
+        shutterParameters = (Button) findViewById(R.id.shutterParameters);
+        cameraCharacteristics = (Button) findViewById(R.id.cameraCharacteristics);
+
+        cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                creatCameraPreview();
+            }
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+            }
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                return false;
+            }
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+            }
+        });
+        shoot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
+            }
+        });
+        shutterParameters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeShutterParameters();
+            }
+        });
         cameraCharacteristics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraCharacteristics(v);
+                displayCameraCharacteristics(v);
             }
         });
     }
 
+    private void creatCameraPreview() {
+    }
 
-    protected void cameraCharacteristics(View view) {
+    private void takePhoto() {
+    }
+
+    private void changeShutterParameters() {
+    }
+
+    private void displayCameraCharacteristics(View view) {
         Intent intent = new Intent(this, MessageDisplayActivity.class);
         CameraManager cameraManager = (CameraManager) this.getSystemService(CameraManager.class);
         String messageText = "Camera Id List: {";
@@ -92,7 +138,7 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    protected static String repStr(String str, int count) {
+    private static String repStr(String str, int count) {
         String repeatedString = "";
         for (int i = 0; i < count; i += 1) {
             repeatedString += str;
