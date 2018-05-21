@@ -11,6 +11,6 @@
 
     <!-- name in activity CameraView-->
     <string name="button_shoot">SHOOT</string>
-    <string name="button_camera_characteristics">Camera \nCharacteristics</string>
-    <string name="button_shoot_parameters">Shoot \nParameters</string>
+    <string name="button_camera_characteristics">Camera\nCharacteristics</string>
+    <string name="button_shoot_parameters">Shutter\nParameters</string>
 </resources>
