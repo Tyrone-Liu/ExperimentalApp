@@ -1,15 +1,9 @@
 <resources>
     <!-- name for app and activities -->
     <string name="app_name">Experimental App</string>
-    <string name="activity_name_camera_view">Camera View</string>
     <string name="activity_name_message_display">Message Display</string>
 
     <!-- name in activity Main-->
-    <string name="edit_text_hint">Message for MessageDisplay</string>
-    <string name="button_message_send">Send Message</string>
-    <string name="button_camera_view">Camera View</string>
-
-    <!-- name in activity CameraView-->
     <string name="button_shoot">SHOOT</string>
     <string name="button_camera_characteristics">Camera\nCharacteristics</string>
     <string name="button_shoot_parameters">Shutter\nParameters</string>
