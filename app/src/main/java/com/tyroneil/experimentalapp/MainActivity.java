@@ -16,8 +16,8 @@ import java.util.Arrays;
 public class MainActivity extends Activity {
     public static final String EXTRA_MESSAGE = "com.tyroneil.experimentalapp.MESSAGE";
 
-    private TextureView cameraPreview;
-    private Button shoot;
+    private TextureView preview;
+    private Button capture;
     private Button shutterParameters;
     private Button cameraCharacteristics;
 
@@ -26,15 +26,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cameraPreview = (TextureView) findViewById(R.id.cameraPreview);
-        shoot = (Button) findViewById(R.id.shoot);
+        preview = (TextureView) findViewById(R.id.preview);
+        capture = (Button) findViewById(R.id.capture);
         shutterParameters = (Button) findViewById(R.id.shutterParameters);
         cameraCharacteristics = (Button) findViewById(R.id.cameraCharacteristics);
 
-        cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+        preview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                createCameraPreview();
+                createPreview();
             }
             @Override
             public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             }
         });
-        shoot.setOnClickListener(new View.OnClickListener() {
+        capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takePhoto();
@@ -67,14 +67,17 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void createCameraPreview() {
+    // method related to {@Code createPreview()}; start
+    private void createPreview() {
     }
+    // method related to {@Code createPreview()}; end
 
     private void takePhoto() {
     }
 
     private void changeShutterParameters() {
     }
+
 
     private void displayCameraCharacteristics(View view) {
         Intent intent = new Intent(this, MessageDisplayActivity.class);
