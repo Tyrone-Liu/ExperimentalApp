@@ -3,6 +3,7 @@ package com.tyroneil.experimentalapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class MessageDisplayActivity extends Activity {
@@ -17,5 +18,15 @@ public class MessageDisplayActivity extends Activity {
 
         TextView messageDisplay = findViewById(R.id.messageDisplay);
         messageDisplay.setText(messageText);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return false;
     }
 }
