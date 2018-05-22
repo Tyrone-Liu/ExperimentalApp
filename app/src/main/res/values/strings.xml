@@ -5,6 +5,6 @@
 
     <!-- name in activity Main-->
     <string name="button_capture">SHOOT</string>
-    <string name="button_camera_characteristics">Camera\nCharacteristics</string>
-    <string name="button_shutter_parameters">Shutter\nParameters</string>
+    <string name="button_display_camera_characteristics">C.C.</string>
+    <string name="button_change_shutter_parameters">S.P.</string>
 </resources>
