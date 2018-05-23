@@ -2,11 +2,19 @@ package com.tyroneil.experimentalapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Size;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -16,25 +24,46 @@ import java.util.Arrays;
 public class MainActivity extends Activity {
     public static final String EXTRA_MESSAGE = "com.tyroneil.experimentalapp.MESSAGE";
 
-    private TextureView preview;
+    private TextureView previewTextureView;
     private Button capture;
-    private Button shutterParameters;
-    private Button cameraCharacteristics;
+    private Button changeShutterParameters;
+    private Button displayCameraCharacteristics;
+
+    // shared variable
+    private CameraManager cameraManager;
+    private String[] cameraIdList;
+
+    private Handler callbackHandler;
+
+    // variable for preview
+    private CaptureRequest.Builder previewRequestBuilder;
+    private CaptureRequest previewRequest;
+    private CameraCaptureSession previewSession;
+
+    private int previewFormat;
+    private Size previewSize;
+
+    // current variable
+    private String cameraId;
+    private CameraDevice cameraDevice;
+    private CameraCharacteristics cameraCharacteristics;
+    private StreamConfigurationMap streamConfigurationMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preview = (TextureView) findViewById(R.id.preview);
+        previewTextureView = (TextureView) findViewById(R.id.previewTextureView);
         capture = (Button) findViewById(R.id.capture);
-        shutterParameters = (Button) findViewById(R.id.shutterParameters);
-        cameraCharacteristics = (Button) findViewById(R.id.cameraCharacteristics);
+        changeShutterParameters = (Button) findViewById(R.id.changeShutterParameters);
+        displayCameraCharacteristics = (Button) findViewById(R.id.displayCameraCharacteristics);
 
-        preview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+        previewTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                createPreview();
+                createPreview(0);
             }
             @Override
             public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
@@ -53,45 +82,133 @@ public class MainActivity extends Activity {
                 takePhoto();
             }
         });
-        shutterParameters.setOnClickListener(new View.OnClickListener() {
+        changeShutterParameters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeShutterParameters();
             }
         });
-        cameraCharacteristics.setOnClickListener(new View.OnClickListener() {
+        displayCameraCharacteristics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayCameraCharacteristics(v);
+                displayCameraCharacteristics();
             }
         });
+
+        cameraManager = (CameraManager) this.getSystemService(CameraManager.class);
+        displayCameraCharacteristics();
     }
 
-    // method related to {@Code createPreview()}; start
-    private void createPreview() {
+    /**
+     * The process to create a preview needs to wait for 'CameraDevice', 'CameraCaptureSession' to
+     * callback, so there will be three stages.
+     *
+     * Stage 0: Use 'CameraManager' to query a cameraId, then open the camera.
+     * Stage 1:
+     *     'CameraDevice.StateCallback.onOpened()' call 'createPreview()' with {@param 1}.
+     *     Use info from 'CameraCharacteristics' to set preview image format and size.
+     *     Use 'CameraDevice.createCaptureRequest()' to create a 'CaptureRequest.Builder'.
+     *     Use 'CaptureRequest.Builder.addTarget()' to set TextureView as the output target.
+     *     Use 'CameraDevice.createCaptureSession()' to create a 'CameraCaptureSession'.
+     * Stage 2:
+     *     'CameraCaptureSession.StateCallback.onConfigured()' call 'createPreview()' with {@param 2}.
+     *     Use 'CameraCaptureSession.setRepeatingRequest(CaptureRequest.Builder.build())' to
+     *     submit 'CaptureRequest' to 'CameraCaptureSession'.
+     *
+     * @param stage the stage of creating (int 0, 1, 2)
+     */
+    private void createPreview(int stage) {
+        if (stage == 0) {
+            try {
+                cameraIdList = cameraManager.getCameraIdList();
+                cameraId = cameraIdList[0];  // (TO_DO) make this changeable
+                cameraManager.openCamera(cameraId, cameraStateCallback, callbackHandler);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        } else if (stage == 1) {  // got cameraDevice
+            try {
+                cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+            streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+            previewFormat = ImageFormat.YUV_420_888;  // (TO_DO) make this changeable
+            previewSize = streamConfigurationMap.getOutputSizes(previewFormat)[0];
+            SurfaceTexture previewSurfaceTexture = previewTextureView.getSurfaceTexture();
+            previewSurfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
+            Surface previewSurface = new Surface(previewSurfaceTexture);
+            try {
+                previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                previewRequestBuilder.addTarget(previewSurface);
+                previewRequest = previewRequestBuilder.build();
+                cameraDevice.createCaptureSession(Arrays.asList(previewSurface), previewSessionStateCallback, callbackHandler);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+        } else if (stage == 2) {  // got previewSession
+            try {
+                previewSession.setRepeatingRequest(previewRequest, null, callbackHandler);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    // method related to {@Code createPreview()}; end
 
+    // will call 'createPreview(1)'
+    private CameraDevice.StateCallback cameraStateCallback = new CameraDevice.StateCallback() {
+        @Override
+        public void onOpened(CameraDevice camera) {
+            cameraDevice = camera;
+            createPreview(1);
+        }
+
+        @Override
+        public void onDisconnected(CameraDevice camera) {
+        }
+
+        @Override
+        public void onError(CameraDevice camera, int error) {
+        }
+    };
+
+    // will call 'createPreview(2)'
+    private CameraCaptureSession.StateCallback previewSessionStateCallback = new CameraCaptureSession.StateCallback() {
+        @Override
+        public void onConfigured(CameraCaptureSession session) {
+            previewSession = session;
+            createPreview(2);
+        }
+
+        @Override
+        public void onConfigureFailed(CameraCaptureSession session) {
+        }
+    };
+
+
+    // (TO_DO)
     private void takePhoto() {
     }
 
+
+    // (TO_DO)
     private void changeShutterParameters() {
     }
 
 
-    private void displayCameraCharacteristics(View view) {
+    private void displayCameraCharacteristics() {
         Intent intent = new Intent(this, MessageDisplayActivity.class);
-        CameraManager cameraManager = (CameraManager) this.getSystemService(CameraManager.class);
         String messageText = "Camera Id List: {";
         try {
             String[] cameraIdList = cameraManager.getCameraIdList();
             for (String e : cameraIdList) {
                 messageText += e + ", ";
-            }
-            messageText += "}\n" + "\n\n";
+            } messageText += "}\n" + "\n\n";
 
             for (String cameraId : cameraIdList) {
-                CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
+                cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
                 messageText += (
                         "Camera Id: " + cameraId + "\n"
                         + repStr(" ", 4) + "LENS_FACING: "
@@ -116,10 +233,18 @@ public class MainActivity extends Activity {
                 Arrays.sort(request_avaliable_capabilities);
                 for (int e : request_avaliable_capabilities) {
                     messageText += e + ", ";
-                }
-                messageText += "}\n";
+                } messageText += "}\n";
 
-                messageText += repStr(" ", 4) + "SCALER_STREAM_CONFIGURATION_MAP:\n";
+                messageText += repStr(" ", 4) + "SCALER_STREAM_CONFIGURATION_MAP:\n" + repStr(" ", 8) + "Output Sizes:\n";
+                streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                for (int e : streamConfigurationMap.getOutputFormats()) {
+                    messageText += repStr(" ", 8) + " Format: " + e + "\n";
+                    for (Size s : (streamConfigurationMap.getOutputSizes(e))) {
+                        messageText += repStr(" ", 8) + "  " + s.toString() + "\n";
+                    }
+                } messageText += "}\n";
+/*
+                // Full output of SCALER_STREAM_CONFIGURATION_MAP
                 String scaler_stream_configuration_map = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).toString();
                 messageText += (
                         repStr(" ", 8)
@@ -131,6 +256,7 @@ public class MainActivity extends Activity {
                                 .replace(", out:", ",\n" + repStr(" ", 8) + "  out:")
                         + "\n"
                 );
+*/
 
                 messageText += "\n\n";
             }
@@ -139,6 +265,20 @@ public class MainActivity extends Activity {
         }
         intent.putExtra(MainActivity.EXTRA_MESSAGE, messageText);
         startActivity(intent);
+    }
+
+    // CameraCharacteristics value Int to String (TO_DO)
+    private String[] CCIntToString(String cCKey, int[] intValue) {
+        String[] stringValue = new String[intValue.length];
+        if (cCKey == "REQUEST_AVAILABLE_CAPABILITIES") {
+            for (int e : intValue) {
+            }
+        } else if (cCKey == "SCALER_STREAM_CONFIGURATION_MAP") {
+            for (int e : intValue) {
+            }
+
+        }
+        return stringValue;
     }
 
     private static String repStr(String str, int count) {
