@@ -1,7 +1,6 @@
 package com.tyroneil.experimentalapp;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -11,10 +10,12 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
+import android.hardware.camera2.DngCreator;
 import android.hardware.camera2.TotalCaptureResult;
-import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Range;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
@@ -22,46 +23,67 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class MainActivity extends Activity {
-    public static final String EXTRA_MESSAGE = "com.tyroneil.experimentalapp.MESSAGE";
-
+    // widgets in activity
     private RatioChangeableTextureView previewTextureView;
-    private Button capture;
-    private Button changeShutterParameters;
-    private Button displayCameraCharacteristics;
+    private Button captureButton;
+    private Button modeButton;
+    private Button settingsButton;
+
+    private Button exposureTimeButton;
+    private Button sensitivityButton;
+    private Button focusDistanceButton;
+    private Button focalLengthButton;
+    private Button apertureButton;
 
     // shared variable
     private CameraManager cameraManager;
     private String[] cameraIdList;
 
-    private Handler callbackHandler;
+    private Handler backgroundHandler;
 
     // current cameraDevice variable
     private String cameraId;
     private CameraDevice cameraDevice;
     private CameraCharacteristics cameraCharacteristics;
-    private StreamConfigurationMap streamConfigurationMap;
 
     private CameraCaptureSession captureSession;
     private int sensorOrientation;
 
     // variable for preview
     private CaptureRequest.Builder previewRequestBuilder;
-    private CaptureRequest previewRequest;
-
-    private Size previewOutputSize;
+    private Size previewSize;
 
     // variable for capture
     private CaptureRequest.Builder captureRequestBuilder;
-    private CaptureRequest captureRequest;
-
+    private CaptureResult captureResult;
+    private ImageReader imageReader;
+    private DngCreator dngCreator;
     private int captureFormat;
     private Size captureSize;
 
+    // capture parameters
+    private int autoMode;  // CONTROL_MODE (0/1 OFF/AUTO)
+    private int aeMode;  // CONTROL_AE_MODE (0/1 OFF/ON)
+    private int afMode;  // CONTROL_AF_MODE (0/4 OFF/CONTINUOUS_PICTURE)
+    private int awbMode;  // CONTROL_AWB_MODE (0/1 OFF/AUTO)
+
+    private long exposureTime;  // SENSOR_EXPOSURE_TIME
+    private int sensitivity;  // SENSOR_SENSITIVITY
+    private float focusDistance;  // LENS_FOCUS_DISTANCE
+    private float focalLength;  // LENS_FOCAL_LENGTH
+    private float aperture;  // LENS_APERTURE
+
+    private int opticalStabilizationMode;  // LENS_OPTICAL_STABILIZATION_MODE
+
     // debug Tool
     private TextView displayDebugMessage;
+    private String debugMessage = "";
+    private int debugCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +91,15 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         previewTextureView = (RatioChangeableTextureView) findViewById(R.id.previewTextureView);
-        capture = (Button) findViewById(R.id.capture);
-        changeShutterParameters = (Button) findViewById(R.id.changeShutterParameters);
-        displayCameraCharacteristics = (Button) findViewById(R.id.displayCameraCharacteristics);
+        captureButton = (Button) findViewById(R.id.capture);
+        modeButton = (Button) findViewById(R.id.mode);
+        settingsButton = (Button) findViewById(R.id.settings);
+
+        exposureTimeButton = (Button) findViewById(R.id.exposureTime);
+        sensitivityButton = (Button) findViewById(R.id.sensitivity);
+        focusDistanceButton = (Button) findViewById(R.id.focusDistance);
+        focalLengthButton = (Button) findViewById(R.id.focalLength);
+        apertureButton = (Button) findViewById(R.id.aperture);
 
         previewTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
@@ -89,27 +117,55 @@ public class MainActivity extends Activity {
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             }
         });
-        capture.setOnClickListener(new View.OnClickListener() {
+        captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePhoto(0);
+                goCapture();
             }
         });
-        changeShutterParameters.setOnClickListener(new View.OnClickListener() {
+        modeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeShutterParameters();
+                setMode();
             }
         });
-        displayCameraCharacteristics.setOnClickListener(new View.OnClickListener() {
+        settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayCameraCharacteristics();
+                goSettings();
             }
         });
 
-        cameraManager = (CameraManager) this.getSystemService(CameraManager.class);
-//        displayCameraCharacteristics();
+        exposureTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setExposureTime();
+            }
+        });
+        sensitivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSensitivity();
+            }
+        });
+        focusDistanceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFocusDistance();
+            }
+        });
+        focalLengthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFocalLength();
+            }
+        });
+        apertureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setAperture();
+            }
+        });
 
         displayDebugMessage = (TextView) findViewById(R.id.displayDebugMessage);  // debug
     }
@@ -134,52 +190,84 @@ public class MainActivity extends Activity {
      * @param stage the stage of creating (int 0, 1, 2)
      */
     private void createPreview(int stage) {
+        // TODO: make all this parameters changeable
+        // autoMode = 1;
+        autoMode = 0;  // debug
+        aeMode = 1;
+        afMode = 4;
+        awbMode = 1;
+
+        // TODO: make capture format changeable in settings, then make this default RAW_SENSOR
+        captureFormat = 256;
+
         if (stage == 0) {
             try {
+                cameraManager = (CameraManager) this.getSystemService(CameraManager.class);
                 cameraIdList = cameraManager.getCameraIdList();
-                cameraId = cameraIdList[0];  // TODO: make this changeable
-                cameraManager.openCamera(cameraId, cameraStateCallback, callbackHandler);
+                // TODO: make camera changeable in settings
+                for (String e : cameraIdList) {
+                    if ((cameraManager.getCameraCharacteristics(e)).get(CameraCharacteristics.LENS_FACING) == 1) {
+                        cameraId = e;
+                        cameraCharacteristics = cameraManager.getCameraCharacteristics(e);
+                        initiateCaptureParameters(cameraCharacteristics);
+                        break;
+                    }
+                    cameraId = cameraIdList[0];
+                }
             } catch (CameraAccessException e) {
                 e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
             }
-        } else if (stage == 1) {  // got cameraDevice
+
             try {
-                cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
-            } catch (CameraAccessException e) {
+                cameraManager.openCamera(cameraId, cameraStateCallback, backgroundHandler);
+            } catch (CameraAccessException | SecurityException e) {
                 e.printStackTrace();
             }
-            sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-            streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-            previewOutputSize = streamConfigurationMap.getOutputSizes(SurfaceTexture.class)[0];  // TODO: make this changeable
+        } else if (stage == 1) {
+            // got cameraDevice
+            // this stage will also be used to refresh the preview parameters
+            previewSize = choosePreviewSize(cameraCharacteristics, captureFormat);
+
             /**
              * Check the 'SENSOR_ORIENTATION' to set width and height appropriately.
              * (Switch width and height if necessary.  )
              */
+            sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             if (sensorOrientation == 90 || sensorOrientation == 270) {
-                previewTextureView.setAspectRatio(previewOutputSize.getHeight(), previewOutputSize.getWidth());
+                previewTextureView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
             } else {
-                previewTextureView.setAspectRatio(previewOutputSize.getWidth(), previewOutputSize.getHeight());
+                previewTextureView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
             }
+
             SurfaceTexture previewSurfaceTexture = previewTextureView.getSurfaceTexture();
-            previewSurfaceTexture.setDefaultBufferSize(previewOutputSize.getWidth(), previewOutputSize.getHeight());
+            previewSurfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface previewSurface = new Surface(previewSurfaceTexture);
             try {
-                // TODO: make the preview request match the capture request (exposure time, etc.)
                 previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+
+                previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
+                previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
+                previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
+                previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
+
+                previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
+                previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
+                previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
+                previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
+                previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
+
+                previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
+
                 previewRequestBuilder.addTarget(previewSurface);
-                previewRequest = previewRequestBuilder.build();
-                cameraDevice.createCaptureSession(Arrays.asList(previewSurface), captureSessionStateCallback, callbackHandler);
+                cameraDevice.createCaptureSession(Arrays.asList(previewSurface), captureSessionStateCallback, backgroundHandler);
             } catch (CameraAccessException e) {
                 e.printStackTrace();
             }
         } else if (stage == 2) {  // got captureSession
             try {
-                /**
-                 * The {@param CaptureCallback} is set to 'null' because preview does not need and additional process.
-                 */
-                captureSession.setRepeatingRequest(previewRequest, null, callbackHandler);
+                // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
+                captureSession.setRepeatingRequest(previewRequestBuilder.build(), captureSessionCaptureCallback, backgroundHandler);
+                updateCaptureParametersIndicator();
             } catch (CameraAccessException e) {
                 e.printStackTrace();
             }
@@ -219,79 +307,218 @@ public class MainActivity extends Activity {
         }
     };
 
+    private CameraCaptureSession.CaptureCallback captureSessionCaptureCallback = new CameraCaptureSession.CaptureCallback() {
+        @Override
+        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
+            super.onCaptureStarted(session, request, timestamp, frameNumber);
+        }
 
-    // TODO:
-    private void takePhoto(int stage) {
-    }
+        @Override
+        public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
+            super.onCaptureProgressed(session, request, partialResult);
+        }
+
+        @Override
+        public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
+            super.onCaptureCompleted(session, request, result);
+            debugCounter ++;
+            debugMessage = "Frame Counter: " + debugCounter;
+            displayDebugMessage.setText(debugMessage);
+        }
+
+        @Override
+        public void onCaptureFailed(CameraCaptureSession session, CaptureRequest request, CaptureFailure failure) {
+            super.onCaptureFailed(session, request, failure);
+        }
+
+        @Override
+        public void onCaptureSequenceCompleted(CameraCaptureSession session, int sequenceId, long frameNumber) {
+            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
+        }
+
+        @Override
+        public void onCaptureSequenceAborted(CameraCaptureSession session, int sequenceId) {
+            super.onCaptureSequenceAborted(session, sequenceId);
+        }
+
+        @Override
+        public void onCaptureBufferLost(CameraCaptureSession session, CaptureRequest request, Surface target, long frameNumber) {
+            super.onCaptureBufferLost(session, request, target, frameNumber);
+        }
+    };
 
 
-    // TODO:
-    private void changeShutterParameters() {
-    }
+    private void initiateCaptureParameters(CameraCharacteristics cameraCharacteristics) {
+        final Range<Long> SENSOR_INFO_EXPOSURE_TIME_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE);
+        final Range<Integer> SENSOR_INFO_SENSITIVITY_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
+        final float LENS_INFO_HYPERFOCAL_DISTANCE = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_HYPERFOCAL_DISTANCE);
+        final float[] LENS_INFO_AVAILABLE_FOCAL_LENGTHS = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
+        final float[] LENS_INFO_AVAILABLE_APERTURES = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES);
 
+        final int[] LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
 
-    private void displayCameraCharacteristics() {
-        Intent intent = new Intent(this, MessageDisplayActivity.class);
-        String messageText = "Camera Id List: {";
-        try {
-            String[] cameraIdList = cameraManager.getCameraIdList();
-            for (String e : cameraIdList) {
-                messageText += e + ", ";
-            } messageText += "}\n" + "\n\n";
+        exposureTime = SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
+        // sensitivity = SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+        sensitivity = (SENSOR_INFO_SENSITIVITY_RANGE.getLower() + SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) / 2;  // debug
+        focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
+        // TODO: make these two parameters changeable through UI buttons
+        focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
+        aperture = LENS_INFO_AVAILABLE_APERTURES[0];
 
-            for (String cameraId : cameraIdList) {
-                cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
-                messageText += (
-                        "Camera Id: " + cameraId + "\n"
-                        + repStr(" ", 4) + "LENS_FACING: "
-                        + (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING)).toString() + "\n"
-                        + repStr(" ", 4) + "SENSOR_ORIENTATION: "
-                        + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)).toString() + "\n"
-                        + repStr(" ", 4) + "SENSOR_INFO_PHYSICAL_SIZE: "
-                        + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)).toString() + "\n"
-                        + repStr(" ", 4) + "SENSOR_INFO_PIXEL_ARRAY_SIZE: "
-                        + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE)).toString() + "\n"
-                        + repStr(" ", 4) + "INFO_SUPPORTED_HARDWARE_LEVEL: "
-                        + (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)).toString() + "\n"
-                );
-
-                messageText += repStr(" ", 4) + "SENSOR_INFO_EXPOSURE_TIME_RANGE:";
-                if ((cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)) != null) {
-                    messageText += "\n" + repStr(" ", 8) + (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)).toString() + "\n";
-                } else {
-                    messageText += " null\n";
-                }
-
-                messageText += repStr(" ", 4) + "REQUEST_AVAILABLE_CAPABILITIES:\n" + repStr(" ", 8) + "{";
-                int[] request_avaliable_capabilities = cameraCharacteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
-                Arrays.sort(request_avaliable_capabilities);
-                for (int e : request_avaliable_capabilities) {
-                    messageText += e + ", ";
-                } messageText += "}\n";
-
-                messageText += repStr(" ", 4) + "SCALER_STREAM_CONFIGURATION_MAP:\n";
-                streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                messageText += repStr(" ", 8) + "Output Sizes:\n";
-                int counter = 0;
-                for (Size e : streamConfigurationMap.getOutputSizes(SurfaceTexture.class)) {
-                    messageText += repStr(" ", 8 + 2) + counter + ". " + e.toString() + " " + String.format("%.4f", (float) e.getWidth() / e.getHeight()) + "\n";
-                    counter ++;
-                }
-
-                messageText += "\n\n";
+        opticalStabilizationMode = 0;
+        for (int e : LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION) {
+            if (e == 1) {
+                opticalStabilizationMode = e;
+                break;
             }
-        } catch (CameraAccessException e) {
-            e.getStackTrace();
         }
-        intent.putExtra(MainActivity.EXTRA_MESSAGE, messageText);
-        startActivity(intent);
     }
 
-    private static String repStr(String str, int count) {
-        String repeatedString = "";
-        for (int i = 0; i < count; i += 1) {
-            repeatedString += str;
+
+    /**
+     * First, get the sensor pixel array size, which is the maximum
+     * available size and the output size in RAW_SENSOR format.
+     *
+     * Second, get the available size in capture format (if it is not RAW_SENSOR (32)), and find
+     * the maximum size that has the closest aspect ratio with the sensor pixel array size.
+     *
+     * Last, in the available size for SurfaceTexture.class format, find an optimized size
+     * with the same aspect ratio as the size found in the second step.
+     */
+    private Size choosePreviewSize(CameraCharacteristics cameraCharacteristics, int captureFormat) {
+        final Size SENSOR_INFO_PIXEL_ARRAY_SIZE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE);
+        Size[] previewSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(SurfaceTexture.class);
+        Size[] previewSizesFiltered;
+        if (captureFormat == 32) {
+            previewSizesFiltered = sizesFilter(previewSizes, SENSOR_INFO_PIXEL_ARRAY_SIZE);
+            return previewSizesFiltered[0];  // TODO: choose optimized size, not maximum size
         }
-        return repeatedString;
+        Size[] captureSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(captureFormat);
+        Size[] captureSizesFiltered = sizesFilter(captureSizes, SENSOR_INFO_PIXEL_ARRAY_SIZE);
+        previewSizesFiltered = sizesFilter(previewSizes, captureSizesFiltered[0]);
+        return previewSizesFiltered[0];
+    }
+
+    private Size[] sizesFilter(Size[] sizes, Size goalSize) {
+        float minimumDeviation = 0.000f;
+        ArrayList<Size> sizesFiltered = new ArrayList<>();
+        while (sizesFiltered.isEmpty()) {
+            for (Size e : sizes) {
+                float deviation = ((float) e.getWidth() / e.getHeight()) - ((float) goalSize.getWidth() / goalSize.getHeight());
+                if (
+                        (deviation == 0.0f)
+                        || ((deviation < 0.0f) && (deviation > - minimumDeviation))
+                        || ((deviation > 0.0f) && (deviation < minimumDeviation))
+                ) {
+                    sizesFiltered.add(e);
+                }
+            }
+            minimumDeviation += 0.005f;
+        }
+        sizesFiltered.sort(sizesComparator);
+        return sizesFiltered.toArray(new Size[sizesFiltered.size()]);
+    }
+
+    Comparator<Size> sizesComparator = new Comparator<Size>() {
+        @Override
+        public int compare(Size size1, Size size0) {
+            return Integer.compare(size0.getWidth() * size0.getHeight(), size1.getWidth() * size1.getHeight());
+        }
+    };
+
+
+    private void updateCaptureParametersIndicator() {
+        if (aeMode == 0 || autoMode == 0) {
+            exposureTimeButton.setText("S.S.\n" + String.format("%.2f", (float) (exposureTime / 10000000) / 100) + "s");
+            sensitivityButton.setText("ISO\n" + sensitivity);
+        } else {
+            exposureTimeButton.setText("S.S.\nAUTO");
+            sensitivityButton.setText("ISO\nAUTO");
+        }
+
+        if (afMode == 0 || autoMode == 0) {
+            focusDistanceButton.setText("F.D.\n" + String.format("%.3f", 1 / focusDistance) + "m");
+        } else {
+            focusDistanceButton.setText("F.D.\nAUTO");
+        }
+
+        focalLengthButton.setText("F.L.\n" + String.format("%.2f", focalLength) + "mm");
+        apertureButton.setText("APE\nf/" + String.format("%.1f", aperture));
+    }
+
+
+//    private void takePhoto() {
+//        try {
+//            if (autoMode == 1) {
+//                captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+//            } else {
+//                captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
+//                previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
+//                previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
+//            }
+//            captureRequestBuilder.addTarget(imageReader.getSurface());
+//            captureSession.capture(captureRequestBuilder.build(), captureSessionCaptureCallback, backgroundHandler);
+//        } catch (CameraAccessException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private ImageReader.OnImageAvailableListener captureImageAvailableListener = new ImageReader.OnImageAvailableListener() {
+//        @Override
+//        public void onImageAvailable(ImageReader reader) {
+//            if (captureFormat == ImageFormat.RAW_SENSOR) {
+//                dngCreator = new DngCreator(cameraCharacteristics, captureResult);
+////                dngCreator.setOrientation(sensorOrientation);
+//                File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/LongShoot/RAW_TEST.DNG");
+//                try {
+//                    FileOutputStream imageOutput = new FileOutputStream(imageFile);
+//                    dngCreator.writeImage(imageOutput, reader.acquireLatestImage());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    reader.close();
+//                }
+//            }
+//        }
+//    };
+
+
+    /**
+     * buttons that control capture
+     */
+    private void goCapture() {
+        // TODO
+    }
+
+    private void setMode() {
+        // TODO
+    }
+
+    private void goSettings() {
+        // TODO
+    }
+
+
+    /**
+     * buttons that change capture parameters
+     */
+    private void setExposureTime() {
+        // TODO
+    }
+
+    private void setSensitivity() {
+        // TODO
+    }
+
+    private void setFocusDistance() {
+        // TODO
+    }
+
+    private void setFocalLength() {
+        // TODO
+    }
+
+    private void setAperture() {
+        // TODO
     }
 }
