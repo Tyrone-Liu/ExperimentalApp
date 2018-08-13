@@ -46,8 +46,10 @@ public class RatioChangeableTextureView extends TextureView {
             setMeasuredDimension(width, height);
         } else {
             if (((float) ratioWidth / ratioHeight) < ((float) width / height)) {
+                // width is smaller, view's width need to be reduced
                 setMeasuredDimension(height * ratioWidth / ratioHeight, height);
             } else {
+                // height is smaller, view's height need to be reduced
                 setMeasuredDimension(width, width * ratioHeight / ratioWidth);
             }
         }
