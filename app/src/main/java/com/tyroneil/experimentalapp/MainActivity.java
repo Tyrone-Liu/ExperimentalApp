@@ -30,15 +30,8 @@ import java.util.Comparator;
 public class MainActivity extends Activity {
     // widgets in activity
     private RatioChangeableTextureView previewTextureView;
-    private Button captureButton;
-    private Button modeButton;
-    private Button settingsButton;
-
-    private Button exposureTimeButton;
-    private Button sensitivityButton;
-    private Button focusDistanceButton;
-    private Button focalLengthButton;
-    private Button apertureButton;
+    private Button captureButton, modeButton, settingsButton;
+    private Button exposureTimeButton, sensitivityButton, focusDistanceButton, focalLengthButton, apertureButton;
 
     // shared variable
     private CameraManager cameraManager;
@@ -358,8 +351,15 @@ public class MainActivity extends Activity {
         final int[] LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
 
         exposureTime = SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
-        // sensitivity = SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-        sensitivity = (SENSOR_INFO_SENSITIVITY_RANGE.getLower() + SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) / 2;  // debug
+
+        if (SENSOR_INFO_SENSITIVITY_RANGE.contains(200)) {
+            sensitivity = 200;
+        } else if (SENSOR_INFO_SENSITIVITY_RANGE.contains(400)) {
+            sensitivity = 400;
+        } else {
+            sensitivity = SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+        }
+
         focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
         // TODO: make these two parameters changeable through UI buttons
         focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
