@@ -29,7 +29,7 @@ import java.util.Comparator;
 
 public class MainActivity extends Activity {
     // widgets in activity
-    private RatioChangeableTextureView previewTextureView;
+    private ChangeableRatioTextureView previewTextureView;
     private Button captureButton, modeButton, settingsButton;
     private Button exposureTimeButton, sensitivityButton, focusDistanceButton, focalLengthButton, apertureButton;
 
@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        previewTextureView = (RatioChangeableTextureView) findViewById(R.id.previewTextureView);
+        previewTextureView = (ChangeableRatioTextureView) findViewById(R.id.previewTextureView);
         captureButton = (Button) findViewById(R.id.capture);
         modeButton = (Button) findViewById(R.id.mode);
         settingsButton = (Button) findViewById(R.id.settings);
