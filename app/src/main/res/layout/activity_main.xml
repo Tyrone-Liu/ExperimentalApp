@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.tyroneil.experimentalapp.RatioChangeableTextureView
+    <com.tyroneil.experimentalapp.ChangeableRatioTextureView
         android:id="@+id/previewTextureView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,6 +66,24 @@
         app:layout_constraintTop_toTopOf="@+id/capture" />
 
     <Button
+        android:id="@+id/focusDistance"
+        style="@android:style/Widget.Material.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="monospace"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:text="@string/button_focusDistance"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/capture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
         android:id="@+id/exposureTime"
         style="@android:style/Widget.Material.Button.Borderless.Colored"
         android:layout_width="wrap_content"
@@ -96,24 +114,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/focusDistance"
         app:layout_constraintEnd_toStartOf="@+id/focusDistance"
         app:layout_constraintStart_toEndOf="@+id/exposureTime" />
-
-    <Button
-        android:id="@+id/focusDistance"
-        style="@android:style/Widget.Material.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:fontFamily="monospace"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:text="@string/button_focusDistance"
-        android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/capture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/focalLength"
