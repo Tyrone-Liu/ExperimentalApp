@@ -2,10 +2,9 @@ package com.tyroneil.experimentalapp;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Size;
 import android.view.TextureView;
 
-public class RatioChangeableTextureView extends TextureView {
+public class ChangeableRatioTextureView extends TextureView {
 
     private int ratioWidth = 0;
     private int ratioHeight = 0;
@@ -13,13 +12,13 @@ public class RatioChangeableTextureView extends TextureView {
     /**
      * Three default constructor
      */
-    public RatioChangeableTextureView(Context context) {
+    public ChangeableRatioTextureView(Context context) {
         super(context);
     }
-    public RatioChangeableTextureView(Context context, AttributeSet attrs) {
+    public ChangeableRatioTextureView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    public RatioChangeableTextureView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ChangeableRatioTextureView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
