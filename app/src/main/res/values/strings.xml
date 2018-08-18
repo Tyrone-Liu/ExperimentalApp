@@ -1,8 +1,8 @@
 <resources>
-    <!-- name for app and activities -->
+    <!-- app and activities -->
     <string name="app_name">Experimental App</string>
 
-    <!-- name for buttons in activity Main-->
+    <!-- content_main-->
     <string name="button_capture">CAPTURE</string>
     <string name="button_mode">Mode</string>
     <string name="button_settings">Settings</string>
@@ -12,4 +12,8 @@
     <string name="button_focusDistance">F.D.\n--m</string>
     <string name="button_focalLength">F.L.\n--mm</string>
     <string name="button_aperture">APE\nf/--</string>
+
+    <!-- content_main_bottom_sheet_seek_bar -->
+    <string name="button_apply">OK</string>
+    <string name="check_box_auto">AUTO</string>
 </resources>
