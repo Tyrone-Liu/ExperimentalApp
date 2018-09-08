@@ -2,18 +2,27 @@
     <!-- app and activities -->
     <string name="app_name">Experimental App</string>
 
-    <!-- content_main-->
-    <string name="button_capture">CAPTURE</string>
-    <string name="button_mode">Mode</string>
-    <string name="button_settings">Settings</string>
+    <!-- content camera control -->
+    <string name="button_camera_control_mode">Mode</string>
+    <string name="button_camera_control_capture">CAPTURE</string>
+    <string name="button_camera_control_settings">Settings</string>
 
-    <string name="button_exposureTime">S.S.\n--s</string>
-    <string name="button_sensitivity">ISO\n--</string>
-    <string name="button_focusDistance">F.D.\n--m</string>
-    <string name="button_focalLength">F.L.\n--mm</string>
-    <string name="button_aperture">APE\nf/--</string>
+    <!-- content capture parameters indicator -->
+    <string name="button_parameters_indicator_setExposureTime">S.S.\n--s</string>
+    <string name="button_parameters_indicator_setSensitivity">ISO\n--</string>
+    <string name="button_parameters_indicator_setAperture">APE\nf/--</string>
+    <string name="button_parameters_indicator_setAutoWhiteBalance">AWB\n--</string>
+    <string name="button_parameters_indicator_setOpticalStabilization">OIS\n--</string>
+    <string name="button_parameters_indicator_setFocusDistance">F.D.\n--m</string>
+    <string name="button_parameters_indicator_setFocalLength">F.L.\n--mm</string>
 
-    <!-- content_main_bottom_sheet_seek_bar -->
-    <string name="button_apply">OK</string>
-    <string name="check_box_auto">AUTO</string>
+    <!-- content capture parameter range control -->
+    <string name="textView_range_control_title">Title</string>
+    <string name="textView_range_control_title_exposureTime">Shutter Speed</string>
+    <string name="textView_range_control_title_sensitivity">ISO</string>
+    <string name="textView_range_control_title_focusDistance">Focus Distance</string>
+    <string name="textView_range_control_valueMinimum">MIN\n--</string>
+    <string name="textView_range_control_valueMaximum">MAX\n--</string>
+    <string name="button_range_control_apply">OK</string>
+    <string name="checkBox_range_control_auto">AUTO</string>
 </resources>
