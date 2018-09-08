@@ -1,6 +1,6 @@
 <resources>
     <!-- app and activities -->
-    <string name="app_name">Experimental App</string>
+    <string name="app_name">Long Shoot Alpha</string>
 
     <!-- content camera control -->
     <string name="button_camera_control_mode">Mode</string>

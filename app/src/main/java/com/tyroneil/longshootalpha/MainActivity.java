@@ -1,4 +1,4 @@
-package com.tyroneil.experimentalapp;
+package com.tyroneil.longshootalpha;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +14,6 @@ import android.hardware.camera2.DngCreator;
 import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.AndroidException;
 import android.util.Range;
 import android.util.Size;
 import android.view.Surface;

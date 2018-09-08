@@ -1,4 +1,4 @@
-package com.tyroneil.experimentalapp;
+package com.tyroneil.longshootalpha;
 
 import android.app.Activity;
 import android.content.Context;

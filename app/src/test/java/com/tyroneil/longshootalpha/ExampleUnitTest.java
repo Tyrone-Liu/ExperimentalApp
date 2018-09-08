@@ -1,4 +1,4 @@
-package com.tyroneil.experimentalapp;
+package com.tyroneil.longshootalpha;
 
 import org.junit.Test;
 
