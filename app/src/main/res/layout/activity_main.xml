@@ -7,20 +7,21 @@
     android:background="@color/colorBackground"
     tools:context=".MainActivity">
 
-    <!-- main content -->
+    <!-- camera control -->
+    <include layout="@layout/content_camera_control" />
 
-    <include layout="@layout/content_main" />
+    <!-- capture parameter range control -->
+    <include layout="@layout/content_capture_parameter_range_control" />
 
-    <!-- main bottom sheet content -->
-    <include layout="@layout/content_main_bottom_sheet_seek_bar" />
+    <!-- capture parameter list control -->
+    <include layout="@layout/content_capture_parameter_list_control" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
         <TextView
-            android:id="@+id/errorMessageTextView"
+            android:id="@+id/textView_errorMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -34,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/debugMessageTextView"
+            android:id="@+id/textView_debugMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -44,7 +45,7 @@
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/errorMessageTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_errorMessage" />
 
     </android.support.constraint.ConstraintLayout>
 
