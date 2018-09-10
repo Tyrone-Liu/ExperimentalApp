@@ -14,6 +14,7 @@ import android.hardware.camera2.DngCreator;
 import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.BottomSheetBehavior;
 import android.util.Range;
 import android.util.Size;
 import android.view.Surface;
@@ -113,6 +114,17 @@ public class MainActivity extends Activity {
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessageTextView = (TextView) findViewById(R.id.textView_debugMessage);  // debug
+    }
+
+    @Override
+    public void onBackPressed() {
+        if ((UIOperator.rangeControlBottomSheet).getState() != BottomSheetBehavior.STATE_HIDDEN) {
+            (UIOperator.rangeControlBottomSheet).setState(BottomSheetBehavior.STATE_HIDDEN);
+        } else if ((UIOperator.listControlBottomSheet).getState() != BottomSheetBehavior.STATE_HIDDEN) {
+            (UIOperator.listControlBottomSheet).setState(BottomSheetBehavior.STATE_HIDDEN);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
