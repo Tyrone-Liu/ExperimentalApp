@@ -51,7 +51,7 @@
         android:text="@string/button_parameters_indicator_setSensitivity"
         android:textColor="@color/colorPrimary"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setAperture"
+        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setAutoWhiteBalance"
         app:layout_constraintEnd_toStartOf="@+id/button_parameters_indicator_setAperture" />
 
     <Button
@@ -66,7 +66,7 @@
         android:text="@string/button_parameters_indicator_setExposureTime"
         android:textColor="@color/colorPrimary"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setSensitivity"
+        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setAutoWhiteBalance"
         app:layout_constraintEnd_toStartOf="@+id/button_parameters_indicator_setSensitivity" />
 
     <Button
@@ -96,7 +96,7 @@
         android:text="@string/button_parameters_indicator_setFocalLength"
         android:textColor="@color/colorPrimary"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setOpticalStabilization"
+        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setAutoWhiteBalance"
         app:layout_constraintStart_toEndOf="@+id/button_parameters_indicator_setOpticalStabilization" />
 
     <Button
@@ -111,7 +111,7 @@
         android:text="@string/button_parameters_indicator_setFocusDistance"
         android:textColor="@color/colorPrimary"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setFocalLength"
+        app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setAutoWhiteBalance"
         app:layout_constraintStart_toEndOf="@+id/button_parameters_indicator_setFocalLength" />
 
 </android.support.constraint.ConstraintLayout>

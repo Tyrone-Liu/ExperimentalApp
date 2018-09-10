@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomSheet_capture_parameter_range_control"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -31,20 +30,18 @@
                 android:id="@+id/textView_range_control_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="monospace"
                 android:text="@string/textView_range_control_title"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range"
+                app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <SeekBar
-                android:id="@+id/seekBar_range_control_seekBar"
+                android:id="@+id/seekBar_range_control_range"
                 style="@android:style/Widget.Material.SeekBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -71,8 +68,8 @@
                 android:text="@string/textView_range_control_valueMinimum"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorPrimaryVariant"
-                app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_seekBar"
-                app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_seekBar" />
+                app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_range"
+                app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range" />
 
             <TextView
                 android:id="@+id/textView_range_control_valueMaximum"
@@ -84,8 +81,8 @@
                 android:text="@string/textView_range_control_valueMaximum"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorPrimaryVariant"
-                app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_seekBar"
-                app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_seekBar" />
+                app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_range"
+                app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range" />
 
             <Button
                 android:id="@+id/button_range_control_apply"
@@ -96,11 +93,12 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:fontFamily="monospace"
+                android:minHeight="48dp"
                 android:minWidth="48dp"
                 android:text="@string/button_range_control_apply"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_seekBar"
-                app:layout_constraintTop_toBottomOf="@+id/seekBar_range_control_seekBar" />
+                app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range"
+                app:layout_constraintTop_toBottomOf="@+id/seekBar_range_control_range" />
 
             <CheckBox
                 android:id="@+id/checkBox_range_control_auto"
@@ -113,7 +111,7 @@
                 android:text="@string/checkBox_range_control_auto"
                 android:textColor="@color/colorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/button_range_control_apply"
-                app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_seekBar" />
+                app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range" />
 
             <EditText
                 android:id="@+id/editText_range_control_value"

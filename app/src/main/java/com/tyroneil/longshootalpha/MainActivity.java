@@ -26,33 +26,37 @@ import java.util.Comparator;
 public class MainActivity extends Activity {
     private static Context context;
 
-    // shared variable
+    // region shared variable
     private static CameraManager cameraManager;
     private static String[] cameraIdList;
 
     static Handler backgroundHandler;
+    // endregion
 
-    // current cameraDevice variable
+    // region current cameraDevice variable
     private static String cameraId;
     private static CameraDevice cameraDevice;
     private static CameraCharacteristics cameraCharacteristics;
 
     static CameraCaptureSession captureSession;
     private static int sensorOrientation;
+    // endregion
 
-    // variable for preview
+    // region variable for preview
     static CaptureRequest.Builder previewRequestBuilder;
     private static Size previewSize;
+    // endregion
 
-    // variable for capture
+    // region variable for capture
     private CaptureRequest.Builder captureRequestBuilder;
     private CaptureResult captureResult;
     private ImageReader imageReader;
     private DngCreator dngCreator;
     private static int captureFormat;
     private Size captureSize;
+    // endregion
 
-    // capture parameters
+    // region capture parameters
     static int autoMode;  // CONTROL_MODE (0/1 OFF/AUTO)
     static final int AUTO_MODE_OFF = 0;
     static final int AUTO_MODE_AUTO = 1;
@@ -87,13 +91,15 @@ public class MainActivity extends Activity {
 
     static int opticalStabilizationMode;  // LENS_OPTICAL_STABILIZATION_MODE
     static int[] LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION;  // constant for each camera device
+    // endregion
 
-    // debug Tool
+    // region debug Tool
     static TextView errorMessageTextView;
 
     static TextView debugMessageTextView;
     static String debugMessage = "";
     static int debugCounter = 0;
+    // endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +116,7 @@ public class MainActivity extends Activity {
     }
 
 
+    // region process of creating preview
     /**
      * The process to create a preview needs to wait for 'CameraDevice', 'CameraCaptureSession' to
      * callback, so there will be three stages.
@@ -262,7 +269,7 @@ public class MainActivity extends Activity {
      */
     private static Size choosePreviewSize(CameraCharacteristics cameraCharacteristics, int captureFormat) {
         final Size SENSOR_INFO_PIXEL_ARRAY_SIZE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE);
-        int maxPreviewResolution = 1080;  // TODO: make max preview resolution changeable in settings
+        int maxPreviewResolution = 2160;  // TODO: make max preview resolution changeable in settings
         Size[] previewSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(SurfaceTexture.class);
         Size[] previewSizesFiltered;
         if (captureFormat == 32) {
@@ -345,6 +352,7 @@ public class MainActivity extends Activity {
             }
         }
     }
+    // endregion
 
 
 //    private void takePhoto() {
