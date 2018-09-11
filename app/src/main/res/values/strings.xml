@@ -28,6 +28,6 @@
 
     <!-- content capture parameter range control -->
     <string name="textView_list_control_title">List Control Title</string>
-    <string name="button_list_control_apply">Apply</string>
+    <string name="button_list_control_dismiss">Dismiss</string>
 
 </resources>

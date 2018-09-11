@@ -32,63 +32,54 @@
                 android:id="@+id/textView_list_control_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
                 android:fontFamily="monospace"
                 android:text="@string/textView_list_control_title"
-                android:textAlignment="center"
+                android:textAlignment="textStart"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/button_list_control_apply"
-                app:layout_constraintStart_toStartOf="@+id/button_list_control_apply"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="@+id/button_list_control_dismiss"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/button_list_control_dismiss" />
 
             <Button
-                android:id="@+id/button_list_control_apply"
+                android:id="@+id/button_list_control_dismiss"
                 style="@android:style/Widget.Material.Button.Colored"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:fontFamily="monospace"
-                android:text="@string/button_list_control_apply"
+                android:minHeight="48dp"
+                android:minWidth="80dp"
+                android:text="@string/button_list_control_dismiss"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <android.support.v4.widget.NestedScrollView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:fadeScrollbars="false"
                 android:fillViewport="true"
+                android:scrollbarThumbVertical="@color/colorPrimaryVariant"
                 android:scrollbars="vertical"
                 app:layout_constrainedHeight="true"
-                app:layout_constraintBottom_toTopOf="@+id/button_list_control_apply"
-                app:layout_constraintEnd_toEndOf="@+id/button_list_control_apply"
-                app:layout_constraintStart_toStartOf="@+id/button_list_control_apply"
-                app:layout_constraintTop_toBottomOf="@+id/textView_list_control_title">
+                app:layout_constraintBottom_toTopOf="@+id/button_list_control_dismiss"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <RadioGroup
                     android:id="@+id/radioGroup_list_control_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/radioButton2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:buttonTint="@color/colorPrimary"
-                        android:fontFamily="monospace"
-                        android:text="RadioButton"
-                        android:textColor="@color/colorPrimary" />
 
                 </RadioGroup>
             </android.support.v4.widget.NestedScrollView>

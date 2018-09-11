@@ -2,12 +2,15 @@ package com.tyroneil.longshootalpha;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.SurfaceTexture;
+import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CaptureRequest;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.text.InputType;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.TextureView;
 import android.view.View;
@@ -52,7 +55,7 @@ public class UIOperator extends Activity {
     static BottomSheetBehavior listControlBottomSheet;
     static TextView titleTextView_list_control;
     static RadioGroup listRadioGroup_list_control;
-    static Button applyButton_list_control;
+    static Button dismissButton_list_control;
 
     static void initiateContentCameraControl(final Activity activity) {
         previewCRTV_camera_control = (ChangeableRatioTextureView) activity.findViewById(R.id.cRTV_camera_control_preview);
@@ -133,11 +136,28 @@ public class UIOperator extends Activity {
 
         titleTextView_list_control = (TextView) activity.findViewById(R.id.textView_list_control_title);
         listRadioGroup_list_control = (RadioGroup) activity.findViewById(R.id.radioGroup_list_control_list);
-        applyButton_list_control = (Button) activity.findViewById(R.id.button_list_control_apply);
+        dismissButton_list_control = (Button) activity.findViewById(R.id.button_list_control_dismiss);
 
         // region debug
-        for (int i = 0; i < 50; i ++) {
-            listRadioGroup_list_control.addView(new RadioButton(activity));
+        RadioButton radioButton;
+        for (int i = 1; i <= 50; i ++) {
+            radioButton = new RadioButton(activity);
+            radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+            radioButton.setButtonTintList(new ColorStateList(
+                    new int[][]{
+                            new int[]{-android.R.attr.state_checked},
+                            new int[]{android.R.attr.state_checked}
+                    },
+                    new int[] {
+                            activity.getColor(R.color.colorPrimary),
+                            activity.getColor(R.color.colorPrimary)
+                    }
+            ));
+            radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+            radioButton.setText("RadioButton" + i);
+            radioButton.setTextColor(activity.getColor(R.color.colorPrimary));
+            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            listRadioGroup_list_control.addView(radioButton);
         }
         // endregion
 
