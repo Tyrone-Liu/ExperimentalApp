@@ -13,8 +13,8 @@
     <string name="button_parameters_indicator_setAperture">APE\nf/--</string>
     <string name="button_parameters_indicator_setAutoWhiteBalance">AWB\n--</string>
     <string name="button_parameters_indicator_setOpticalStabilization">OIS\n--</string>
-    <string name="button_parameters_indicator_setFocusDistance">F.D.\n--m</string>
     <string name="button_parameters_indicator_setFocalLength">F.L.\n--mm</string>
+    <string name="button_parameters_indicator_setFocusDistance">F.D.\n--m</string>
 
     <!-- content capture parameter range control -->
     <string name="textView_range_control_title">Range Control Title</string>
@@ -28,6 +28,10 @@
 
     <!-- content capture parameter range control -->
     <string name="textView_list_control_title">List Control Title</string>
+    <string name="textView_list_control_title_aperture">Aperture</string>
+    <string name="textView_list_control_title_autoWhiteBalance">Auto White Balance</string>
+    <string name="textView_list_control_title_opticalStabilization">Optical Image Stabilization</string>
+    <string name="textView_list_control_title_focalLength">Focal Length</string>
     <string name="button_list_control_dismiss">Dismiss</string>
 
 </resources>

@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -49,9 +50,9 @@ public class UIOperator extends Activity {
     static CheckBox autoCheckBox_range_control;
     static EditText valueEditText_range_control;
     static Button applyButton_range_control;
-    static final int EDIT_TEXT_VALUE_TYPE_EXPOSURE_TIME = 0;
-    static final int EDIT_TEXT_VALUE_TYPE_SENSITIVITY = 1;
-    static final int EDIT_TEXT_VALUE_TYPE_FOCUS_DISTANCE = 2;
+    static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME = 0;
+    static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY = 1;
+    static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE = 2;
     // endregion
 
     // region content capture parameter list control
@@ -59,8 +60,11 @@ public class UIOperator extends Activity {
     static TextView titleTextView_list_control;
     static RadioGroup listRadioGroup_list_control;
     static Button dismissButton_list_control;
+    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES = 0;
+    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES = 1;
     // endregion
 
+    // region initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
         previewCRTV_camera_control = (ChangeableRatioTextureView) MainActivity.activity.findViewById(R.id.cRTV_camera_control_preview);
         modeButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_mode);
@@ -107,7 +111,6 @@ public class UIOperator extends Activity {
         setFocusDistanceButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
     }
 
-    // region initiate bottom sheets (range_control, list_control)
     static void initiateContentRangeControl() {
         rangeControlBottomSheet = BottomSheetBehavior.from(MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control));
 
@@ -154,7 +157,7 @@ public class UIOperator extends Activity {
     // endregion
 
     static void updateCaptureParametersIndicator() {
-        if (MainActivity.aeMode == MainActivity.AE_MODE_OFF || MainActivity.autoMode == MainActivity.AUTO_MODE_OFF) {
+        if (MainActivity.aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
             if (MainActivity.exposureTime < 1000L) {
                 setExposureTimeButton_parameters_indicator.setText("S.S.\n" + MainActivity.exposureTime + "ns");
             } else if (MainActivity.exposureTime < 1000000L) {
@@ -170,7 +173,12 @@ public class UIOperator extends Activity {
             setSensitivityButton_parameters_indicator.setText("ISO\nAUTO");
         }
 
-        if (MainActivity.afMode == MainActivity.AF_MODE_OFF || MainActivity.autoMode == MainActivity.AUTO_MODE_OFF) {
+        setApertureButton_parameters_indicator.setText("APE\nf/" + String.format("%.1f", MainActivity.aperture));
+        setAutoWhiteBalance_parameters_indicator.setText("AWB\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.awbMode, true));
+        setOpticalStabilization_parameters_indicator.setText("OIS\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true));
+        setFocalLengthButton_parameters_indicator.setText("F.L.\n" + String.format("%.2f", MainActivity.focalLength) + "mm");
+
+        if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
             if (MainActivity.focusDistance == 0.0f) {
                 setFocusDistanceButton_parameters_indicator.setText("F.D.\n" + "Infi");
             } else {
@@ -179,28 +187,26 @@ public class UIOperator extends Activity {
         } else {
             setFocusDistanceButton_parameters_indicator.setText("F.D.\nAUTO");
         }
-
-        setFocalLengthButton_parameters_indicator.setText("F.L.\n" + String.format("%.2f", MainActivity.focalLength) + "mm");
-        setApertureButton_parameters_indicator.setText("APE\nf/" + String.format("%.1f", MainActivity.aperture));
     }
 
     static void updatePreviewParameters() {
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, MainActivity.autoMode);
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, MainActivity.aeMode);
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, MainActivity.afMode);
-        MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, MainActivity.awbMode);
 
-        if (MainActivity.aeMode == MainActivity.AE_MODE_OFF || MainActivity.autoMode == MainActivity.AUTO_MODE_OFF) {
+        if (MainActivity.aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
             MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
             MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, MainActivity.sensitivity);
         }
-        if (MainActivity.afMode == MainActivity.AF_MODE_OFF || MainActivity.autoMode == MainActivity.AUTO_MODE_OFF) {
+
+        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, MainActivity.aperture);
+        MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, MainActivity.awbMode);
+        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, MainActivity.opticalStabilizationMode);
+        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, MainActivity.focalLength);
+
+        if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
             MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, MainActivity.focusDistance);
         }
-        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, MainActivity.focalLength);
-        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, MainActivity.aperture);
-
-        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, MainActivity.opticalStabilizationMode);
 
         try {
             MainActivity.captureSession.stopRepeating();
@@ -231,13 +237,17 @@ public class UIOperator extends Activity {
         @Override
         public void onClick(View view) {
             rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            titleTextView_range_control.setText(R.string.textView_range_control_title);
+            valueMinimumTextView_range_control.setText(R.string.textView_range_control_valueMinimum);
+            valueMaximumTextView_range_control.setText(R.string.textView_range_control_valueMaximum);
             valueEditText_range_control.setText("");
 
             if (  // parameters controlled by aeMode
                        (((Button) view).getId() == R.id.button_parameters_indicator_setExposureTime)
                     || (((Button) view).getId() == R.id.button_parameters_indicator_setSensitivity)
             ) {
-                if (MainActivity.aeMode == MainActivity.AE_MODE_OFF || MainActivity.autoMode == MainActivity.AUTO_MODE_OFF) {
+                if (MainActivity.aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(true);
@@ -247,9 +257,9 @@ public class UIOperator extends Activity {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (((CheckBox) buttonView).isPressed()) {
                             if (isChecked) {
-                                MainActivity.aeMode = MainActivity.AE_MODE_ON;
+                                MainActivity.aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
                             } else {
-                                MainActivity.aeMode = MainActivity.AE_MODE_OFF;
+                                MainActivity.aeMode = CameraMetadata.CONTROL_AE_MODE_OFF;
                             }
                             rangeControlBottomSheet_setAutoCheckBoxChecked(isChecked);
                             updateCaptureParametersIndicator();
@@ -278,7 +288,7 @@ public class UIOperator extends Activity {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
                                 if (!((valueEditText_range_control.getText()).toString()).equals("")) {
-                                    rangeControlBottomSheet_applyValueEditTextValue(EDIT_TEXT_VALUE_TYPE_EXPOSURE_TIME);
+                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -293,7 +303,7 @@ public class UIOperator extends Activity {
                         @Override
                         public void onClick(View v) {
                             if (!((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(EDIT_TEXT_VALUE_TYPE_EXPOSURE_TIME);
+                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                             }
@@ -351,7 +361,7 @@ public class UIOperator extends Activity {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
                                 if (!((valueEditText_range_control.getText()).toString()).equals("")) {
-                                    rangeControlBottomSheet_applyValueEditTextValue(EDIT_TEXT_VALUE_TYPE_SENSITIVITY);
+                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -366,7 +376,7 @@ public class UIOperator extends Activity {
                         @Override
                         public void onClick(View v) {
                             if (!((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(EDIT_TEXT_VALUE_TYPE_SENSITIVITY);
+                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                             }
@@ -406,7 +416,7 @@ public class UIOperator extends Activity {
             }
 
             else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
-                if (MainActivity.afMode == MainActivity.AF_MODE_OFF || MainActivity.autoMode == MainActivity.AUTO_MODE_OFF) {
+                if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(true);
@@ -416,9 +426,9 @@ public class UIOperator extends Activity {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (((CheckBox) buttonView).isPressed()) {
                             if (isChecked) {
-                                MainActivity.afMode = MainActivity.AF_MODE_CONTINUOUS_PICTURE;
+                                MainActivity.afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
                             } else {
-                                MainActivity.afMode = MainActivity.AF_MODE_OFF;
+                                MainActivity.afMode = CameraMetadata.CONTROL_AF_MODE_OFF;
                             }
                             rangeControlBottomSheet_setAutoCheckBoxChecked(isChecked);
                             updateCaptureParametersIndicator();
@@ -442,7 +452,7 @@ public class UIOperator extends Activity {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             if (!((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(EDIT_TEXT_VALUE_TYPE_FOCUS_DISTANCE);
+                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE);
                                 return true;
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -457,7 +467,7 @@ public class UIOperator extends Activity {
                     @Override
                     public void onClick(View v) {
                         if (!((valueEditText_range_control.getText()).toString()).equals("")) {
-                            rangeControlBottomSheet_applyValueEditTextValue(EDIT_TEXT_VALUE_TYPE_FOCUS_DISTANCE);
+                            rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE);
                         } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                             rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                         }
@@ -512,8 +522,8 @@ public class UIOperator extends Activity {
         }
     }
 
-    static void rangeControlBottomSheet_applyValueEditTextValue(int editTextValueType) {
-        if (editTextValueType == EDIT_TEXT_VALUE_TYPE_EXPOSURE_TIME) {
+    static void rangeControlBottomSheet_applyValueEditTextValue(int valueEditTextType) {
+        if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME) {
             double rawValue = Double.valueOf((valueEditText_range_control.getText()).toString());
             MainActivity.exposureTime = (long) (rawValue * 1000000000L);
             if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
@@ -522,7 +532,7 @@ public class UIOperator extends Activity {
                 MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
             }
 
-        } else if (editTextValueType == EDIT_TEXT_VALUE_TYPE_SENSITIVITY) {
+        } else if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY) {
             MainActivity.sensitivity = Integer.valueOf((valueEditText_range_control.getText()).toString());
             if (MainActivity.sensitivity < MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
                 MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
@@ -530,7 +540,7 @@ public class UIOperator extends Activity {
                 MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
             }
 
-        } else if (editTextValueType == EDIT_TEXT_VALUE_TYPE_FOCUS_DISTANCE) {
+        } else if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE) {
             float rawValue = Float.valueOf((valueEditText_range_control.getText()).toString());
             MainActivity.focusDistance = 1 / rawValue;
             if (MainActivity.focusDistance < 0.0f) {
@@ -551,44 +561,206 @@ public class UIOperator extends Activity {
         @Override
         public void onClick(View view) {
             listControlBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            titleTextView_list_control.setText(R.string.textView_list_control_title);
             listRadioGroup_list_control.removeAllViews();
 
-            // region debug
             RadioButton radioButton;
-            for (int i = 1; i <= 50; i ++) {
-                radioButton = new RadioButton(MainActivity.activity);
-                radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                radioButton.setButtonTintList(new ColorStateList(
-                        new int[][]{
-                                new int[]{-android.R.attr.state_checked},
-                                new int[]{android.R.attr.state_checked}
-                        },
-                        new int[] {
-                                MainActivity.activity.getColor(R.color.colorPrimary),
-                                MainActivity.activity.getColor(R.color.colorPrimary)
-                        }
-                ));
-                radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                radioButton.setText("RadioButton" + i);
-                radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
-                radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                listRadioGroup_list_control.addView(radioButton);
-            }
-            // endregion
+            final int[] radioButtonIdArray;
 
             if (((Button) view).getId() == R.id.button_parameters_indicator_setAperture) {
+                titleTextView_list_control.setText(R.string.textView_list_control_title_aperture);
+
+                radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_APERTURES).length];
+                for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_APERTURES).length; i ++) {
+                    radioButton = new RadioButton(MainActivity.activity);
+                    // region basic radio button settings
+                    radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    // endregion
+                    radioButton.setText("f/" + MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]);
+                    listRadioGroup_list_control.addView(radioButton);
+                    radioButtonIdArray[i] = radioButton.getId();
+                }
+                listRadioGroup_list_control.check(radioButtonIdArray[arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)]);
+
+                listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                            MainActivity.aperture = MainActivity.LENS_INFO_AVAILABLE_APERTURES[arrayIndexOf(radioButtonIdArray, checkedId)];
+                            updateCaptureParametersIndicator();
+                            updatePreviewParameters();
+                        }
+                    }
+                });
             }
 
             else if (((Button) view).getId() == R.id.button_parameters_indicator_setAutoWhiteBalance) {
+                titleTextView_list_control.setText(R.string.textView_list_control_title_autoWhiteBalance);
+
+                radioButtonIdArray = new int[(MainActivity.CONTROL_AWB_AVAILABLE_MODES).length];
+                for (int i = 0; i < (MainActivity.CONTROL_AWB_AVAILABLE_MODES).length; i ++) {
+                    radioButton = new RadioButton(MainActivity.activity);
+                    // region basic radio button settings
+                    radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    // endregion
+                    radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.CONTROL_AWB_AVAILABLE_MODES[i], false));
+                    listRadioGroup_list_control.addView(radioButton);
+                    radioButtonIdArray[i] = radioButton.getId();
+                }
+                listRadioGroup_list_control.check(radioButtonIdArray[arrayIndexOf(MainActivity.CONTROL_AWB_AVAILABLE_MODES, MainActivity.awbMode)]);
+
+                listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                            MainActivity.awbMode = MainActivity.CONTROL_AWB_AVAILABLE_MODES[arrayIndexOf(radioButtonIdArray, checkedId)];
+                            updateCaptureParametersIndicator();
+                            updatePreviewParameters();
+                        }
+                    }
+                });
             }
 
             else if (((Button) view).getId() == R.id.button_parameters_indicator_setOpticalStabilization) {
+                titleTextView_list_control.setText(R.string.textView_list_control_title_opticalStabilization);
+
+                radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length];
+                for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length; i ++) {
+                    radioButton = new RadioButton(MainActivity.activity);
+                    // region basic radio button settings
+                    radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    // endregion
+                    radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[i], false));
+                    listRadioGroup_list_control.addView(radioButton);
+                    radioButtonIdArray[i] = radioButton.getId();
+                }
+                listRadioGroup_list_control.check(radioButtonIdArray[arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION, MainActivity.opticalStabilizationMode)]);
+
+                listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                            MainActivity.opticalStabilizationMode = MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[arrayIndexOf(radioButtonIdArray, checkedId)];
+                            updateCaptureParametersIndicator();
+                            updatePreviewParameters();
+                        }
+                    }
+                });
             }
 
             else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocalLength) {
+                titleTextView_list_control.setText(R.string.textView_list_control_title_focalLength);
+
+                radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length];
+                for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length; i ++) {
+                    radioButton = new RadioButton(MainActivity.activity);
+                    // region basic radio button settings
+                    radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    // endregion
+                    radioButton.setText(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[i] + " mm");
+                    listRadioGroup_list_control.addView(radioButton);
+                    radioButtonIdArray[i] = radioButton.getId();
+                }
+                listRadioGroup_list_control.check(radioButtonIdArray[arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS, MainActivity.focalLength)]);
+
+                listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                            MainActivity.focalLength = MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[arrayIndexOf(radioButtonIdArray, checkedId)];
+                            updateCaptureParametersIndicator();
+                            updatePreviewParameters();
+                        }
+                    }
+                });
             }
         }
     };
+
+    static String listControlBottomSheet_intValueToString(int intValueType, int intValue, boolean shortString) {
+        String string = "";
+
+        if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES) {
+            switch (intValue) {
+                case 0:
+                    string = (shortString? "OFF" : "OFF");
+                    break;
+                case 1:
+                    string = (shortString? "AUTO" : "AUTO");
+                    break;
+                case 2:
+                    string = (shortString? "INC." : "Incandescent");
+                    break;
+                case 3:
+                    string = (shortString? "FLU." : "Fluorescent");
+                    break;
+                case 4:
+                    string = (shortString? "FLU.W." : "Fluorescent (Warm)");
+                    break;
+                case 5:
+                    string = (shortString? "DAY." : "Daylight");
+                    break;
+                case 6:
+                    string = (shortString? "DAY.C." : "Daylight (Cloudy)");
+                    break;
+                case 7:
+                    string = (shortString? "TWI." : "Twilight");
+                    break;
+                case 8:
+                    string = (shortString? "SHA." : "Shade");
+                    break;
+            }
+        } else if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES) {
+            switch (intValue) {
+                case 0:
+                    string = "OFF";
+                    break;
+                case 1:
+                    string = "ON";
+                    break;
+            }
+        }
+
+        return string;
+    }
+
+    static int arrayIndexOf(int[] array, int value) {
+        for (int i = 0; i < array.length; i ++) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    static int arrayIndexOf(float[] array, float value) {
+        for (int i = 0; i < array.length; i ++) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+        return -1;
+    }
     // endregion
 
 }
