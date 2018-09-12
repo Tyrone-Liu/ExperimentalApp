@@ -8,6 +8,7 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DngCreator;
@@ -27,6 +28,7 @@ import java.util.Comparator;
 public class MainActivity extends Activity {
     private static Context context;
     static Activity activity;
+    static float scale;
 
     // region shared variable
     private static CameraManager cameraManager;
@@ -60,20 +62,7 @@ public class MainActivity extends Activity {
 
     // region capture parameters
     static int autoMode;  // CONTROL_MODE (0/1 OFF/AUTO)
-    static final int AUTO_MODE_OFF = 0;
-    static final int AUTO_MODE_AUTO = 1;
-
     static int aeMode;  // CONTROL_AE_MODE (0/1 OFF/ON)
-    static final int AE_MODE_OFF = 0;
-    static final int AE_MODE_ON = 1;
-
-    static int afMode;  // CONTROL_AF_MODE (0/4 OFF/CONTINUOUS_PICTURE)
-    static final int AF_MODE_OFF = 0;
-    static final int AF_MODE_CONTINUOUS_PICTURE = 4;
-
-    static int awbMode;  // CONTROL_AWB_MODE (0/1 OFF/AUTO)
-    static final int AWB_MODE_OFF = 0;
-    static final int AWB_MODE_AUTO = 1;
 
     static long exposureTime;  // SENSOR_EXPOSURE_TIME
     static Range<Long> SENSOR_INFO_EXPOSURE_TIME_RANGE;  // constant for each camera device
@@ -81,18 +70,22 @@ public class MainActivity extends Activity {
     static int sensitivity;  // SENSOR_SENSITIVITY
     static Range<Integer> SENSOR_INFO_SENSITIVITY_RANGE;  // constant for each camera device
 
-    static float focusDistance;  // LENS_FOCUS_DISTANCE
-    static float LENS_INFO_HYPERFOCAL_DISTANCE;  // constant for each camera device
-    static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
+    static float aperture;  // LENS_APERTURE
+    static float[] LENS_INFO_AVAILABLE_APERTURES;  // constant for each camera device
+
+    static int awbMode;  // CONTROL_AWB_MODE
+    static int[] CONTROL_AWB_AVAILABLE_MODES;  // constant for each camera devices
+
+    static int opticalStabilizationMode;  // LENS_OPTICAL_STABILIZATION_MODE
+    static int[] LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION;  // constant for each camera device
 
     static float focalLength;  // LENS_FOCAL_LENGTH
     static float[] LENS_INFO_AVAILABLE_FOCAL_LENGTHS;  // constant for each camera device
 
-    static float aperture;  // LENS_APERTURE
-    static float[] LENS_INFO_AVAILABLE_APERTURES;  // constant for each camera device
-
-    static int opticalStabilizationMode;  // LENS_OPTICAL_STABILIZATION_MODE
-    static int[] LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION;  // constant for each camera device
+    static int afMode;  // CONTROL_AF_MODE (0/4 OFF/CONTINUOUS_PICTURE)
+    static float focusDistance;  // LENS_FOCUS_DISTANCE
+    static float LENS_INFO_HYPERFOCAL_DISTANCE;  // constant for each camera device
+    static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
     // endregion
 
     // region debug Tool
@@ -109,6 +102,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         MainActivity.context = getApplicationContext();
         MainActivity.activity = this;
+        scale = getResources().getDisplayMetrics().density;
 
         UIOperator.initiateContentCameraControl();
         UIOperator.initiateContentRangeControl();
@@ -151,10 +145,9 @@ public class MainActivity extends Activity {
      */
     static void createPreview(int stage) {
         // TODO: make all this parameters changeable
-        autoMode = AUTO_MODE_AUTO;
-        aeMode = AE_MODE_ON;
-        afMode = AF_MODE_CONTINUOUS_PICTURE;
-        awbMode = AWB_MODE_AUTO;
+        autoMode = CameraMetadata.CONTROL_MODE_AUTO;
+        aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
+        afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
         // TODO: make capture format changeable in settings, then make this default RAW_SENSOR
         captureFormat = 256;
@@ -207,19 +200,18 @@ public class MainActivity extends Activity {
                 previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
-                previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
 
-                if (aeMode == AE_MODE_OFF || autoMode == AUTO_MODE_OFF) {
+                if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                     previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
                 }
-                if (afMode == AF_MODE_OFF || autoMode == AUTO_MODE_OFF) {
+                previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
+                previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
+                previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
+                previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
+                if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
                 }
-                previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
-                previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
-
-                previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
 
                 previewRequestBuilder.addTarget(previewSurface);
                 cameraDevice.createCaptureSession(Arrays.asList(previewSurface), captureSessionStateCallback, backgroundHandler);
@@ -334,11 +326,13 @@ public class MainActivity extends Activity {
     private static void initiateCaptureParameters(CameraCharacteristics cameraCharacteristics) {
         SENSOR_INFO_EXPOSURE_TIME_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE);
         SENSOR_INFO_SENSITIVITY_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
+        LENS_INFO_AVAILABLE_APERTURES = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES);
+        CONTROL_AWB_AVAILABLE_MODES = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AWB_AVAILABLE_MODES);
+        LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
+        LENS_INFO_AVAILABLE_FOCAL_LENGTHS = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
+
         LENS_INFO_HYPERFOCAL_DISTANCE = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_HYPERFOCAL_DISTANCE);
         LENS_INFO_MINIMUM_FOCUS_DISTANCE = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE);
-        LENS_INFO_AVAILABLE_FOCAL_LENGTHS = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
-        LENS_INFO_AVAILABLE_APERTURES = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES);
-        LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
 
         if (SENSOR_INFO_EXPOSURE_TIME_RANGE.contains(100000000L)) {
             exposureTime = 100000000L;  // 0.1s
@@ -354,9 +348,8 @@ public class MainActivity extends Activity {
             sensitivity = SENSOR_INFO_SENSITIVITY_RANGE.getLower();
         }
 
-        focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
-        focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
         aperture = LENS_INFO_AVAILABLE_APERTURES[0];
+        awbMode = CameraMetadata.CONTROL_AWB_MODE_AUTO;
 
         opticalStabilizationMode = 0;
         for (int e : LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION) {
@@ -365,6 +358,9 @@ public class MainActivity extends Activity {
                 break;
             }
         }
+
+        focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
+        focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
     }
     // endregion
 
