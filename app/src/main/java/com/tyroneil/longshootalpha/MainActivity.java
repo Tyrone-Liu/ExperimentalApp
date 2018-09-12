@@ -26,6 +26,7 @@ import java.util.Comparator;
 
 public class MainActivity extends Activity {
     private static Context context;
+    static Activity activity;
 
     // region shared variable
     private static CameraManager cameraManager;
@@ -107,10 +108,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MainActivity.context = getApplicationContext();
+        MainActivity.activity = this;
 
-        UIOperator.initiateContentCameraControl(this);
-        UIOperator.initiateContentRangeControl(this);
-        UIOperator.initiateContentListControl(this);
+        UIOperator.initiateContentCameraControl();
+        UIOperator.initiateContentRangeControl();
+        UIOperator.initiateContentListControl();
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessageTextView = (TextView) findViewById(R.id.textView_debugMessage);  // debug

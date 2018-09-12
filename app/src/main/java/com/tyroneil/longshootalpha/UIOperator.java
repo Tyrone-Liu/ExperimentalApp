@@ -26,11 +26,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class UIOperator extends Activity {
-    // content camera control
+    // region content camera control
     static ChangeableRatioTextureView previewCRTV_camera_control;
     static Button modeButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
+    // endregion
 
-    // content capture parameters indicator
+    // region content capture parameters indicator
     static Button
             setExposureTimeButton_parameters_indicator,
             setSensitivityButton_parameters_indicator,
@@ -39,8 +40,9 @@ public class UIOperator extends Activity {
             setOpticalStabilization_parameters_indicator,
             setFocalLengthButton_parameters_indicator,
             setFocusDistanceButton_parameters_indicator;
+    // endregion
 
-    // content capture parameter range control
+    // region content capture parameter range control
     static BottomSheetBehavior rangeControlBottomSheet;
     static TextView titleTextView_range_control, valueMinimumTextView_range_control, valueMaximumTextView_range_control;
     static SeekBar rangeSeekBar_range_control;
@@ -50,27 +52,29 @@ public class UIOperator extends Activity {
     static final int EDIT_TEXT_VALUE_TYPE_EXPOSURE_TIME = 0;
     static final int EDIT_TEXT_VALUE_TYPE_SENSITIVITY = 1;
     static final int EDIT_TEXT_VALUE_TYPE_FOCUS_DISTANCE = 2;
+    // endregion
 
-    // content capture parameter list control
+    // region content capture parameter list control
     static BottomSheetBehavior listControlBottomSheet;
     static TextView titleTextView_list_control;
     static RadioGroup listRadioGroup_list_control;
     static Button dismissButton_list_control;
+    // endregion
 
-    static void initiateContentCameraControl(final Activity activity) {
-        previewCRTV_camera_control = (ChangeableRatioTextureView) activity.findViewById(R.id.cRTV_camera_control_preview);
-        modeButton_camera_control = (Button) activity.findViewById(R.id.button_camera_control_mode);
-        captureButton_camera_control = (Button) activity.findViewById(R.id.button_camera_control_capture);
-        settingsButton_camera_control = (Button) activity.findViewById(R.id.button_camera_control_settings);
+    static void initiateContentCameraControl() {
+        previewCRTV_camera_control = (ChangeableRatioTextureView) MainActivity.activity.findViewById(R.id.cRTV_camera_control_preview);
+        modeButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_mode);
+        captureButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_capture);
+        settingsButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_settings);
 
         // content parameters indicator
-        setExposureTimeButton_parameters_indicator = (Button) activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
-        setSensitivityButton_parameters_indicator = (Button) activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
-        setApertureButton_parameters_indicator = (Button) activity.findViewById(R.id.button_parameters_indicator_setAperture);
-        setAutoWhiteBalance_parameters_indicator = (Button) activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
-        setOpticalStabilization_parameters_indicator = (Button) activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
-        setFocalLengthButton_parameters_indicator = (Button) activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
-        setFocusDistanceButton_parameters_indicator = (Button) activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
+        setExposureTimeButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
+        setSensitivityButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
+        setApertureButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAperture);
+        setAutoWhiteBalance_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
+        setOpticalStabilization_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
+        setFocalLengthButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
+        setFocusDistanceButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
 
         previewCRTV_camera_control.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
@@ -104,23 +108,23 @@ public class UIOperator extends Activity {
     }
 
     // region initiate bottom sheets (range_control, list_control)
-    static void initiateContentRangeControl(final Activity activity) {
-        rangeControlBottomSheet = BottomSheetBehavior.from(activity.findViewById(R.id.bottomSheet_capture_parameter_range_control));
+    static void initiateContentRangeControl() {
+        rangeControlBottomSheet = BottomSheetBehavior.from(MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control));
 
-        titleTextView_range_control = (TextView) activity.findViewById(R.id.textView_range_control_title);
-        valueMinimumTextView_range_control = (TextView) activity.findViewById(R.id.textView_range_control_valueMinimum);
-        valueMaximumTextView_range_control = (TextView) activity.findViewById(R.id.textView_range_control_valueMaximum);
-        rangeSeekBar_range_control = (SeekBar) activity.findViewById(R.id.seekBar_range_control_range);
-        autoCheckBox_range_control = (CheckBox) activity.findViewById(R.id.checkBox_range_control_auto);
-        valueEditText_range_control = (EditText) activity.findViewById(R.id.editText_range_control_value);
-        applyButton_range_control = (Button) activity.findViewById(R.id.button_range_control_apply);
+        titleTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_title);
+        valueMinimumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMinimum);
+        valueMaximumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMaximum);
+        rangeSeekBar_range_control = (SeekBar) MainActivity.activity.findViewById(R.id.seekBar_range_control_range);
+        autoCheckBox_range_control = (CheckBox) MainActivity.activity.findViewById(R.id.checkBox_range_control_auto);
+        valueEditText_range_control = (EditText) MainActivity.activity.findViewById(R.id.editText_range_control_value);
+        applyButton_range_control = (Button) MainActivity.activity.findViewById(R.id.button_range_control_apply);
 
         rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
         rangeControlBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(bottomSheet.getWindowToken(), 0);
                 }
             }
@@ -131,35 +135,19 @@ public class UIOperator extends Activity {
         });
     }
 
-    static void initiateContentListControl(final Activity activity) {
-        listControlBottomSheet = BottomSheetBehavior.from(activity.findViewById(R.id.bottomSheet_capture_parameter_list_control));
+    static void initiateContentListControl() {
+        listControlBottomSheet = BottomSheetBehavior.from(MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_list_control));
 
-        titleTextView_list_control = (TextView) activity.findViewById(R.id.textView_list_control_title);
-        listRadioGroup_list_control = (RadioGroup) activity.findViewById(R.id.radioGroup_list_control_list);
-        dismissButton_list_control = (Button) activity.findViewById(R.id.button_list_control_dismiss);
+        titleTextView_list_control = (TextView) MainActivity.activity.findViewById(R.id.textView_list_control_title);
+        listRadioGroup_list_control = (RadioGroup) MainActivity.activity.findViewById(R.id.radioGroup_list_control_list);
+        dismissButton_list_control = (Button) MainActivity.activity.findViewById(R.id.button_list_control_dismiss);
 
-        // region debug
-        RadioButton radioButton;
-        for (int i = 1; i <= 50; i ++) {
-            radioButton = new RadioButton(activity);
-            radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-            radioButton.setButtonTintList(new ColorStateList(
-                    new int[][]{
-                            new int[]{-android.R.attr.state_checked},
-                            new int[]{android.R.attr.state_checked}
-                    },
-                    new int[] {
-                            activity.getColor(R.color.colorPrimary),
-                            activity.getColor(R.color.colorPrimary)
-                    }
-            ));
-            radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-            radioButton.setText("RadioButton" + i);
-            radioButton.setTextColor(activity.getColor(R.color.colorPrimary));
-            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-            listRadioGroup_list_control.addView(radioButton);
-        }
-        // endregion
+        dismissButton_list_control.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+        });
 
         listControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
@@ -563,6 +551,42 @@ public class UIOperator extends Activity {
         @Override
         public void onClick(View view) {
             listControlBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
+            listRadioGroup_list_control.removeAllViews();
+
+            // region debug
+            RadioButton radioButton;
+            for (int i = 1; i <= 50; i ++) {
+                radioButton = new RadioButton(MainActivity.activity);
+                radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+                radioButton.setButtonTintList(new ColorStateList(
+                        new int[][]{
+                                new int[]{-android.R.attr.state_checked},
+                                new int[]{android.R.attr.state_checked}
+                        },
+                        new int[] {
+                                MainActivity.activity.getColor(R.color.colorPrimary),
+                                MainActivity.activity.getColor(R.color.colorPrimary)
+                        }
+                ));
+                radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+                radioButton.setText("RadioButton" + i);
+                radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                listRadioGroup_list_control.addView(radioButton);
+            }
+            // endregion
+
+            if (((Button) view).getId() == R.id.button_parameters_indicator_setAperture) {
+            }
+
+            else if (((Button) view).getId() == R.id.button_parameters_indicator_setAutoWhiteBalance) {
+            }
+
+            else if (((Button) view).getId() == R.id.button_parameters_indicator_setOpticalStabilization) {
+            }
+
+            else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocalLength) {
+            }
         }
     };
     // endregion
