@@ -5,7 +5,6 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
 ## Progress
 + [x] A preview interface that matches capture parameters
 + [x] UI of capture parameters controller
-
 + Control of capture parameters
     * [x] Exposure Time
     * [x] Sensitivity
@@ -14,7 +13,6 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
     * [ ] Optical Stabilization
     * [ ] Focal Length
     * [x] Focus Distance
-
 + [ ] Capture and store the photo
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
@@ -34,12 +32,10 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
     * [ ] GPS record for shots
     * [ ] White balance (When you have RAW output, white balance is not that demanded)
     * [ ] Flash control (Flash lights on phones may not be a good choice for great photos)
-
 + Photo output
     * [ ] Choice between RAW (DNG) / PNG / JPEG output or any combinations of them
     * [ ] Write correct metadata into files or embed in shot
     * [ ] Custom output file name with patterns
-
 + Burst (for stacking or time-lapse)
     * Control method: Switch
         - [ ] Switch / button to start / stop burst (no need to press the shutter button for many times)
