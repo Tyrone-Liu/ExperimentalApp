@@ -1,15 +1,26 @@
-# Long Shoot
-
-**Long Shoot** is an ***experimental*** android camera app using camera2 API.  
-The purpose is shooting **long exposure photo** and **stacking photos** with RAW output and full control of shutter parameters.  
+# Long Shoot Alpha
+This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/LongShoot)**, which is currently empty.🙄  
 
 
 ## Progress
-One thing I need to clarify is that before a certain state of development, this app is definitely **unuseable**.  Most of the experimental work will be done in this alpha repo [LongShootAlpha](https://github.com/Tyrone-Liu/LongShootAlpha.git).  
++ [x] A preview interface that matches capture parameters
++ [x] UI of capture parameters controller
+
++ Control of capture parameters
+    * [x] Exposure Time
+    * [x] Sensitivity
+    * [ ] Aperture
+    * [ ] Auto White Balance
+    * [ ] Optical Stabilization
+    * [ ] Focal Length
+    * [x] Focus Distance
+
++ [ ] Capture and store the photo
++ [ ] Different capture sequences for stacking or time-lapse
++ [ ] More miscellaneous settings in setting interface
 
 
 ## Features & To-Do
-
 + Full control of shutter parameters
     * Focus
         - [x] Auto focus
@@ -31,7 +42,7 @@ One thing I need to clarify is that before a certain state of development, this 
 
 + Burst (for stacking or time-lapse)
     * Control method: Switch
-        - [ ] Switch / button to start / stop burst (no need to press shutter button many times)
+        - [ ] Switch / button to start / stop burst (no need to press the shutter button for many times)
         - [ ] Configurable time interval between each shot / shot group
         - [ ] Configurable shot numbers for each shot group
     * Control method: Button
