@@ -8,11 +8,12 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
 + Control of capture parameters
     * [x] Exposure Time
     * [x] Sensitivity
-    * [ ] Aperture
-    * [ ] Auto White Balance
-    * [ ] Optical Stabilization
-    * [ ] Focal Length
+    * [x] Aperture
+    * [x] Auto White Balance
+    * [x] Optical Stabilization
+    * [x] Focal Length
     * [x] Focus Distance
++ [ ] Handle App sent to background, closed, killed or camera crashed
 + [ ] Capture and store the photo
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
@@ -30,8 +31,8 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
         - [ ] Numbers of shot in BRK
         - [ ] Exposure distance between each shot in BRK
     * [ ] GPS record for shots
-    * [ ] White balance (When you have RAW output, white balance is not that demanded)
-    * [ ] Flash control (Flash lights on phones may not be a good choice for great photos)
+    * [x] White balance (When you have RAW output, white balance is not that demanded)
+    * [ ] Flash control (Flash lights on phones may not be a good choice for great lighting)
 + Photo output
     * [ ] Choice between RAW (DNG) / PNG / JPEG output or any combinations of them
     * [ ] Write correct metadata into files or embed in shot
