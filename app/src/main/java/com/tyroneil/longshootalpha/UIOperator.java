@@ -1,6 +1,5 @@
 package com.tyroneil.longshootalpha;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.SurfaceTexture;
@@ -26,7 +25,7 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class UIOperator extends Activity {
+public class UIOperator {
     // region content camera control
     static ChangeableRatioTextureView previewCRTV_camera_control;
     static Button modeButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
@@ -80,14 +79,11 @@ public class UIOperator extends Activity {
         setFocalLengthButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
         setFocusDistanceButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
 
+        MainActivity.createPreview(MainActivity.CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE);
         previewCRTV_camera_control.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                // debug
-                MainActivity.debugMessage += "TV available\n";
-                MainActivity.debugMessageTextView.setText(MainActivity.debugMessage);
-                // debug
-                MainActivity.createPreview(0);
+                MainActivity.createPreview(MainActivity.CREATE_PREVIEW_STAGE_OPEN_CAMERA);
             }
 
             @Override
@@ -95,7 +91,7 @@ public class UIOperator extends Activity {
             }
             @Override
             public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                return false;
+                return true;
             }
             @Override
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
@@ -214,7 +210,7 @@ public class UIOperator extends Activity {
 
         try {
             MainActivity.captureSession.stopRepeating();
-            MainActivity.captureSession.setRepeatingRequest(MainActivity.previewRequestBuilder.build(), null, MainActivity.backgroundHandler);
+            MainActivity.captureSession.setRepeatingRequest(MainActivity.previewRequestBuilder.build(), null, MainActivity.cameraBackgroundHandler);
         } catch (CameraAccessException e) {
             MainActivity.displayErrorMessage(e);
         }

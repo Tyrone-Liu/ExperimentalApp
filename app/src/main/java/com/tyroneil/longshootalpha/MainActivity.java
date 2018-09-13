@@ -2,6 +2,7 @@ package com.tyroneil.longshootalpha;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -35,8 +36,13 @@ public class MainActivity extends Activity {
     private static CameraManager cameraManager;
     private static String[] cameraIdList;
 
-    static Handler backgroundHandler;
-    static HandlerThread backgroundThread;
+    static HandlerThread cameraBackgroundThread;
+    static Handler cameraBackgroundHandler;
+
+    static final int CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE = 0;
+    static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
+    static final int CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION = 2;
+    static final int CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST = 3;
     // endregion
 
     // region current cameraDevice variable
@@ -112,57 +118,39 @@ public class MainActivity extends Activity {
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessageTextView = (TextView) findViewById(R.id.textView_debugMessage);  // debug
-        // debug
-        debugMessage += "create\n";
-        debugMessageTextView.setText(debugMessage);
-        // debug
-    }
-
-    // debug
-    @Override
-    protected void onResume() {
-        super.onResume();
-        debugMessage += "resume\n";
-        debugMessageTextView.setText(debugMessage);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        debugMessage += "start\n";
-        debugMessageTextView.setText(debugMessage);
-    }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        debugMessage += "restart\n";
-        debugMessageTextView.setText(debugMessage);
-    }
+        cameraBackgroundThread = new HandlerThread("CameraBackground");
+        cameraBackgroundThread.start();
+        cameraBackgroundHandler = new Handler(cameraBackgroundThread.getLooper());
 
-
-    @Override
-    protected void onPause() {
-        debugMessage += "pause\n\n";
-        debugMessageTextView.setText(debugMessage);
-        super.onPause();
+        if ((UIOperator.previewCRTV_camera_control).isAvailable()) {
+            createPreview(CREATE_PREVIEW_STAGE_OPEN_CAMERA);
+        }
     }
 
     @Override
     protected void onStop() {
-        debugMessage += "stop\n\n";
-        debugMessageTextView.setText(debugMessage);
+        captureSession.close();
+        captureSession = null;
+        cameraDevice.close();
+        cameraDevice = null;
+
+        cameraBackgroundThread.quitSafely();
+        try {  // if previous statement is using '.quit()', then there is not necessary to use '.join()'
+            cameraBackgroundThread.join();
+            cameraBackgroundThread = null;
+            cameraBackgroundHandler = null;
+        } catch (InterruptedException e) {
+            displayErrorMessage(e);
+        }
+
         super.onStop();
     }
-
-    @Override
-    protected void onDestroy() {
-        debugMessage += "destroy\n\n";
-        debugMessageTextView.setText(debugMessage);
-        super.onDestroy();
-    }
-
-    // debug
 
     @Override
     public void onBackPressed() {
@@ -181,29 +169,32 @@ public class MainActivity extends Activity {
      * The process to create a preview needs to wait for 'CameraDevice', 'CameraCaptureSession' to
      * callback, so there will be three stages.
      *
-     * Stage 0: Use 'CameraManager' to query a cameraId, then open the camera.
-     * Stage 1:
-     *     'CameraDevice.StateCallback.onOpened()' call 'createPreview()' with {@param 1}.
-     *     Use info from 'CameraCharacteristics' to set preview image format and size.
+     * Stage INITIATE_CAMERA_CANDIDATE: called by onCreate()
+     *     Use 'CameraManager' to query a cameraId, set the previewTextureView aspect ratio.
+     *
+     * Stage OPEN_CAMERA: called when necessary
+     *     Open camera using the selected cameraId.
+     *
+     * Stage CREATE_CAPTURE_SESSION: called by 'CameraDevice.StateCallback.onOpened()' with {@param CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION}.
      *     Use 'CameraDevice.createCaptureRequest()' to create a 'CaptureRequest.Builder'.
      *     Use 'CaptureRequest.Builder.addTarget()' to set TextureView as the output target.
      *     Use 'CameraDevice.createCaptureSession()' to create a 'CameraCaptureSession'.
-     * Stage 2:
-     *     'CameraCaptureSession.StateCallback.onConfigured()' call 'createPreview()' with {@param 2}.
+     *
+     * Stage SET_REPEATING_REQUEST: called by 'CameraCaptureSession.StateCallback.onConfigured()' with {@param CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST}.
      *     Use 'CameraCaptureSession.setRepeatingRequest(CaptureRequest.Builder.build())' to
      *     submit 'CaptureRequest' to 'CameraCaptureSession'.
      *
-     * @param stage the stage of creating (int 0, 1, 2)
+     * @param stage the stage of creating preview (int 0, 1, 2, 3)
      */
     static void createPreview(int stage) {
-        autoMode = CameraMetadata.CONTROL_MODE_AUTO;
-        aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
-        afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
+        if (stage == CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE) {
+            autoMode = CameraMetadata.CONTROL_MODE_AUTO;
+            aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
+            afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-        // TODO: make capture format changeable in settings, then make this default RAW_SENSOR
-        captureFormat = 256;
+            // TODO: make capture format changeable in settings, then make this default RAW_SENSOR
+            captureFormat = ImageFormat.JPEG;
 
-        if (stage == 0) {
             try {
                 cameraManager = (CameraManager) MainActivity.context.getSystemService(CameraManager.class);
                 cameraIdList = cameraManager.getCameraIdList();
@@ -217,31 +208,35 @@ public class MainActivity extends Activity {
                 }
                 cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
                 initiateCaptureParameters(cameraCharacteristics);
+                UIOperator.updateCaptureParametersIndicator();
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
             }
-
-            try {
-                cameraManager.openCamera(cameraId, cameraStateCallback, backgroundHandler);
-            } catch (CameraAccessException | SecurityException e) {
-                displayErrorMessage(e);
-            }
-        } else if (stage == 1) {
-            // got cameraDevice
-            // this stage will also be used to refresh the preview parameters after changed camera device
-            previewSize = choosePreviewSize(cameraCharacteristics, captureFormat);
 
             /**
              * Check the 'SENSOR_ORIENTATION' to set width and height appropriately.
              * (Switch width and height if necessary.  )
              */
+            previewSize = choosePreviewSize(cameraCharacteristics, captureFormat);
             sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             if (sensorOrientation == 90 || sensorOrientation == 270) {
                 (UIOperator.previewCRTV_camera_control).setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
             } else {
                 (UIOperator.previewCRTV_camera_control).setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
             }
+        }
 
+        else if (stage == CREATE_PREVIEW_STAGE_OPEN_CAMERA) {
+            try {
+                cameraManager.openCamera(cameraId, cameraStateCallback, cameraBackgroundHandler);
+            } catch (CameraAccessException | SecurityException e) {
+                displayErrorMessage(e);
+            }
+        }
+
+        else if (stage == CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION) {
+            // got cameraDevice
+            // this stage will also be used to refresh the preview parameters after changed camera device
             SurfaceTexture previewSurfaceTexture = (UIOperator.previewCRTV_camera_control).getSurfaceTexture();
             previewSurfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface previewSurface = new Surface(previewSurfaceTexture);
@@ -265,15 +260,16 @@ public class MainActivity extends Activity {
                 }
 
                 previewRequestBuilder.addTarget(previewSurface);
-                cameraDevice.createCaptureSession(Arrays.asList(previewSurface), captureSessionStateCallback, backgroundHandler);
+                cameraDevice.createCaptureSession(Arrays.asList(previewSurface), captureSessionStateCallback, cameraBackgroundHandler);
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
             }
-        } else if (stage == 2) {  // got captureSession
+        }
+
+        else if (stage == CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST) {  // got captureSession
             try {
                 // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
-                captureSession.setRepeatingRequest(previewRequestBuilder.build(), null, backgroundHandler);
-                UIOperator.updateCaptureParametersIndicator();
+                captureSession.setRepeatingRequest(previewRequestBuilder.build(), null, cameraBackgroundHandler);
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
             }
@@ -287,7 +283,7 @@ public class MainActivity extends Activity {
         @Override
         public void onOpened(CameraDevice camera) {
             cameraDevice = camera;
-            createPreview(1);
+            createPreview(CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION);
         }
 
         @Override
@@ -309,15 +305,17 @@ public class MainActivity extends Activity {
         @Override
         public void onConfigured(CameraCaptureSession session) {
             captureSession = session;
-            createPreview(2);
+            createPreview(CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST);
         }
 
         @Override
         public void onConfigureFailed(CameraCaptureSession session) {
+            session.close();
+            captureSession = null;
         }
     };
 
-
+    // region method to choose preview size
     /**
      * First, get the sensor pixel array size, which is the maximum
      * available size and the output size in RAW_SENSOR format.
@@ -376,7 +374,7 @@ public class MainActivity extends Activity {
             return Integer.compare(size0.getWidth() * size0.getHeight(), size1.getWidth() * size1.getHeight());
         }
     };
-
+    // endregion
 
     private static void initiateCaptureParameters(CameraCharacteristics cameraCharacteristics) {
         SENSOR_INFO_EXPOSURE_TIME_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE);
@@ -385,7 +383,6 @@ public class MainActivity extends Activity {
         CONTROL_AWB_AVAILABLE_MODES = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AWB_AVAILABLE_MODES);
         LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
         LENS_INFO_AVAILABLE_FOCAL_LENGTHS = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
-
         LENS_INFO_HYPERFOCAL_DISTANCE = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_HYPERFOCAL_DISTANCE);
         LENS_INFO_MINIMUM_FOCUS_DISTANCE = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE);
 
@@ -418,7 +415,6 @@ public class MainActivity extends Activity {
         focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
     }
     // endregion
-
 
 //    private void takePhoto() {
 //        try {
@@ -454,7 +450,6 @@ public class MainActivity extends Activity {
 //            }
 //        }
 //    };
-
 
     static void displayErrorMessage(Exception error) {
         errorMessageTextView.setBackgroundResource(R.color.colorSurface);

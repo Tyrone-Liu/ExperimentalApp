@@ -13,9 +13,10 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
     * [x] Optical Stabilization
     * [x] Focal Length
     * [x] Focus Distance
-+ [ ] Handle App sent to background, closed, killed or camera crashed
++ [x] Handle App sent to background, closed, killed or camera crashed
 + [ ] Capture and store the photo
 + [ ] Different capture sequences for stacking or time-lapse
++ [ ] Handle Android permission request
 + [ ] More miscellaneous settings in setting interface
 
 
