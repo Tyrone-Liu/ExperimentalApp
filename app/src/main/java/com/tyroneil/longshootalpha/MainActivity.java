@@ -144,7 +144,6 @@ public class MainActivity extends Activity {
      * @param stage the stage of creating (int 0, 1, 2)
      */
     static void createPreview(int stage) {
-        // TODO: make all this parameters changeable
         autoMode = CameraMetadata.CONTROL_MODE_AUTO;
         aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
         afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
@@ -160,12 +159,12 @@ public class MainActivity extends Activity {
                 for (String e : cameraIdList) {
                     if ((cameraManager.getCameraCharacteristics(e)).get(CameraCharacteristics.LENS_FACING) == 1) {
                         cameraId = e;
-                        cameraCharacteristics = cameraManager.getCameraCharacteristics(e);
-                        initiateCaptureParameters(cameraCharacteristics);
                         break;
                     }
                     cameraId = cameraIdList[0];
                 }
+                cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
+                initiateCaptureParameters(cameraCharacteristics);
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
             }
@@ -241,9 +240,13 @@ public class MainActivity extends Activity {
 
         @Override
         public void onDisconnected(CameraDevice camera) {
+            camera.close();
+            cameraDevice = null;
         }
         @Override
         public void onError(CameraDevice camera, int error) {
+            camera.close();
+            cameraDevice = null;
         }
     };
 
