@@ -83,6 +83,10 @@ public class UIOperator extends Activity {
         previewCRTV_camera_control.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                // debug
+                MainActivity.debugMessage += "TV available\n";
+                MainActivity.debugMessageTextView.setText(MainActivity.debugMessage);
+                // debug
                 MainActivity.createPreview(0);
             }
 

@@ -15,6 +15,7 @@ import android.hardware.camera2.DngCreator;
 import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.util.Range;
 import android.util.Size;
@@ -35,6 +36,7 @@ public class MainActivity extends Activity {
     private static String[] cameraIdList;
 
     static Handler backgroundHandler;
+    static HandlerThread backgroundThread;
     // endregion
 
     // region current cameraDevice variable
@@ -110,7 +112,57 @@ public class MainActivity extends Activity {
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessageTextView = (TextView) findViewById(R.id.textView_debugMessage);  // debug
+        // debug
+        debugMessage += "create\n";
+        debugMessageTextView.setText(debugMessage);
+        // debug
     }
+
+    // debug
+    @Override
+    protected void onResume() {
+        super.onResume();
+        debugMessage += "resume\n";
+        debugMessageTextView.setText(debugMessage);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        debugMessage += "start\n";
+        debugMessageTextView.setText(debugMessage);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        debugMessage += "restart\n";
+        debugMessageTextView.setText(debugMessage);
+    }
+
+
+    @Override
+    protected void onPause() {
+        debugMessage += "pause\n\n";
+        debugMessageTextView.setText(debugMessage);
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        debugMessage += "stop\n\n";
+        debugMessageTextView.setText(debugMessage);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        debugMessage += "destroy\n\n";
+        debugMessageTextView.setText(debugMessage);
+        super.onDestroy();
+    }
+
+    // debug
 
     @Override
     public void onBackPressed() {

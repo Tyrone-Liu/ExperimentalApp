@@ -30,7 +30,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="monospace"
-            android:textSize="10sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/textView_errorMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
