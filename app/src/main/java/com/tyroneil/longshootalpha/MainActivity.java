@@ -427,23 +427,30 @@ public class MainActivity extends Activity {
         try {  // TODO: if any auto mode is on, lock result state first!  Or capture with auto mode may result strangely
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
 
-            // TODO: all this needs to use auto result from preview
-//            captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
-//            captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
-//            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
-//            captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
-
             if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                 captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
+            } else {
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, true);
             }
+
             captureRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
+
+            if (!(awbMode == CameraMetadata.CONTROL_AWB_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF)) {
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_LOCK, true);
+            }
+
             captureRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
             captureRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
+
             if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
+            } else {
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
+
             captureSession.capture(captureRequestBuilder.build(), null, cameraBackgroundHandler);
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
