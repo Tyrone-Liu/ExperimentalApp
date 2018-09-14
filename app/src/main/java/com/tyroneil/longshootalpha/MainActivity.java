@@ -185,6 +185,7 @@ public class MainActivity extends Activity {
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
+        debugMessage1TextView = (TextView) findViewById(R.id.textView_debugMessage_1);  // debug
     }
 
     @Override
