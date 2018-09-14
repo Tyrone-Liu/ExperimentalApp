@@ -704,42 +704,20 @@ public class UIOperator {
 
         if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES) {
             switch (intValue) {
-                case 0:
-                    string = (shortString? "OFF" : "OFF");
-                    break;
-                case 1:
-                    string = (shortString? "AUTO" : "AUTO");
-                    break;
-                case 2:
-                    string = (shortString? "INC." : "Incandescent");
-                    break;
-                case 3:
-                    string = (shortString? "FLU." : "Fluorescent");
-                    break;
-                case 4:
-                    string = (shortString? "FLU.W." : "Fluorescent (Warm)");
-                    break;
-                case 5:
-                    string = (shortString? "DAY." : "Daylight");
-                    break;
-                case 6:
-                    string = (shortString? "DAY.C." : "Daylight (Cloudy)");
-                    break;
-                case 7:
-                    string = (shortString? "TWI." : "Twilight");
-                    break;
-                case 8:
-                    string = (shortString? "SHA." : "Shade");
-                    break;
+                case 0: string = (shortString? "OFF" : "OFF"); break;
+                case 1: string = (shortString? "AUTO" : "AUTO"); break;
+                case 2: string = (shortString? "INC." : "Incandescent"); break;
+                case 3: string = (shortString? "FLU." : "Fluorescent"); break;
+                case 4: string = (shortString? "FLU.W." : "Fluorescent (Warm)"); break;
+                case 5: string = (shortString? "DAY." : "Daylight"); break;
+                case 6: string = (shortString? "DAY.C." : "Daylight (Cloudy)"); break;
+                case 7: string = (shortString? "TWI." : "Twilight"); break;
+                case 8: string = (shortString? "SHA." : "Shade"); break;
             }
         } else if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES) {
             switch (intValue) {
-                case 0:
-                    string = "OFF";
-                    break;
-                case 1:
-                    string = "ON";
-                    break;
+                case 0: string = "OFF"; break;
+                case 1: string = "ON"; break;
             }
         }
 
@@ -748,17 +726,13 @@ public class UIOperator {
 
     static int arrayIndexOf(int[] array, int value) {
         for (int i = 0; i < array.length; i ++) {
-            if (array[i] == value) {
-                return i;
-            }
+            if (array[i] == value) {return i;}
         }
         return -1;
     }
     static int arrayIndexOf(float[] array, float value) {
         for (int i = 0; i < array.length; i ++) {
-            if (array[i] == value) {
-                return i;
-            }
+            if (array[i] == value) {return i;}
         }
         return -1;
     }
