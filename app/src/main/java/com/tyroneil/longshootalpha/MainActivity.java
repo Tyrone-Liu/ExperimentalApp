@@ -60,12 +60,12 @@ public class MainActivity extends Activity {
     // endregion
 
     // region variable for capture
-    private CaptureRequest.Builder captureRequestBuilder;
+    static CaptureRequest.Builder captureRequestBuilder;
     private CaptureResult captureResult;
-    private ImageReader imageReader;
+    private static ImageReader imageReader;
     private DngCreator dngCreator;
     private static int captureFormat;
-    private Size captureSize;
+    private static Size captureSize;
     // endregion
 
     // region capture parameters
@@ -217,7 +217,8 @@ public class MainActivity extends Activity {
              * Check the 'SENSOR_ORIENTATION' to set width and height appropriately.
              * (Switch width and height if necessary.  )
              */
-            previewSize = choosePreviewSize(cameraCharacteristics, captureFormat);
+            previewSize = chooseOutputSize(cameraCharacteristics, captureFormat, true);
+            captureSize = chooseOutputSize(cameraCharacteristics, captureFormat, false);  // find optimal size for capture
             sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             if (sensorOrientation == 90 || sensorOrientation == 270) {
                 (UIOperator.previewCRTV_camera_control).setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
@@ -241,7 +242,7 @@ public class MainActivity extends Activity {
             previewSurfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface previewSurface = new Surface(previewSurfaceTexture);
             try {
-                previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
 
                 previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
@@ -258,9 +259,12 @@ public class MainActivity extends Activity {
                 if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
                 }
-
                 previewRequestBuilder.addTarget(previewSurface);
-                cameraDevice.createCaptureSession(Arrays.asList(previewSurface), captureSessionStateCallback, cameraBackgroundHandler);
+
+                // prepare output surface for capture
+                imageReader = ImageReader.newInstance(captureSize.getWidth(), captureSize.getHeight(), captureFormat, 1);
+                // the second item in outputs list is for capture
+                cameraDevice.createCaptureSession(Arrays.asList(previewSurface, imageReader.getSurface()), captureSessionStateCallback, cameraBackgroundHandler);
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
             }
@@ -326,26 +330,28 @@ public class MainActivity extends Activity {
      * Last, in the available size for SurfaceTexture.class format, find an optimized size
      * with the same aspect ratio as the size found in the second step.
      */
-    private static Size choosePreviewSize(CameraCharacteristics cameraCharacteristics, int captureFormat) {
+    private static Size chooseOutputSize(CameraCharacteristics cameraCharacteristics, int captureFormat, boolean forPreview) {
         final Size SENSOR_INFO_PIXEL_ARRAY_SIZE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE);
-        int maxPreviewResolution = 2160;  // TODO: make max preview resolution changeable in settings
-        Size[] previewSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(SurfaceTexture.class);
-        Size[] previewSizesFiltered;
-        if (captureFormat == 32) {
-            previewSizesFiltered = sizesFilter(previewSizes, SENSOR_INFO_PIXEL_ARRAY_SIZE);
-        } else {
+        Size[] outputSizes;
+        Size[] outputSizesFiltered;
+        if (forPreview) {
+            int maxPreviewResolution = 1440;  // TODO: make max preview resolution changeable in settings
+            outputSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(SurfaceTexture.class);
             Size[] captureSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(captureFormat);
             Size[] captureSizesFiltered = sizesFilter(captureSizes, SENSOR_INFO_PIXEL_ARRAY_SIZE);
-            previewSizesFiltered = sizesFilter(previewSizes, captureSizesFiltered[0]);
-        }
-        for (Size e : previewSizesFiltered) {
-            if ((e.getWidth() <= e.getHeight()) && (e.getWidth() <= maxPreviewResolution)) {
-                return e;
-            } else if ((e.getWidth() > e.getHeight()) && (e.getHeight() <= maxPreviewResolution)) {
-                return e;
+            outputSizesFiltered = sizesFilter(outputSizes, captureSizesFiltered[0]);
+            for (Size e : outputSizesFiltered) {
+                if ((e.getWidth() <= e.getHeight()) && (e.getWidth() <= maxPreviewResolution)) {
+                    return e;
+                } else if ((e.getWidth() > e.getHeight()) && (e.getHeight() <= maxPreviewResolution)) {
+                    return e;
+                }
             }
+        } else {
+            outputSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(captureFormat);
+            outputSizesFiltered = sizesFilter(outputSizes, SENSOR_INFO_PIXEL_ARRAY_SIZE);
         }
-        return previewSizesFiltered[previewSizesFiltered.length - 1];
+        return outputSizesFiltered[0];
     }
 
     private static Size[] sizesFilter(Size[] sizes, Size goalSize) {
@@ -413,6 +419,35 @@ public class MainActivity extends Activity {
 
         focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
         focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
+    }
+    // endregion
+
+    // region process of taking photo(s)
+    static void takePhoto() {
+        try {  // TODO: if any auto mode is on, lock result state first!  Or capture with auto mode may result strangely
+            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
+
+            // TODO: all this needs to use auto result from preview
+//            captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
+//            captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
+//            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
+//            captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
+
+            if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+                captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
+                captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
+            }
+            captureRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
+            captureRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
+            captureRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
+            if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+                captureRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
+            }
+            captureRequestBuilder.addTarget(imageReader.getSurface());
+            captureSession.capture(captureRequestBuilder.build(), null, cameraBackgroundHandler);
+        } catch (CameraAccessException e) {
+            displayErrorMessage(e);
+        }
     }
     // endregion
 

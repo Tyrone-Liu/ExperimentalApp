@@ -224,6 +224,7 @@ public class UIOperator {
             }
 
             else if (((Button) view).getId() == R.id.button_camera_control_capture) {
+                MainActivity.takePhoto();
             }
 
             else if (((Button) view).getId() == R.id.button_camera_control_settings) {
