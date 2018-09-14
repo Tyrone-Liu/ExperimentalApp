@@ -339,7 +339,14 @@ public class MainActivity extends Activity {
 
                 // prepare output surface for capture
                 imageReader = ImageReader.newInstance(captureSize.getWidth(), captureSize.getHeight(), captureFormat, 1);
-                // the second item in outputs list is for capture
+
+                // The second item in outputs list is for capture
+                // In this case, both the 'repeating request' used by preview and 'capture request'
+                // used by capture will be submit to one 'capture session'.  So, the
+                // 'capture session' outputs should contain both 'preview surface' and
+                // 'image reader'.
+                // For each capture request, their format and size are decided by their output
+                // surface.
                 cameraDevice.createCaptureSession(Arrays.asList(previewSurface, imageReader.getSurface()), captureSessionStateCallback, cameraBackgroundHandler);
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
