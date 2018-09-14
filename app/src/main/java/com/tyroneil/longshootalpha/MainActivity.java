@@ -256,6 +256,7 @@ public class MainActivity extends Activity {
      * @param stage the stage of creating preview (int 0, 1, 2, 3)
      */
     static void createPreview(int stage) {
+        // region CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
         if (stage == CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE) {
             autoMode = CameraMetadata.CONTROL_MODE_AUTO;
             aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
@@ -295,7 +296,9 @@ public class MainActivity extends Activity {
                 (UIOperator.previewCRTV_camera_control).setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
             }
         }
+        // endregion CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
 
+        // region CREATE_PREVIEW_STAGE_OPEN_CAMERA
         else if (stage == CREATE_PREVIEW_STAGE_OPEN_CAMERA) {
             try {
                 cameraManager.openCamera(cameraId, cameraStateCallback, cameraBackgroundHandler);
@@ -303,7 +306,9 @@ public class MainActivity extends Activity {
                 displayErrorMessage(e);
             }
         }
+        // endregion CREATE_PREVIEW_STAGE_OPEN_CAMERA
 
+        // region CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION
         else if (stage == CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION) {
             // got cameraDevice
             // this stage will also be used to refresh the preview parameters after changed camera device
@@ -322,7 +327,9 @@ public class MainActivity extends Activity {
                     previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
                 }
                 previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
+
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
+
                 previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
                 previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
                 if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
@@ -338,7 +345,9 @@ public class MainActivity extends Activity {
                 displayErrorMessage(e);
             }
         }
+        // endregion CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION
 
+        // region CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
         else if (stage == CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST) {  // got captureSession
             try {
                 // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
@@ -348,6 +357,7 @@ public class MainActivity extends Activity {
                 displayErrorMessage(e);
             }
         }
+        // endregion CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
     }
 
     // previewCaptureCallback is for debug purpose
@@ -531,12 +541,14 @@ public class MainActivity extends Activity {
                 captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                 captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
             } else {
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, true);
             }
 
             captureRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
 
             if (!(awbMode == CameraMetadata.CONTROL_AWB_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF)) {
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_LOCK, true);
             }
 
