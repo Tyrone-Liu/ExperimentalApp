@@ -579,6 +579,7 @@ public class MainActivity extends Activity {
             (UIOperator.captureButton_camera_control).setWidth((UIOperator.captureButton_camera_control).getWidth());
             (UIOperator.captureButton_camera_control).setHeight((UIOperator.captureButton_camera_control).getHeight());
             (UIOperator.captureButton_camera_control).setText("");
+            (UIOperator.captureButton_camera_control).setEnabled(false);
             (UIOperator.capturingProgressBar_camera_control).setElevation(8f * scale);
 
             captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
@@ -612,6 +613,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void run() {
                     (UIOperator.capturingProgressBar_camera_control).setElevation(0f);
+                    (UIOperator.captureButton_camera_control).setEnabled(true);
                     (UIOperator.captureButton_camera_control).setText(R.string.button_camera_control_capture);
                 }
             });
