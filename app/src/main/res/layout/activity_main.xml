@@ -32,13 +32,28 @@
             android:fontFamily="monospace"
             android:textColor="@color/colorPrimary"
             android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView_debugMessage"
+            app:layout_constraintBottom_toTopOf="@+id/textView_debugMessage_0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView_debugMessage"
+            android:id="@+id/textView_debugMessage_0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="monospace"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/textView_debugMessage_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_errorMessage" />
+
+        <TextView
+            android:id="@+id/textView_debugMessage_1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -50,7 +65,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_errorMessage" />
+            app:layout_constraintTop_toBottomOf="@id/textView_debugMessage_0" />
 
     </android.support.constraint.ConstraintLayout>
 

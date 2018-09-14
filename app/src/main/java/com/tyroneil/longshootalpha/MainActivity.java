@@ -10,13 +10,16 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DngCreator;
+import android.hardware.camera2.TotalCaptureResult;
 import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.util.Range;
 import android.util.Size;
@@ -96,14 +99,78 @@ public class MainActivity extends Activity {
     static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
     // endregion
 
-    // region debug Tool
     static TextView errorMessageTextView;
 
-    static TextView debugMessageTextView;
+    // region debug Tool
+    static TextView debugMessage0TextView;
+    static TextView debugMessage1TextView;
     static String debugMessage = "";
-    static int debugCounter = 0;
+    static String previewDebugMessage = "";
+    static String captureDebugMessage = "";
+    static int debugCounter0 = 0;
+    static int debugCounter1 = 0;
+
+    private static String totalResultDebugTool(TotalCaptureResult result) {
+        String message = (
+                "ET:" + String.format("%.4f", (double) (result.get(CaptureResult.SENSOR_EXPOSURE_TIME) / 10000) / 100000) + ", "
+                        + "SE:" + result.get(CaptureResult.SENSOR_SENSITIVITY) + ", "
+                        + "AP:" + result.get(CaptureResult.LENS_APERTURE) + ", "
+                        + "OS:" + result.get(CaptureResult.LENS_OPTICAL_STABILIZATION_MODE) + ", "
+                        + "FL:" + result.get(CaptureResult.LENS_FOCAL_LENGTH) + ", "
+                        + "FD:" + String.format("%.3f", result.get(CaptureResult.LENS_FOCUS_DISTANCE)) + ", "
+                        + "\n"
+                        + "CONTROL_MODE: " + result.get(CaptureResult.CONTROL_MODE) + "\n"
+                        + "AE_MODE: " + result.get(CaptureResult.CONTROL_AE_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AE_STATE", result.get(CaptureResult.CONTROL_AE_STATE)) + "\n"
+                        + "AWB_MODE: " + result.get(CaptureResult.CONTROL_AWB_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AWB_STATE", result.get(CaptureResult.CONTROL_AWB_STATE)) + "\n"
+                        + "AF_MODE: " + result.get(CaptureResult.CONTROL_AF_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AF_STATE", result.get(CaptureResult.CONTROL_AF_STATE)) + ", Trigger: " + stateToStringDebugTool("CONTROL_AF_TRIGGER", result.get(CaptureResult.CONTROL_AF_TRIGGER)) + "\n"
+        );
+        return message;
+    }
+    private static String stateToStringDebugTool(String key, int state) {
+        String message = "";
+        switch (key) {
+            case "CONTROL_AE_STATE":
+                switch (state) {
+                    case CameraMetadata.CONTROL_AE_STATE_CONVERGED: message = "CONVERGED"; break;
+                    case CameraMetadata.CONTROL_AE_STATE_FLASH_REQUIRED: message = "FLASH_REQUIRED"; break;
+                    case CameraMetadata.CONTROL_AE_STATE_INACTIVE: message = "INACTIVE"; break;
+                    case CameraMetadata.CONTROL_AE_STATE_LOCKED: message = "LOCKED"; break;
+                    case CameraMetadata.CONTROL_AE_STATE_PRECAPTURE: message = "PRECAPTURE"; break;
+                    case CameraMetadata.CONTROL_AE_STATE_SEARCHING: message = "SEARCHING"; break;
+                }
+                break;
+            case "CONTROL_AWB_STATE":
+                switch (state) {
+                    case CameraMetadata.CONTROL_AWB_STATE_CONVERGED: message = "CONVERGED"; break;
+                    case CameraMetadata.CONTROL_AWB_STATE_INACTIVE: message = "INACTIVE"; break;
+                    case CameraMetadata.CONTROL_AWB_STATE_LOCKED: message = "LOCKED"; break;
+                    case CameraMetadata.CONTROL_AWB_STATE_SEARCHING: message = "SEARCHING"; break;
+                }
+                break;
+            case "CONTROL_AF_STATE":
+                switch (state) {
+                    case CameraMetadata.CONTROL_AF_STATE_ACTIVE_SCAN: message = "ACTIVE_SCAN"; break;
+                    case CameraMetadata.CONTROL_AF_STATE_FOCUSED_LOCKED: message = "FOCUSED_LOCKED"; break;
+                    case CameraMetadata.CONTROL_AF_STATE_INACTIVE: message = "INACTIVE"; break;
+                    case CameraMetadata.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED: message = "NOT_FOCUSED_LOCKED"; break;
+                    case CameraMetadata.CONTROL_AF_STATE_PASSIVE_FOCUSED: message = "PASSIVE_FOCUSED"; break;
+                    case CameraMetadata.CONTROL_AF_STATE_PASSIVE_SCAN: message = "PASSIVE_SCAN"; break;
+                    case CameraMetadata.CONTROL_AF_STATE_PASSIVE_UNFOCUSED: message = "PASSIVE_UNFOCUSED"; break;
+                }
+                break;
+            case "CONTROL_AF_TRIGGER":
+                switch (state) {
+                    case CameraMetadata.CONTROL_AF_TRIGGER_CANCEL: message = "CANCEL"; break;
+                    case CameraMetadata.CONTROL_AF_TRIGGER_IDLE: message = "IDLE"; break;
+                    case CameraMetadata.CONTROL_AF_TRIGGER_START: message = "START"; break;
+                }
+                break;
+        }
+        return message;
+    }
     // endregion
 
+    // region handle activity lifecycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +184,7 @@ public class MainActivity extends Activity {
         UIOperator.initiateContentListControl();
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
-        debugMessageTextView = (TextView) findViewById(R.id.textView_debugMessage);  // debug
+        debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
     }
 
     @Override
@@ -162,6 +229,7 @@ public class MainActivity extends Activity {
             super.onBackPressed();
         }
     }
+    // endregion handle activity lifecycle
 
 
     // region process of creating preview
@@ -273,12 +341,42 @@ public class MainActivity extends Activity {
         else if (stage == CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST) {  // got captureSession
             try {
                 // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
-                captureSession.setRepeatingRequest(previewRequestBuilder.build(), null, cameraBackgroundHandler);
+                // previewCaptureCallback is for debug purpose
+                captureSession.setRepeatingRequest(previewRequestBuilder.build(), previewCaptureCallback, cameraBackgroundHandler);
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
             }
         }
     }
+
+    // previewCaptureCallback is for debug purpose
+    static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
+        @Override
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            debugCounter0 ++;
+            previewDebugMessage = "# " + debugCounter0 + " preview completed" + "\n" + totalResultDebugTool(result);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    debugMessage0TextView.setText(previewDebugMessage);
+                }
+            });
+            super.onCaptureCompleted(session, request, result);
+        }
+
+        @Override
+        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+            debugCounter0 ++;
+            previewDebugMessage = "# " + debugCounter0 + " preview failed" + "\n";
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    debugMessage0TextView.setText(previewDebugMessage);
+                }
+            });
+            super.onCaptureFailed(session, request, failure);
+        }
+    };
 
     /**
      * Produce a 'CameraDevice', then call 'createPreview(1)'
@@ -426,6 +524,7 @@ public class MainActivity extends Activity {
     static void takePhoto() {
         try {  // TODO: if any auto mode is on, lock result state first!  Or capture with auto mode may result strangely
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
+            captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_OFF_KEEP_STATE);
 
             if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
@@ -451,11 +550,48 @@ public class MainActivity extends Activity {
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
 
-            captureSession.capture(captureRequestBuilder.build(), null, cameraBackgroundHandler);
+            captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
         }
     }
+
+    private static CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
+        @Override
+        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
+            super.onCaptureStarted(session, request, timestamp, frameNumber);
+        }
+
+        @Override
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            // region debug in captureCallback
+            debugCounter1 ++;
+            captureDebugMessage = "# " + debugCounter1 + " capture completed" + "\n" + totalResultDebugTool(result);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    debugMessage1TextView.setText(captureDebugMessage);
+                }
+            });
+            // endregion debug in captureCallback
+            super.onCaptureCompleted(session, request, result);
+        }
+
+        @Override
+        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+            // region debug in captureCallback
+            debugCounter1 ++;
+            captureDebugMessage = "# " + debugCounter1 + " capture completed" + "\n";
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    debugMessage1TextView.setText(captureDebugMessage);
+                }
+            });
+            // endregion debug in captureCallback
+            super.onCaptureFailed(session, request, failure);
+        }
+    };
     // endregion
 
 //    private void takePhoto() {
@@ -493,8 +629,13 @@ public class MainActivity extends Activity {
 //        }
 //    };
 
-    static void displayErrorMessage(Exception error) {
-        errorMessageTextView.setBackgroundResource(R.color.colorSurface);
-        errorMessageTextView.setText(error.toString());
+    static void displayErrorMessage(final Exception error) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                errorMessageTextView.setBackgroundResource(R.color.colorSurface);
+                errorMessageTextView.setText(error.toString());
+            }
+        });
     }
 }
