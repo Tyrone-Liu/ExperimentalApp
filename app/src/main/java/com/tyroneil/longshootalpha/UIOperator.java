@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -29,6 +30,7 @@ public class UIOperator {
     // region content camera control
     static ChangeableRatioTextureView previewCRTV_camera_control;
     static Button modeButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
+    static ProgressBar capturingProgressBar_camera_control;
     // endregion
 
     // region content capture parameters indicator
@@ -69,6 +71,7 @@ public class UIOperator {
         modeButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_mode);
         captureButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_capture);
         settingsButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_settings);
+        capturingProgressBar_camera_control = (ProgressBar) MainActivity.activity.findViewById(R.id.progressBar_camera_control_capturing);
 
         // content parameters indicator
         setExposureTimeButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);

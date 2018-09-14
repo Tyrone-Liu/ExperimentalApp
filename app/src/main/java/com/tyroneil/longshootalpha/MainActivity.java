@@ -179,13 +179,13 @@ public class MainActivity extends Activity {
         MainActivity.activity = this;
         scale = getResources().getDisplayMetrics().density;
 
-        UIOperator.initiateContentCameraControl();
-        UIOperator.initiateContentRangeControl();
-        UIOperator.initiateContentListControl();
-
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
         debugMessage1TextView = (TextView) findViewById(R.id.textView_debugMessage_1);  // debug
+
+        UIOperator.initiateContentCameraControl();
+        UIOperator.initiateContentRangeControl();
+        UIOperator.initiateContentListControl();
     }
 
     @Override
@@ -205,6 +205,9 @@ public class MainActivity extends Activity {
     protected void onStop() {
         captureSession.close();
         captureSession = null;
+        imageReader.close();
+        imageReader = null;
+        // TODO: close dngCreator
         cameraDevice.close();
         cameraDevice = null;
 
@@ -339,6 +342,7 @@ public class MainActivity extends Activity {
 
                 // prepare output surface for capture
                 imageReader = ImageReader.newInstance(captureSize.getWidth(), captureSize.getHeight(), captureFormat, 1);
+                imageReader.setOnImageAvailableListener(onImageAvailableListener, cameraBackgroundHandler);
 
                 // The second item in outputs list is for capture
                 // In this case, both the 'repeating request' used by preview and 'capture request'
@@ -366,35 +370,6 @@ public class MainActivity extends Activity {
         }
         // endregion CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
     }
-
-    // previewCaptureCallback is for debug purpose
-    static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            debugCounter0 ++;
-            previewDebugMessage = "# " + debugCounter0 + " preview completed" + "\n" + totalResultDebugTool(result);
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    debugMessage0TextView.setText(previewDebugMessage);
-                }
-            });
-            super.onCaptureCompleted(session, request, result);
-        }
-
-        @Override
-        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
-            debugCounter0 ++;
-            previewDebugMessage = "# " + debugCounter0 + " preview failed" + "\n";
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    debugMessage0TextView.setText(previewDebugMessage);
-                }
-            });
-            super.onCaptureFailed(session, request, failure);
-        }
-    };
 
     /**
      * Produce a 'CameraDevice', then call 'createPreview(1)'
@@ -536,11 +511,40 @@ public class MainActivity extends Activity {
         focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
         focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
     }
+
+    // previewCaptureCallback is for debug purpose
+    static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
+        @Override
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            debugCounter0 ++;
+            previewDebugMessage = "# " + debugCounter0 + " preview completed" + "\n" + totalResultDebugTool(result);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    debugMessage0TextView.setText(previewDebugMessage);
+                }
+            });
+            super.onCaptureCompleted(session, request, result);
+        }
+
+        @Override
+        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+            debugCounter0 ++;
+            previewDebugMessage = "# " + debugCounter0 + " preview failed" + "\n";
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    debugMessage0TextView.setText(previewDebugMessage);
+                }
+            });
+            super.onCaptureFailed(session, request, failure);
+        }
+    };
     // endregion
 
     // region process of taking photo(s)
     static void takePhoto() {
-        try {  // TODO: if any auto mode is on, lock result state first!  Or capture with auto mode may result strangely
+        try {
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
             captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_OFF_KEEP_STATE);
 
@@ -570,18 +574,27 @@ public class MainActivity extends Activity {
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
 
+            // from the material design documents, the elevation of a button is within [2dp, 8dp]
+            // therefore, set the elevation of a progressBar to 8dp will bring it to front
+            (UIOperator.captureButton_camera_control).setWidth((UIOperator.captureButton_camera_control).getWidth());
+            (UIOperator.captureButton_camera_control).setHeight((UIOperator.captureButton_camera_control).getHeight());
+            (UIOperator.captureButton_camera_control).setText("");
+            (UIOperator.capturingProgressBar_camera_control).setElevation(8f * scale);
+
             captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
         }
     }
 
-    private static CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
+    private static ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
-        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
-            super.onCaptureStarted(session, request, timestamp, frameNumber);
+        public void onImageAvailable(ImageReader reader) {
         }
+    };
 
+    // the purpose of captureCallback is to show capture progress indicator
+    private static CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             // region debug in captureCallback
@@ -595,13 +608,21 @@ public class MainActivity extends Activity {
             });
             // endregion debug in captureCallback
             super.onCaptureCompleted(session, request, result);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    (UIOperator.capturingProgressBar_camera_control).setElevation(0f);
+                    (UIOperator.captureButton_camera_control).setText(R.string.button_camera_control_capture);
+                }
+            });
+
         }
 
         @Override
         public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
             // region debug in captureCallback
             debugCounter1 ++;
-            captureDebugMessage = "# " + debugCounter1 + " capture completed" + "\n";
+            captureDebugMessage = "# " + debugCounter1 + " capture failed" + "\n";
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -614,22 +635,6 @@ public class MainActivity extends Activity {
     };
     // endregion
 
-//    private void takePhoto() {
-//        try {
-//            if (autoMode == 1) {
-//                captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-//            } else {
-//                captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
-//                previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
-//                previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
-//            }
-//            captureRequestBuilder.addTarget(imageReader.getSurface());
-//            captureSession.capture(captureRequestBuilder.build(), captureSessionCaptureCallback, backgroundHandler);
-//        } catch (CameraAccessException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
 //    private ImageReader.OnImageAvailableListener captureImageAvailableListener = new ImageReader.OnImageAvailableListener() {
 //        @Override
 //        public void onImageAvailable(ImageReader reader) {

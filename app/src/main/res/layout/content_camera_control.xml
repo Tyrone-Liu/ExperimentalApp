@@ -21,11 +21,24 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:backgroundTint="@color/colorPrimary"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="monospace"
         android:text="@string/button_camera_control_capture"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_camera_control_capturing"
+        style="@android:style/Widget.Material.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorBackground"
+        app:layout_constraintBottom_toBottomOf="@+id/button_camera_control_capture"
+        app:layout_constraintEnd_toEndOf="@+id/button_camera_control_capture"
+        app:layout_constraintStart_toStartOf="@+id/button_camera_control_capture"
+        app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture" />
 
     <Button
         android:id="@+id/button_camera_control_mode"
@@ -33,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="monospace"
         android:text="@string/button_camera_control_mode"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/button_camera_control_capture"
@@ -45,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="monospace"
         android:text="@string/button_camera_control_settings"
         android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toEndOf="@+id/button_camera_control_capture"
