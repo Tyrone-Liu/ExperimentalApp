@@ -723,24 +723,6 @@ public class MainActivity extends Activity {
     };
     // endregion
 
-//    private ImageReader.OnImageAvailableListener captureImageAvailableListener = new ImageReader.OnImageAvailableListener() {
-//        @Override
-//        public void onImageAvailable(ImageReader reader) {
-//            if (captureFormat == ImageFormat.RAW_SENSOR) {
-//                dngCreator = new DngCreator(cameraCharacteristics, captureResult);
-////                dngCreator.setOrientation(sensorOrientation);
-//                File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/LongShoot/RAW_TEST.DNG");
-//                try {
-//                    FileOutputStream imageOutput = new FileOutputStream(imageFile);
-//                    dngCreator.writeImage(imageOutput, reader.acquireLatestImage());
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    reader.close();
-//                }
-//            }
-//        }
-//    };
 
     static void displayErrorMessage(final Exception error) {
         activity.runOnUiThread(new Runnable() {
