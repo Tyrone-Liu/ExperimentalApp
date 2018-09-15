@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Locale;
 
 public class MainActivity extends Activity {
     private static Context context;
@@ -78,7 +77,6 @@ public class MainActivity extends Activity {
     private static Size captureSize;
     private static TotalCaptureResult totalCaptureResult;
     private static ImageReader imageReader;
-    private DngCreator dngCreator;
     private static Date imageTimeStamp;
     private static String imageFileTimeStampName;
     // endregion
@@ -613,8 +611,9 @@ public class MainActivity extends Activity {
             // TODO: make file name changeable in settings
             imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(imageFileTimeStampName);
-            File imageFile;
             Image image = reader.acquireNextImage();
+            File imageFile;
+            FileOutputStream imageOutputStream = null;
             if (reader.getImageFormat() == ImageFormat.JPEG) {
                 // TODO: make save file path changeable, and auto create folder if not exist
                 imageFile = new File(
@@ -624,7 +623,6 @@ public class MainActivity extends Activity {
                 ByteBuffer imageBuffer = image.getPlanes()[0].getBuffer();
                 byte[] imageBytes = new byte[imageBuffer.remaining()];
                 imageBuffer.get(imageBytes);
-                FileOutputStream imageOutputStream = null;
                 try {
                     imageOutputStream = new FileOutputStream(imageFile);
                     imageOutputStream.write(imageBytes);
@@ -640,6 +638,23 @@ public class MainActivity extends Activity {
             }
 
             else if (reader.getImageFormat() == ImageFormat.RAW_SENSOR) {
+                imageFile = new File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                                + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".DNG"
+                );
+                DngCreator dngCreator = new DngCreator(cameraCharacteristics, totalCaptureResult);
+                try {
+                    imageOutputStream = new FileOutputStream(imageFile);
+                    dngCreator.writeImage(imageOutputStream, image);
+                } catch (IOException e) {
+                    displayErrorMessage(e);
+                } finally {
+                    image.close();
+                    if (imageOutputStream != null) {
+                        try {imageOutputStream.close();}
+                        catch (IOException e) {displayErrorMessage(e);}
+                    }
+                }
             }
         }
     };
@@ -663,7 +678,6 @@ public class MainActivity extends Activity {
             } else {
                 imageTimeStamp = new Date(System.currentTimeMillis() - ((long) ((double) (result.get(CaptureResult.SENSOR_TIMESTAMP) - SystemClock.elapsedRealtimeNanos()) / 1000000d)));
             }
-
             totalCaptureResult = result;
             super.onCaptureCompleted(session, request, result);
             activity.runOnUiThread(new Runnable() {
