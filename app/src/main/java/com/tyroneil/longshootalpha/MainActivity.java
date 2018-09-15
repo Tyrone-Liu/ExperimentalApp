@@ -15,6 +15,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DngCreator;
 import android.hardware.camera2.TotalCaptureResult;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
@@ -221,7 +222,6 @@ public class MainActivity extends Activity {
             imageReader.close();
             imageReader = null;
         }
-        // TODO: close dngCreator
         if (cameraDevice != null) {
             cameraDevice.close();
             cameraDevice = null;
@@ -335,7 +335,7 @@ public class MainActivity extends Activity {
             previewSurfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface previewSurface = new Surface(previewSurfaceTexture);
             try {
-                previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
+                previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
 
                 previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
@@ -562,8 +562,13 @@ public class MainActivity extends Activity {
     // region process of taking photo(s)
     static void takePhoto() {
         try {
-            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
+            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_OFF_KEEP_STATE);
+
+            if (captureFormat == ImageFormat.JPEG) {
+                captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, sensorOrientation);
+                captureRequestBuilder.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
+            }
 
             if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
@@ -643,6 +648,15 @@ public class MainActivity extends Activity {
                                 + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".DNG"
                 );
                 DngCreator dngCreator = new DngCreator(cameraCharacteristics, totalCaptureResult);
+
+                if (sensorOrientation != 0) {
+                    switch (sensorOrientation) {
+                        case 90: dngCreator.setOrientation(ExifInterface.ORIENTATION_ROTATE_90); break;
+                        case 180: dngCreator.setOrientation(ExifInterface.ORIENTATION_ROTATE_180); break;
+                        case 270: dngCreator.setOrientation(ExifInterface.ORIENTATION_ROTATE_270); break;
+                    }
+                }
+
                 try {
                     imageOutputStream = new FileOutputStream(imageFile);
                     dngCreator.writeImage(imageOutputStream, image);
@@ -650,6 +664,7 @@ public class MainActivity extends Activity {
                     displayErrorMessage(e);
                 } finally {
                     image.close();
+                    dngCreator.close();
                     if (imageOutputStream != null) {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
