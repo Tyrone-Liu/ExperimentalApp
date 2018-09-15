@@ -15,10 +15,13 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DngCreator;
 import android.hardware.camera2.TotalCaptureResult;
+import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.util.Range;
@@ -26,9 +29,16 @@ import android.util.Size;
 import android.view.Surface;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
     private static Context context;
@@ -39,13 +49,13 @@ public class MainActivity extends Activity {
     private static CameraManager cameraManager;
     private static String[] cameraIdList;
 
-    static HandlerThread cameraBackgroundThread;
+    private static HandlerThread cameraBackgroundThread;
     static Handler cameraBackgroundHandler;
 
     static final int CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE = 0;
     static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
-    static final int CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION = 2;
-    static final int CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST = 3;
+    private static final int CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION = 2;
+    private static final int CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST = 3;
     // endregion
 
     // region current cameraDevice variable
@@ -63,12 +73,14 @@ public class MainActivity extends Activity {
     // endregion
 
     // region variable for capture
-    static CaptureRequest.Builder captureRequestBuilder;
-    private CaptureResult captureResult;
-    private static ImageReader imageReader;
-    private DngCreator dngCreator;
+    private static CaptureRequest.Builder captureRequestBuilder;
     private static int captureFormat;
     private static Size captureSize;
+    private static TotalCaptureResult totalCaptureResult;
+    private static ImageReader imageReader;
+    private DngCreator dngCreator;
+    private static Date imageTimeStamp;
+    private static String imageFileTimeStampName;
     // endregion
 
     // region capture parameters
@@ -203,13 +215,19 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onStop() {
-        captureSession.close();
-        captureSession = null;
-        imageReader.close();
-        imageReader = null;
+        if (captureSession != null) {
+            captureSession.close();
+            captureSession = null;
+        }
+        if (imageReader != null) {
+            imageReader.close();
+            imageReader = null;
+        }
         // TODO: close dngCreator
-        cameraDevice.close();
-        cameraDevice = null;
+        if (cameraDevice != null) {
+            cameraDevice.close();
+            cameraDevice = null;
+        }
 
         cameraBackgroundThread.quitSafely();
         try {  // if previous statement is using '.quit()', then there is not necessary to use '.join()'
@@ -338,6 +356,7 @@ public class MainActivity extends Activity {
                 if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
                 }
+
                 previewRequestBuilder.addTarget(previewSurface);
 
                 // prepare output surface for capture
@@ -540,7 +559,7 @@ public class MainActivity extends Activity {
             super.onCaptureFailed(session, request, failure);
         }
     };
-    // endregion
+    // endregion process of creating preview
 
     // region process of taking photo(s)
     static void takePhoto() {
@@ -591,6 +610,37 @@ public class MainActivity extends Activity {
     private static ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
+            // TODO: make file name changeable in settings
+            imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(imageFileTimeStampName);
+            File imageFile;
+            Image image = reader.acquireNextImage();
+            if (reader.getImageFormat() == ImageFormat.JPEG) {
+                // TODO: make save file path changeable, and auto create folder if not exist
+                imageFile = new File(
+                          Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                        + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".JPG"
+                );
+                ByteBuffer imageBuffer = image.getPlanes()[0].getBuffer();
+                byte[] imageBytes = new byte[imageBuffer.remaining()];
+                imageBuffer.get(imageBytes);
+                FileOutputStream imageOutputStream = null;
+                try {
+                    imageOutputStream = new FileOutputStream(imageFile);
+                    imageOutputStream.write(imageBytes);
+                } catch (IOException e) {
+                    displayErrorMessage(e);
+                } finally {
+                    image.close();
+                    if (imageOutputStream != null) {
+                        try {imageOutputStream.close();}
+                        catch (IOException e) {displayErrorMessage(e);}
+                    }
+                }
+            }
+
+            else if (reader.getImageFormat() == ImageFormat.RAW_SENSOR) {
+            }
         }
     };
 
@@ -608,6 +658,13 @@ public class MainActivity extends Activity {
                 }
             });
             // endregion debug in captureCallback
+            if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE) == CameraMetadata.SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN) {
+                imageTimeStamp = new Date();
+            } else {
+                imageTimeStamp = new Date(System.currentTimeMillis() - ((long) ((double) (result.get(CaptureResult.SENSOR_TIMESTAMP) - SystemClock.elapsedRealtimeNanos()) / 1000000d)));
+            }
+
+            totalCaptureResult = result;
             super.onCaptureCompleted(session, request, result);
             activity.runOnUiThread(new Runnable() {
                 @Override
