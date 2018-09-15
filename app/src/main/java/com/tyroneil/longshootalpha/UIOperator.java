@@ -209,6 +209,8 @@ public class UIOperator {
         MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, MainActivity.focalLength);
         if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
             MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, MainActivity.focusDistance);
+        } else {
+            MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
         }
 
         try {

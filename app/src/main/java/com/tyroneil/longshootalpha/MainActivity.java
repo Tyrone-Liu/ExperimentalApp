@@ -353,8 +353,9 @@ public class MainActivity extends Activity {
                 previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
                 if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
+                } else {
+                    previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
                 }
-
                 previewRequestBuilder.addTarget(previewSurface);
 
                 // prepare output surface for capture
@@ -562,8 +563,17 @@ public class MainActivity extends Activity {
     // region process of taking photo(s)
     static void takePhoto() {
         try {
-            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-            captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_OFF_KEEP_STATE);
+            // TODO: make captureRequest template changeable between 'TEMPLATE_MANUAL' and 'TEMPLATE_STILL_CAPTURE' in settings.
+            // 'TEMPLATE_MANUAL' has the least preset parameters, user
+            // has the most control over camera.
+            // 'TEMPLATE_STILL_CAPTURE' may be better for capture
+            // because it is has more complete parameters, but it make
+            // problems in capture parameters hard to discover.
+            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
+
+            captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
 
             if (captureFormat == ImageFormat.JPEG) {
                 captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, sensorOrientation);
@@ -574,14 +584,13 @@ public class MainActivity extends Activity {
                 captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                 captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
             } else {
-                captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, true);
             }
 
             captureRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
 
+            captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
             if (!(awbMode == CameraMetadata.CONTROL_AWB_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF)) {
-                captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_LOCK, true);
             }
 
@@ -591,7 +600,6 @@ public class MainActivity extends Activity {
             if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
             } else {
-                captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
