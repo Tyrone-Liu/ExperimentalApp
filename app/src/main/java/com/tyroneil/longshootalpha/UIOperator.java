@@ -251,7 +251,8 @@ public class UIOperator {
             valueMaximumTextView_range_control.setText(R.string.textView_range_control_valueMaximum);
             valueEditText_range_control.setText("");
 
-            if (  // parameters controlled by aeMode
+            // region parameters controlled by aeMode
+            if (
                        (((Button) view).getId() == R.id.button_parameters_indicator_setExposureTime)
                     || (((Button) view).getId() == R.id.button_parameters_indicator_setSensitivity)
             ) {
@@ -422,7 +423,9 @@ public class UIOperator {
                     });
                 }
             }
+            // endregion
 
+            // region parameters controlled by afMode
             else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
                 if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
@@ -513,6 +516,7 @@ public class UIOperator {
                     }
                 });
             }
+            // endregion
         }
     };
 
