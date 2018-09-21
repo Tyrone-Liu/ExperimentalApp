@@ -238,6 +238,32 @@ public class UIOperator {
             }
         }
     };
+
+    static void cameraControl_setCaptureButtonEnabled(boolean enabled) {
+        if (enabled) {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    capturingProgressBar_camera_control.setElevation(0f);
+                    captureButton_camera_control.setEnabled(true);
+                    captureButton_camera_control.setText(R.string.button_camera_control_capture);
+                }
+            });
+        } else {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // from the material design documents, the elevation of a button is within [2dp, 8dp]
+                    // therefore, set the elevation of a progressBar to 8dp will bring it to front
+                    captureButton_camera_control.setWidth((UIOperator.captureButton_camera_control).getWidth());
+                    captureButton_camera_control.setHeight((UIOperator.captureButton_camera_control).getHeight());
+                    captureButton_camera_control.setText("");
+                    captureButton_camera_control.setEnabled(false);
+                    capturingProgressBar_camera_control.setElevation(8f * MainActivity.scale);
+                }
+            });
+        }
+    }
     // endregion
 
     // region onClickListener for buttons in content_parameters_indicator, type range_control

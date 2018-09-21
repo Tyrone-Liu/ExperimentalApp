@@ -604,14 +604,7 @@ public class MainActivity extends Activity {
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
 
-            // from the material design documents, the elevation of a button is within [2dp, 8dp]
-            // therefore, set the elevation of a progressBar to 8dp will bring it to front
-            (UIOperator.captureButton_camera_control).setWidth((UIOperator.captureButton_camera_control).getWidth());
-            (UIOperator.captureButton_camera_control).setHeight((UIOperator.captureButton_camera_control).getHeight());
-            (UIOperator.captureButton_camera_control).setText("");
-            (UIOperator.captureButton_camera_control).setEnabled(false);
-            (UIOperator.capturingProgressBar_camera_control).setElevation(8f * scale);
-
+            UIOperator.cameraControl_setCaptureButtonEnabled(false);
             captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
@@ -646,6 +639,17 @@ public class MainActivity extends Activity {
                     if (imageOutputStream != null) {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
+                        UIOperator.cameraControl_setCaptureButtonEnabled(true);
+                        // debug
+                        if (debugCounter1 < 128) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    takePhoto();
+                                }
+                            });
+                        }
+                        // debug
                     }
                 }
             }
@@ -676,6 +680,17 @@ public class MainActivity extends Activity {
                     if (imageOutputStream != null) {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
+                        UIOperator.cameraControl_setCaptureButtonEnabled(true);
+                        // debug
+                        if (debugCounter1 < 128) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    takePhoto();
+                                }
+                            });
+                        }
+                        // debug
                     }
                 }
             }
@@ -703,15 +718,6 @@ public class MainActivity extends Activity {
             }
             totalCaptureResult = result;
             super.onCaptureCompleted(session, request, result);
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    (UIOperator.capturingProgressBar_camera_control).setElevation(0f);
-                    (UIOperator.captureButton_camera_control).setEnabled(true);
-                    (UIOperator.captureButton_camera_control).setText(R.string.button_camera_control_capture);
-                }
-            });
-
         }
 
         @Override
