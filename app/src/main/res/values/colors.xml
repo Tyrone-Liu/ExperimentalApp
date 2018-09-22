@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F44336</color>
-    <color name="colorPrimaryVariant">#5D2723</color>
+    <color name="colorPrimary">#F44336</color>  <!-- Material RED_500 -->
+    <color name="colorPrimaryVariant">#5D2723</color>  <!-- Material RED_500 (component disabled, darken version) -->
 
-    <color name="colorBackground">#000000</color>
-    <color name="colorSurface">#1B1B1B</color>
+    <color name="colorSecondary">#1DE9B6</color>  <!-- Material TEAL_A400 -->
+    <color name="colorSecondaryVariant">#1C594A</color>  <!-- Material TEAL_A400 (component disabled, darken version) -->
+
+    <color name="colorSurface">#1B1B1B</color>  <!-- Material GREY_800 Dark_Variant -->
+    <color name="colorBackground">#000000</color>  <!-- Material GREY_900 Dark_Variant -->
 </resources>

@@ -4,7 +4,7 @@
     <style name="AppTheme" parent="android:Theme.Material">
         <item name="android:windowFullscreen">true</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:navigationBarColor">@color/colorBackground</item>
+        <item name="android:navigationBarColor">@color/colorSurface</item>
     </style>
 
     <style name="CameraTheme" parent="AppTheme">
