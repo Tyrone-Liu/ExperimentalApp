@@ -30,7 +30,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="monospace"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorSecondary"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/textView_debugMessage_0"
             app:layout_constraintEnd_toEndOf="parent"

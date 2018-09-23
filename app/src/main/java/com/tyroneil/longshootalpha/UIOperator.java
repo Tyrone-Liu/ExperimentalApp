@@ -614,10 +614,10 @@ public class UIOperator {
                     radioButton = new RadioButton(MainActivity.activity);
                     // region basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion
                     radioButton.setText("f/" + MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]);
@@ -646,10 +646,10 @@ public class UIOperator {
                     radioButton = new RadioButton(MainActivity.activity);
                     // region basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion
                     radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.CONTROL_AWB_AVAILABLE_MODES[i], false));
@@ -678,10 +678,10 @@ public class UIOperator {
                     radioButton = new RadioButton(MainActivity.activity);
                     // region basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion
                     radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[i], false));
@@ -710,10 +710,10 @@ public class UIOperator {
                     radioButton = new RadioButton(MainActivity.activity);
                     // region basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorPrimary), MainActivity.activity.getColor(R.color.colorPrimary)}));
+                    radioButton.setButtonTintList(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion
                     radioButton.setText(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[i] + " mm");
