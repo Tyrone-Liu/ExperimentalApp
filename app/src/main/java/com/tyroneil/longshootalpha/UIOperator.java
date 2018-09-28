@@ -646,7 +646,7 @@ public class UIOperator {
 
         String informationText = (
                 "CoC: " + MainActivity.CIRCLE_OF_CONFUSION + " mm\n"
-                + "H: " + String.format("%.4f", hyperfocalDistance / 1000f) + " m\n"
+                + "H: " + hyperfocalDistance / 1000f + " m\n"
                 + "  Current: \n"
                 + "  D_N: " + nearPointDistanceText + "\n"
                 + "  D_F: " + farPointDistanceText + "\n"
