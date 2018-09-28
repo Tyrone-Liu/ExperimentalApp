@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.util.Range;
 import android.util.Size;
+import android.util.SizeF;
 import android.view.Surface;
 import android.widget.TextView;
 
@@ -106,8 +107,8 @@ public class MainActivity extends Activity {
 
     static int afMode;  // CONTROL_AF_MODE (0/4 OFF/CONTINUOUS_PICTURE)
     static float focusDistance;  // LENS_FOCUS_DISTANCE
-    static float LENS_INFO_HYPERFOCAL_DISTANCE;  // constant for each camera device
     static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
+    static float CIRCLE_OF_CONFUSION;  // unit: mm, constant for each camera device
     // endregion
 
     static TextView errorMessageTextView;
@@ -282,7 +283,7 @@ public class MainActivity extends Activity {
             afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
             // TODO: make capture format changeable in settings, then make this default RAW_SENSOR
-            captureFormat = ImageFormat.JPEG;
+            captureFormat = ImageFormat.RAW_SENSOR;
 
             try {
                 cameraManager = (CameraManager) MainActivity.context.getSystemService(CameraManager.class);
@@ -498,8 +499,13 @@ public class MainActivity extends Activity {
         CONTROL_AWB_AVAILABLE_MODES = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AWB_AVAILABLE_MODES);
         LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
         LENS_INFO_AVAILABLE_FOCAL_LENGTHS = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
-        LENS_INFO_HYPERFOCAL_DISTANCE = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_HYPERFOCAL_DISTANCE);
         LENS_INFO_MINIMUM_FOCUS_DISTANCE = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE);
+
+        // calculate circle of confusion
+        SizeF SENSOR_INFO_PHYSICAL_SIZE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
+        Size SENSOR_INFO_PIXEL_ARRAY_SIZE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE);
+        CIRCLE_OF_CONFUSION = SENSOR_INFO_PHYSICAL_SIZE.getWidth() * (2f / SENSOR_INFO_PIXEL_ARRAY_SIZE.getWidth());
+        // calculate circle of confusion
 
         if (SENSOR_INFO_EXPOSURE_TIME_RANGE.contains(100000000L)) {
             exposureTime = 100000000L;  // 0.1s
@@ -527,7 +533,7 @@ public class MainActivity extends Activity {
         }
 
         focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
-        focusDistance = LENS_INFO_HYPERFOCAL_DISTANCE;
+        focusDistance = 1000f / (((focalLength * focalLength) / (aperture * CIRCLE_OF_CONFUSION)) + focalLength);
     }
 
     // previewCaptureCallback is for debug purpose
@@ -559,6 +565,7 @@ public class MainActivity extends Activity {
         }
     };
     // endregion process of creating preview
+
 
     // region process of taking photo(s)
     static void takePhoto() {
@@ -640,16 +647,6 @@ public class MainActivity extends Activity {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
                         UIOperator.cameraControl_setCaptureButtonEnabled(true);
-                        // debug
-                        if (debugCounter1 < 128) {
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    takePhoto();
-                                }
-                            });
-                        }
-                        // debug
                     }
                 }
             }
@@ -681,16 +678,6 @@ public class MainActivity extends Activity {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
                         UIOperator.cameraControl_setCaptureButtonEnabled(true);
-                        // debug
-                        if (debugCounter1 < 128) {
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    takePhoto();
-                                }
-                            });
-                        }
-                        // debug
                     }
                 }
             }

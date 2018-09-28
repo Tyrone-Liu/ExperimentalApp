@@ -46,7 +46,7 @@ public class UIOperator {
 
     // region content capture parameter range control
     static BottomSheetBehavior rangeControlBottomSheet;
-    static TextView titleTextView_range_control, valueMinimumTextView_range_control, valueMaximumTextView_range_control;
+    static TextView titleTextView_range_control, informationTextView_range_control, valueMinimumTextView_range_control, valueMaximumTextView_range_control;
     static SeekBar rangeSeekBar_range_control;
     static CheckBox autoCheckBox_range_control;
     static EditText valueEditText_range_control;
@@ -118,6 +118,7 @@ public class UIOperator {
         rangeControlBottomSheet = BottomSheetBehavior.from(MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control));
 
         titleTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_title);
+        informationTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_information);
         valueMinimumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMinimum);
         valueMaximumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMaximum);
         rangeSeekBar_range_control = (SeekBar) MainActivity.activity.findViewById(R.id.seekBar_range_control_range);
@@ -185,7 +186,7 @@ public class UIOperator {
             if (MainActivity.focusDistance == 0.0f) {
                 setFocusDistanceButton_parameters_indicator.setText("F.D.\n" + "Infi");
             } else {
-                setFocusDistanceButton_parameters_indicator.setText("F.D.\n" + String.format("%.2f", 1 / MainActivity.focusDistance) + "m");
+                setFocusDistanceButton_parameters_indicator.setText("F.D.\n" + String.format("%.2f", 1f / MainActivity.focusDistance) + "m");
             }
         } else {
             setFocusDistanceButton_parameters_indicator.setText("F.D.\nAUTO");
@@ -273,6 +274,10 @@ public class UIOperator {
             rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
 
             titleTextView_range_control.setText(R.string.textView_range_control_title);
+            // clear information TextView
+            informationTextView_range_control.setText("");
+            informationTextView_range_control.setTextSize(0);
+            // clear information TextView
             valueMinimumTextView_range_control.setText(R.string.textView_range_control_valueMinimum);
             valueMaximumTextView_range_control.setText(R.string.textView_range_control_valueMaximum);
             valueEditText_range_control.setText("");
@@ -475,14 +480,18 @@ public class UIOperator {
                 });
 
                 titleTextView_range_control.setText(R.string.textView_range_control_title_focusDistance);
-                valueMinimumTextView_range_control.setText("MIN\n" + String.format("%.2f", (1 / MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) * 100) + " cm");
+                // setup information TextView
+                rangeControlBottomSheet_setInformationTextViewText();
+                informationTextView_range_control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                // setup information TextView
+                valueMinimumTextView_range_control.setText("MIN\n" + String.format("%.2f", (1f / MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) * 100) + " cm");
                 valueMaximumTextView_range_control.setText("MAX\n" + "Infinity");
 
                 valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 if (MainActivity.focusDistance == 0.0f) {
                     valueEditText_range_control.setHint("Infinity m");
                 } else {
-                    valueEditText_range_control.setHint(String.format("%.4f", 1 / MainActivity.focusDistance) + " m");
+                    valueEditText_range_control.setHint(String.format("%.4f", 1f / MainActivity.focusDistance) + " m");
                 }
                 valueEditText_range_control.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
@@ -527,8 +536,9 @@ public class UIOperator {
                             if (MainActivity.focusDistance == 0.0f) {
                                 valueEditText_range_control.setHint("Infinity");
                             } else {
-                                valueEditText_range_control.setHint(String.format("%.4f", 1 / MainActivity.focusDistance) + " m");
+                                valueEditText_range_control.setHint(String.format("%.4f", 1f / MainActivity.focusDistance) + " m");
                             }
+                            rangeControlBottomSheet_setInformationTextViewText();
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
                         }
@@ -580,7 +590,7 @@ public class UIOperator {
 
         } else if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE) {
             float rawValue = Float.valueOf((valueEditText_range_control.getText()).toString());
-            MainActivity.focusDistance = 1 / rawValue;
+            MainActivity.focusDistance = 1f / rawValue;
             if (MainActivity.focusDistance < 0.0f) {
                 MainActivity.focusDistance = 0.0f;
             } else if (MainActivity.focusDistance > MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
@@ -591,6 +601,58 @@ public class UIOperator {
         rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
         updateCaptureParametersIndicator();
         updatePreviewParameters();
+    }
+
+    static void rangeControlBottomSheet_setInformationTextViewText() {
+        // # demand information:
+        // Circle of Confusion (mm)
+        // Hyperfocal Distance (m)
+        // Near Point Distance (m)
+        // Far Point Distance (m)
+        // Depth of Field (m)
+
+        float hyperfocalDistance = (  // unit: mm
+                (
+                        (MainActivity.focalLength * MainActivity.focalLength)
+                        / (MainActivity.aperture * MainActivity.CIRCLE_OF_CONFUSION)
+                ) + MainActivity.focalLength
+        );
+
+        String nearPointDistanceText;
+        String farPointDistanceText;
+        String depthOfFieldText;
+        if (MainActivity.focusDistance != 0f) {
+            float nearPointDistance = (  // unit: mm
+                    ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
+                    / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
+            );
+            nearPointDistanceText = String.format("%.4f", nearPointDistance / 1000f) + " m";
+            if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
+                float farPointDistance = (  // unit: mm
+                        ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
+                        / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
+                );
+                farPointDistanceText = String.format("%.4f", farPointDistance / 1000f) + " m";
+                depthOfFieldText = String.format("%.4f", (farPointDistance - nearPointDistance) / 1000f) + " m";
+            } else {
+                farPointDistanceText = "Infinity";
+                depthOfFieldText = "Infinity";
+            }
+        } else {
+            nearPointDistanceText = "Infinity";
+            farPointDistanceText = "Infinity";
+            depthOfFieldText = "Infinity";
+        }
+
+        String informationText = (
+                "CoC: " + MainActivity.CIRCLE_OF_CONFUSION + " mm\n"
+                + "H: " + String.format("%.4f", hyperfocalDistance / 1000f) + " m\n"
+                + "  Current: \n"
+                + "  D_N: " + nearPointDistanceText + "\n"
+                + "  D_F: " + farPointDistanceText + "\n"
+                + "  DoF: " + depthOfFieldText
+        );
+        informationTextView_range_control.setText(informationText);
     }
     // endregion
 
