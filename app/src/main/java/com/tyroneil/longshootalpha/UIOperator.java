@@ -626,14 +626,14 @@ public class UIOperator {
                     ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
                     / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
             );
-            nearPointDistanceText = String.format("%.4f", nearPointDistance / 1000f) + " m";
+            nearPointDistanceText = String.format("%.4f", nearPointDistance / 1000f) + "m";
             if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
                 float farPointDistance = (  // unit: mm
                         ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
                         / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
                 );
-                farPointDistanceText = String.format("%.4f", farPointDistance / 1000f) + " m";
-                depthOfFieldText = String.format("%.4f", (farPointDistance - nearPointDistance) / 1000f) + " m";
+                farPointDistanceText = String.format("%.4f", farPointDistance / 1000f) + "m";
+                depthOfFieldText = String.format("%.4f", (farPointDistance - nearPointDistance) / 1000f) + "m";
             } else {
                 farPointDistanceText = "Infinity";
                 depthOfFieldText = "Infinity";
@@ -645,12 +645,11 @@ public class UIOperator {
         }
 
         String informationText = (
-                "CoC: " + MainActivity.CIRCLE_OF_CONFUSION + " mm\n"
-                + "H: " + hyperfocalDistance / 1000f + " m\n"
-                + "  Current: \n"
-                + "  D_N: " + nearPointDistanceText + "\n"
-                + "  D_F: " + farPointDistanceText + "\n"
-                + "  DoF: " + depthOfFieldText
+                "CoC: " + String.format("%.6f", MainActivity.CIRCLE_OF_CONFUSION) + "mm, "
+                + "H: " + String.format("%.6f", hyperfocalDistance / 1000f) + "m\n"
+                + "D_N: " + nearPointDistanceText + ", "
+                + "D_F: " + farPointDistanceText + "\n"
+                + "DoF: " + depthOfFieldText
         );
         informationTextView_range_control.setText(informationText);
     }
