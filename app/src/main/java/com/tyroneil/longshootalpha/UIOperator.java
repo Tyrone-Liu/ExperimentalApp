@@ -26,7 +26,7 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class UIOperator {
+class UIOperator {
     // region content camera control
     static ChangeableRatioTextureView previewCRTV_camera_control;
     static Button modeButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
