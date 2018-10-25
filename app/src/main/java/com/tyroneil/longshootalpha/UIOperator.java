@@ -1,6 +1,7 @@
 package com.tyroneil.longshootalpha;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
@@ -236,6 +237,8 @@ class UIOperator {
             }
 
             else if (((Button) view).getId() == R.id.button_camera_control_settings) {
+                Intent openSettings = new Intent(MainActivity.activity, SettingsActivity.class);
+                MainActivity.activity.startActivity(openSettings);
             }
         }
     };

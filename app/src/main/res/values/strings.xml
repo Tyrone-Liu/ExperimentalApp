@@ -35,4 +35,11 @@
     <string name="textView_list_control_title_focalLength">Focal Length</string>
     <string name="button_list_control_dismiss">Dismiss</string>
 
+    <!-- preferences -->
+    <string name="preference_category_title_1">later?</string>
+    <string name="preference_title_raw">Capture in RAW format</string>
+    <string name="preference_summary_raw">If not in RAW, will capture in JPEG</string>
+    <string name="preference_title_camera_id">Active camera</string>
+    <string name="preference_summary_camera_id">Which camera is used to capture</string>
+
 </resources>
