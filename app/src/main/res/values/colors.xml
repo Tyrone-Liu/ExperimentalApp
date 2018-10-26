@@ -3,8 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>  <!-- Material INDIGO_500 -->
 
     <color name="colorSecondary">#FF3D00</color>  <!-- Material DEEP_ORANGE_A400 -->
-    <color name="colorSecondaryVariant">#602513</color>  <!-- Material DEEP_ORANGE_A400 (component disabled, darken version) -->
-    <!-- #5D2723 Material RED_500 (component disabled, darken version) -->
+    <color name="colorSecondaryVariant">#602513</color>  <!-- Material DEEP_ORANGE_A400 (component disabled, dark version) -->
+    <!-- #5D2723 Material RED_500 (component disabled, dark version) -->
 
     <color name="colorSurface">#1B1B1B</color>  <!-- Material GREY_800 Dark_Variant -->
     <color name="colorBackground">#000000</color>  <!-- Material Black -->

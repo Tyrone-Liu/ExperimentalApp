@@ -6,12 +6,12 @@
 
     <TextView
         android:id="@+id/textView_list_control_title"
+        style="@style/CameraTheme.TextAccentColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/textView_list_control_title"
         android:textAlignment="textStart"
-        android:textColor="@color/colorSecondary"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/button_list_control_dismiss"
@@ -20,12 +20,11 @@
 
     <Button
         android:id="@+id/button_list_control_dismiss"
-        style="@android:style/Widget.Material.Button.Colored"
+        style="@style/CameraTheme.ButtonColoredAccentColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/colorSecondary"
         android:minWidth="80dp"
         android:minHeight="48dp"
         android:text="@string/button_list_control_dismiss"
@@ -34,6 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <android.support.v4.widget.NestedScrollView
+        style="@style/CameraTheme.ScrollbarThumbAccentColor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -42,7 +42,6 @@
         android:layout_marginBottom="8dp"
         android:fadeScrollbars="false"
         android:fillViewport="true"
-        android:scrollbarThumbVertical="@color/colorSecondaryVariant"
         android:scrollbars="vertical"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/button_list_control_dismiss"

@@ -6,12 +6,12 @@
 
     <TextView
         android:id="@+id/textView_range_control_title"
+        style="@style/CameraTheme.TextAccentColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/textView_range_control_title"
         android:textAlignment="center"
-        android:textColor="@color/colorSecondary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range"
         app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range"
@@ -19,13 +19,13 @@
 
     <TextView
         android:id="@+id/textView_range_control_information"
+        style="@style/CameraTheme.TextAccentColorDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:minHeight="8dp"
         android:textAlignment="center"
-        android:textColor="@color/colorSecondaryVariant"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/textView_range_control_valueMaximum"
         app:layout_constraintStart_toEndOf="@+id/textView_range_control_valueMinimum"
@@ -33,7 +33,7 @@
 
     <SeekBar
         android:id="@+id/seekBar_range_control_range"
-        style="@android:style/Widget.Material.SeekBar"
+        style="@style/CameraTheme.SeekBarAccentColor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -41,9 +41,6 @@
         android:layout_marginEnd="8dp"
         android:max="10000"
         android:min="0"
-        android:progressBackgroundTint="@color/colorSecondary"
-        android:progressTint="@color/colorSecondary"
-        android:thumbTint="@color/colorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,36 +48,35 @@
 
     <TextView
         android:id="@+id/textView_range_control_valueMinimum"
+        style="@style/CameraTheme.TextAccentColorDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/textView_range_control_valueMinimum"
         android:textAlignment="textStart"
-        android:textColor="@color/colorSecondaryVariant"
         app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_range"
         app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range" />
 
     <TextView
         android:id="@+id/textView_range_control_valueMaximum"
+        style="@style/CameraTheme.TextAccentColorDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/textView_range_control_valueMaximum"
         android:textAlignment="textEnd"
-        android:textColor="@color/colorSecondaryVariant"
         app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_range"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range" />
 
     <Button
         android:id="@+id/button_range_control_apply"
-        style="@android:style/Widget.Material.Button.Colored"
+        style="@style/CameraTheme.ButtonColoredAccentColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/colorSecondary"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:text="@string/button_range_control_apply"
@@ -90,29 +86,23 @@
 
     <CheckBox
         android:id="@+id/checkBox_range_control_auto"
-        style="@android:style/Widget.Material.CompoundButton.CheckBox"
+        style="@style/CameraTheme.CheckBoxAccentColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/colorSecondary"
         android:checked="false"
         android:text="@string/checkBox_range_control_auto"
-        android:textColor="@color/colorSecondary"
         app:layout_constraintBaseline_toBaselineOf="@+id/button_range_control_apply"
         app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range" />
 
     <EditText
         android:id="@+id/editText_range_control_value"
-        style="@android:style/Widget.Material.EditText"
+        style="@style/CameraTheme.EditTextAccentColor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/colorSecondary"
         android:maxLines="1"
         android:textAlignment="textEnd"
-        android:textColor="@color/colorSecondary"
-        android:textColorHint="@color/colorSecondaryVariant"
-        android:textCursorDrawable="@drawable/cursor_color_primary"
         app:layout_constraintBaseline_toBaselineOf="@+id/button_range_control_apply"
         app:layout_constraintEnd_toStartOf="@+id/button_range_control_apply"
         app:layout_constraintStart_toEndOf="@+id/checkBox_range_control_auto" />
