@@ -39,12 +39,12 @@
         app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture" />
 
     <Button
-        android:id="@+id/button_camera_control_mode"
+        android:id="@+id/button_camera_control_sequence"
         style="@android:style/Widget.Material.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="@string/button_camera_control_mode"
+        android:text="@string/button_camera_control_sequence"
         app:layout_constraintEnd_toStartOf="@+id/button_camera_control_capture"
         app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture" />
 

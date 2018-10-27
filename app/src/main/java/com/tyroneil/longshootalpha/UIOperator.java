@@ -30,7 +30,7 @@ import android.widget.TextView;
 class UIOperator {
     // region content camera control
     static ChangeableRatioTextureView previewCRTV_camera_control;
-    static Button modeButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
+    static Button sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
     static ProgressBar capturingProgressBar_camera_control;
     // endregion
 
@@ -69,7 +69,7 @@ class UIOperator {
     // region initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
         previewCRTV_camera_control = (ChangeableRatioTextureView) MainActivity.activity.findViewById(R.id.cRTV_camera_control_preview);
-        modeButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_mode);
+        sequenceButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_sequence);
         captureButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_capture);
         settingsButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_settings);
         capturingProgressBar_camera_control = (ProgressBar) MainActivity.activity.findViewById(R.id.progressBar_camera_control_capturing);
@@ -102,7 +102,7 @@ class UIOperator {
             }
         });
 
-        modeButton_camera_control.setOnClickListener(onClickListener_camera_control);
+        sequenceButton_camera_control.setOnClickListener(onClickListener_camera_control);
         captureButton_camera_control.setOnClickListener(onClickListener_camera_control);
         settingsButton_camera_control.setOnClickListener(onClickListener_camera_control);
 
@@ -229,7 +229,7 @@ class UIOperator {
     static View.OnClickListener onClickListener_camera_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (((Button) view).getId() == R.id.button_camera_control_mode) {
+            if (((Button) view).getId() == R.id.button_camera_control_sequence) {
             }
 
             else if (((Button) view).getId() == R.id.button_camera_control_capture) {

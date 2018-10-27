@@ -4,7 +4,7 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- content camera control -->
-    <string name="button_camera_control_mode">Mode</string>
+    <string name="button_camera_control_sequence">Sequence</string>
     <string name="button_camera_control_capture">CAPTURE</string>
     <string name="button_camera_control_settings">Settings</string>
 
