@@ -12,13 +12,13 @@ class ChangeableRatioTextureView extends TextureView {
     /**
      * Three default constructor
      */
-    ChangeableRatioTextureView(Context context) {
+    public ChangeableRatioTextureView(Context context) {
         super(context);
     }
-    ChangeableRatioTextureView(Context context, AttributeSet attrs) {
+    public ChangeableRatioTextureView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    ChangeableRatioTextureView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ChangeableRatioTextureView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
