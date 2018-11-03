@@ -14,4 +14,12 @@
             android:summary="@string/preference_summary_camera_id" />
     </PreferenceCategory>
 
+    <!--
+    TODO list:
+    max preview resolution
+    store file name
+    store file path
+    max preview exposure time (prevent shutter lag)
+    -->
+
 </PreferenceScreen>
