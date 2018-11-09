@@ -49,3 +49,6 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
 
 ## Known Bugs (from newest to oldest)
 + [ ] The focus distance used for capture can not match the one used for request.  Seems to have hyper focal distance be the furthest focus distance.  
++ [ ] Capture has an unusual lag, not sure it is caused by 'preview request in pipeline' or something with capture itself.  
+
+
