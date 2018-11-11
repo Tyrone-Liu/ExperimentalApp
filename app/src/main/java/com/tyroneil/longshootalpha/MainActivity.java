@@ -25,6 +25,7 @@ import android.os.HandlerThread;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.util.Log;
 import android.util.Range;
 import android.util.Size;
 import android.util.SizeF;
@@ -119,8 +120,8 @@ public class MainActivity extends Activity {
     static String debugMessage = "";
     static String previewDebugMessage = "";
     static String captureDebugMessage = "";
-    static int debugCounter0 = 0;
-    static int debugCounter1 = 0;
+    static int previewDebugCounter = 0;
+    static int captureDebugCounter = 0;
 
     private static String totalResultDebugTool(TotalCaptureResult result) {
         String message = (
@@ -129,7 +130,7 @@ public class MainActivity extends Activity {
                         + "AP:" + result.get(CaptureResult.LENS_APERTURE) + ", "
                         + "OS:" + result.get(CaptureResult.LENS_OPTICAL_STABILIZATION_MODE) + ", "
                         + "FL:" + result.get(CaptureResult.LENS_FOCAL_LENGTH) + ", "
-                        + "FD:" + String.format("%.3f", result.get(CaptureResult.LENS_FOCUS_DISTANCE)) + ", "
+                        + "FD:" + String.format("%.5f", result.get(CaptureResult.LENS_FOCUS_DISTANCE)) + ", "
                         + "\n"
                         + "CONTROL_MODE: " + result.get(CaptureResult.CONTROL_MODE) + "\n"
                         + "AE_MODE: " + result.get(CaptureResult.CONTROL_AE_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AE_STATE", result.get(CaptureResult.CONTROL_AE_STATE)) + "\n"
@@ -180,6 +181,9 @@ public class MainActivity extends Activity {
         }
         return message;
     }
+
+    static SimpleDateFormat debugDateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
+    static final String LOG_TAG_CAPTURE_LAG = "CAPTURE_LAG";
     // endregion
 
     // region handle activity lifecycle
@@ -338,6 +342,7 @@ public class MainActivity extends Activity {
             try {
                 previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
 
+                // region setup preview request builder
                 previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
@@ -358,6 +363,7 @@ public class MainActivity extends Activity {
                     previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
                 }
                 previewRequestBuilder.addTarget(previewSurface);
+                // endregion setup preview request builder
 
                 // prepare output surface for capture
                 imageReader = ImageReader.newInstance(captureSize.getWidth(), captureSize.getHeight(), captureFormat, 1);
@@ -427,6 +433,29 @@ public class MainActivity extends Activity {
             session.close();
             captureSession = null;
         }
+
+        // region debug
+        @Override
+        public void onActive(CameraCaptureSession session) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onActive");
+            super.onActive(session);
+        }
+        @Override
+        public void onCaptureQueueEmpty(CameraCaptureSession session) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onCaptureQueueEmpty");
+            super.onCaptureQueueEmpty(session);
+        }
+        @Override
+        public void onReady(CameraCaptureSession session) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onReady");
+            super.onReady(session);
+        }
+        @Override
+        public void onSurfacePrepared(CameraCaptureSession session, Surface surface) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onSurfacePrepared");
+            super.onSurfacePrepared(session, surface);
+        }
+        // endregion debug
     };
 
     // region method to choose preview size
@@ -490,7 +519,7 @@ public class MainActivity extends Activity {
             return Integer.compare(size0.getWidth() * size0.getHeight(), size1.getWidth() * size1.getHeight());
         }
     };
-    // endregion
+    // endregion method to choose preview size
 
     private static void initiateCaptureParameters(CameraCharacteristics cameraCharacteristics) {
         SENSOR_INFO_EXPOSURE_TIME_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE);
@@ -540,8 +569,8 @@ public class MainActivity extends Activity {
     static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            debugCounter0 ++;
-            previewDebugMessage = "# " + debugCounter0 + " preview completed" + "\n" + totalResultDebugTool(result);
+            previewDebugCounter++;
+            previewDebugMessage = "# " + previewDebugCounter + " preview completed" + "\n" + totalResultDebugTool(result);
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -553,8 +582,8 @@ public class MainActivity extends Activity {
 
         @Override
         public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
-            debugCounter0 ++;
-            previewDebugMessage = "# " + debugCounter0 + " preview failed" + "\n";
+            previewDebugCounter++;
+            previewDebugMessage = "# " + previewDebugCounter + " preview failed" + "\n";
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -570,6 +599,7 @@ public class MainActivity extends Activity {
     // region process of taking photo(s)
     static void takePhoto() {
         try {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture button pressed");  // debug
             // TODO: make captureRequest template changeable between 'TEMPLATE_MANUAL' and 'TEMPLATE_STILL_CAPTURE' in settings.
             // 'TEMPLATE_MANUAL' has the least preset parameters, user
             // has the most control over camera.
@@ -578,6 +608,7 @@ public class MainActivity extends Activity {
             // problems in capture parameters hard to discover.
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
 
+            // region setup capture request builder
             captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
             captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
@@ -610,9 +641,11 @@ public class MainActivity extends Activity {
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
+            // endregion setup capture request builder
 
             UIOperator.cameraControl_setCaptureButtonEnabled(false);
             captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
         }
@@ -621,6 +654,7 @@ public class MainActivity extends Activity {
     private static ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image available");  // debug
             // TODO: make file name changeable in settings
             imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(imageFileTimeStampName);
@@ -681,6 +715,8 @@ public class MainActivity extends Activity {
                     }
                 }
             }
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image saved");  // debug
+
         }
     };
 
@@ -688,9 +724,10 @@ public class MainActivity extends Activity {
     private static CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureCompleted");  // debug
             // region debug in captureCallback
-            debugCounter1 ++;
-            captureDebugMessage = "# " + debugCounter1 + " capture completed" + "\n" + totalResultDebugTool(result);
+            captureDebugCounter++;
+            captureDebugMessage = "# " + captureDebugCounter + " capture completed" + "\n" + totalResultDebugTool(result);
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -710,8 +747,8 @@ public class MainActivity extends Activity {
         @Override
         public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
             // region debug in captureCallback
-            debugCounter1 ++;
-            captureDebugMessage = "# " + debugCounter1 + " capture failed" + "\n";
+            captureDebugCounter++;
+            captureDebugMessage = "# " + captureDebugCounter + " capture failed" + "\n";
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -721,8 +758,31 @@ public class MainActivity extends Activity {
             // endregion debug in captureCallback
             super.onCaptureFailed(session, request, failure);
         }
+
+        // region debug
+        @Override
+        public void onCaptureBufferLost(CameraCaptureSession session, CaptureRequest request, Surface target, long frameNumber) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureBufferLost");  // debug
+            super.onCaptureBufferLost(session, request, target, frameNumber);
+        }
+        @Override
+        public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureProgressed");  // debug
+            super.onCaptureProgressed(session, request, partialResult);
+        }
+        @Override
+        public void onCaptureSequenceCompleted(CameraCaptureSession session, int sequenceId, long frameNumber) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureSequenceCompleted");  // debug
+            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
+        }
+        @Override
+        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
+            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureStarted");  // debug
+            super.onCaptureStarted(session, request, timestamp, frameNumber);
+        }
+        // endregion debug
     };
-    // endregion
+    // endregion process of taking photo(s)
 
 
     static void displayErrorMessage(final Exception error) {
