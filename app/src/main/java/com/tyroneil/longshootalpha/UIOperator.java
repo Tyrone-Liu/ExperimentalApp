@@ -39,6 +39,7 @@ class UIOperator {
             setExposureTimeButton_parameters_indicator,
             setSensitivityButton_parameters_indicator,
             setApertureButton_parameters_indicator,
+            setTorchButton_parameters_indicator,
             setAutoWhiteBalance_parameters_indicator,
             setOpticalStabilization_parameters_indicator,
             setFocalLengthButton_parameters_indicator,
@@ -62,8 +63,9 @@ class UIOperator {
     static TextView titleTextView_list_control;
     static RadioGroup listRadioGroup_list_control;
     static Button dismissButton_list_control;
-    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES = 0;
-    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES = 1;
+    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH = 0;
+    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES = 1;
+    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES = 2;
     // endregion
 
     // region initiate layouts (camera_control, range_control, list_control)
@@ -78,6 +80,7 @@ class UIOperator {
         setExposureTimeButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
         setSensitivityButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
         setApertureButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAperture);
+        setTorchButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setTorch);
         setAutoWhiteBalance_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
         setOpticalStabilization_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
         setFocalLengthButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
@@ -109,6 +112,7 @@ class UIOperator {
         setExposureTimeButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
         setSensitivityButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
         setApertureButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
+        setTorchButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_toggle_control);
         setAutoWhiteBalance_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
         setOpticalStabilization_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
         setFocalLengthButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
@@ -179,6 +183,7 @@ class UIOperator {
         }
 
         setApertureButton_parameters_indicator.setText("APE\nf/" + String.format("%.1f", MainActivity.aperture));
+        setTorchButton_parameters_indicator.setText("Tor.\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH, MainActivity.flashMode, true));
         setAutoWhiteBalance_parameters_indicator.setText("AWB\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.awbMode, true));
         setOpticalStabilization_parameters_indicator.setText("OIS\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true));
         setFocalLengthButton_parameters_indicator.setText("F.L.\n" + String.format("%.2f", MainActivity.focalLength) + "mm");
@@ -204,6 +209,7 @@ class UIOperator {
             MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, MainActivity.sensitivity);
         }
         MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, MainActivity.aperture);
+        MainActivity.previewRequestBuilder.set(CaptureRequest.FLASH_MODE, MainActivity.flashMode);
 
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, MainActivity.awbMode);
 
@@ -225,7 +231,7 @@ class UIOperator {
         }
     }
 
-    // region onClickListener for buttons in content_camera_control
+    // region onClickListener, content_camera_control
     static View.OnClickListener onClickListener_camera_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -273,9 +279,28 @@ class UIOperator {
             });
         }
     }
-    // endregion
+    // endregion onClickListener, content_camera_control
 
-    // region onClickListener for buttons in content_parameters_indicator, type range_control
+    // region onClickListener, type toggle_control
+    static View.OnClickListener onClickListener_parameters_indicator_toggle_control = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (((Button) view).getId() == R.id.button_parameters_indicator_setTorch) {
+                if (MainActivity.FLASH_INFO_AVAILABLE) {
+                    if (MainActivity.flashMode == CameraMetadata.FLASH_MODE_OFF) {
+                        MainActivity.flashMode = CameraMetadata.FLASH_MODE_TORCH;
+                    } else {
+                        MainActivity.flashMode = CameraMetadata.FLASH_MODE_OFF;
+                    }
+                    updateCaptureParametersIndicator();
+                    updatePreviewParameters();
+                }
+            }
+        }
+    };
+    // endregion onClickListener, type toggle_control
+
+    // region onClickListener, type range_control
     static View.OnClickListener onClickListener_parameters_indicator_range_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -661,9 +686,9 @@ class UIOperator {
         );
         informationTextView_range_control.setText(informationText);
     }
-    // endregion
+    // endregion onClickListener, type range_control
 
-    // region onClickListener for buttons in content_parameters_indicator, type list_control
+    // region onClickListener, type list_control
     static View.OnClickListener onClickListener_parameters_indicator_list_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -809,7 +834,12 @@ class UIOperator {
     static String listControlBottomSheet_intValueToString(int intValueType, int intValue, boolean shortString) {
         String string = "";
 
-        if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES) {
+        if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH) {
+            switch (intValue) {
+                case 0: string = "OFF"; break;
+                case 2: string = "ON"; break;
+            }
+        } else if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES) {
             switch (intValue) {
                 case 0: string = (shortString? "OFF" : "OFF"); break;
                 case 1: string = (shortString? "AUTO" : "AUTO"); break;
@@ -843,6 +873,6 @@ class UIOperator {
         }
         return -1;
     }
-    // endregion
+    // endregion onClickListener, type list_control
 
 }

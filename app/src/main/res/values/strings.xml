@@ -12,6 +12,7 @@
     <string name="button_parameters_indicator_setExposureTime">S.S.\n--s</string>
     <string name="button_parameters_indicator_setSensitivity">ISO\n--</string>
     <string name="button_parameters_indicator_setAperture">APE\nf/--</string>
+    <string name="button_parameters_indicator_setTorch">Tor.\n--</string>
     <string name="button_parameters_indicator_setAutoWhiteBalance">AWB\n--</string>
     <string name="button_parameters_indicator_setOpticalStabilization">OIS\n--</string>
     <string name="button_parameters_indicator_setFocalLength">F.L.\n--mm</string>

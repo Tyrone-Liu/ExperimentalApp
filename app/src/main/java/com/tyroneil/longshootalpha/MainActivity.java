@@ -97,6 +97,9 @@ public class MainActivity extends Activity {
     static float aperture;  // LENS_APERTURE
     static float[] LENS_INFO_AVAILABLE_APERTURES;  // constant for each camera device
 
+    static int flashMode;  // FLASH_MODE
+    static boolean FLASH_INFO_AVAILABLE;  // constant for each camera device
+
     static int awbMode;  // CONTROL_AWB_MODE
     static int[] CONTROL_AWB_AVAILABLE_MODES;  // constant for each camera devices
 
@@ -352,6 +355,7 @@ public class MainActivity extends Activity {
                     previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
                 }
                 previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
+                previewRequestBuilder.set(CaptureRequest.FLASH_MODE, flashMode);
 
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
 
@@ -525,6 +529,7 @@ public class MainActivity extends Activity {
         SENSOR_INFO_EXPOSURE_TIME_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE);
         SENSOR_INFO_SENSITIVITY_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
         LENS_INFO_AVAILABLE_APERTURES = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES);
+        FLASH_INFO_AVAILABLE = cameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
         CONTROL_AWB_AVAILABLE_MODES = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AWB_AVAILABLE_MODES);
         LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
         LENS_INFO_AVAILABLE_FOCAL_LENGTHS = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
@@ -551,6 +556,7 @@ public class MainActivity extends Activity {
         }
 
         aperture = LENS_INFO_AVAILABLE_APERTURES[0];
+        flashMode = CameraMetadata.FLASH_MODE_OFF;
         awbMode = CameraMetadata.CONTROL_AWB_MODE_AUTO;
 
         opticalStabilizationMode = 0;
@@ -626,6 +632,7 @@ public class MainActivity extends Activity {
             }
 
             captureRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
+            captureRequestBuilder.set(CaptureRequest.FLASH_MODE, flashMode);
 
             captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
             if (!(awbMode == CameraMetadata.CONTROL_AWB_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF)) {

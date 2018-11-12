@@ -18,25 +18,36 @@
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:colorAccent">@color/colorSecondary</item>
     </style>
-    <style name="CameraTheme.TextAccentColor"><item name="android:textColor">@color/colorSecondary</item></style>
-    <style name="CameraTheme.TextAccentColorDark"><item name="android:textColor">@color/colorSecondaryVariant</item></style>
+
+    <style name="CameraTheme.TextAccentColor">
+        <item name="android:textColor">@color/colorSecondary</item>
+    </style>
+
+    <style name="CameraTheme.TextAccentColorDark">
+        <item name="android:textColor">@color/colorSecondaryVariant</item>
+    </style>
+
     <style name="CameraTheme.ButtonColoredAccentColor" parent="@android:style/Widget.Material.Button.Colored">
         <item name="android:backgroundTint">@color/colorSecondary</item>
     </style>
+
     <style name="CameraTheme.SeekBarAccentColor" parent="@android:style/Widget.Material.SeekBar">
         <item name="android:progressBackgroundTint">@color/colorSecondary</item>
         <item name="android:progressTint">@color/colorSecondary</item>
         <item name="android:thumbTint">@color/colorSecondary</item>
     </style>
+
     <style name="CameraTheme.CheckBoxAccentColor" parent="@android:style/Widget.Material.CompoundButton.CheckBox">
         <item name="android:buttonTint">@color/colorSecondary</item>
         <item name="android:textColor">@color/colorSecondary</item>
     </style>
+
     <style name="CameraTheme.EditTextAccentColor" parent="@android:style/Widget.Material.EditText">
         <item name="android:backgroundTint">@color/colorSecondary</item>
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textColorHint">@color/colorSecondaryVariant</item>
     </style>
+
     <style name="CameraTheme.ScrollbarThumbAccentColor">
         <item name="android:scrollbarThumbVertical">@color/colorSecondaryVariant</item>
     </style>
@@ -52,6 +63,7 @@
     </style>
 
     <style name="CameraTheme.Indicator" parent="@android:style/Widget.Material.Button.Borderless.Colored">
+        <item name="android:includeFontPadding">false</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">2dp</item>
