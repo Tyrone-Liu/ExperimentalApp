@@ -12,9 +12,9 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
     * [x] ISO
     * [ ] GPS record for shots
     * [x] White balance (When you have RAW output, white balance is not that demanded)
-    * [ ] Flash control (Flash lights on phones may not be a good choice for great lighting)
+    * [x] Flash control (Flash lights on phones may not be a good choice for great lighting)
 + Photo output
-    * [ ] Choice between RAW (DNG) / PNG / JPEG output or any combinations of them
+    * [ ] Choice between RAW (DNG) / JPEG output
     * [ ] Write correct metadata into files or embed in shot
     * [ ] Custom output file name with patterns
 + Capture Sequence (Replacement for BRK and Burst)
@@ -40,7 +40,12 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
     * [x] Focus Distance
 + [x] Handle App sent to background, closed, killed or camera crashed
 + [x] Capture and store the photo
-+ [ ] Controller in UI for switch camera, open torch, magnification, gallery
++ [ ] Controller in UI for:
+    * [ ] Switch camera
+    * [x] Open torch
+    * [ ] Change magnification
+    * [ ] Gallery
+    * [ ] Preview parameters match capture
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
 + [ ] Better handle of auto capture mode capture parameters
@@ -49,5 +54,6 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
 
 ## Known Bugs (from newest to oldest)
 + [ ] The focus distance used for capture can not match the one used for request.  Seems to have hyper focal distance be the furthest focus distance.  
-+ [ ] There is a lag between capture request been sent and the actual capture begins, because every 'capture request' has to go through the 'camera pipeline'
++ [ ] The first capture request go into pipeline will take triple times of exposure time.  
++ [ ] If the capture format is JPEG, image can not be saved after called 'captureSession.abortCapture()'.  
 
