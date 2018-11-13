@@ -46,13 +46,14 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
     * [ ] Change magnification
     * [ ] Gallery
     * [ ] Preview parameters match capture
++ [ ] Another thread for storing image file
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
 + [ ] Better handle of auto capture mode capture parameters
 + [ ] Handle Android permission request
 
 
-## Known Bugs (from newest to oldest)
+## Known Bugs (from oldest to newest)
 + [ ] The focus distance used for capture can not match the one used for request.  Seems to have hyper focal distance be the furthest focus distance.  
 + [ ] The first capture request go into pipeline will take triple times of exposure time.  
 + [ ] If the capture format is JPEG, image can not be saved after called 'captureSession.abortCapture()'.  
