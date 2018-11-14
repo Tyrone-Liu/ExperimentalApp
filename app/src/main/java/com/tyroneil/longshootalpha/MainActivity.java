@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
     }
 
     static SimpleDateFormat debugDateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
-    static final String LOG_TAG_CAPTURE_LAG = "CAPTURE_LAG";
+    static final String LOG_TAG_LSA_CAPTURE_LAG = "LSA_CAPTURE_LAG";
     static final String LOG_TAG_LSA_DEBUG = "LSA_DEBUG";
     // endregion
 
@@ -442,22 +442,22 @@ public class MainActivity extends Activity {
         // region debug
         @Override
         public void onActive(CameraCaptureSession session) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onActive");
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onActive");
             super.onActive(session);
         }
         @Override
         public void onCaptureQueueEmpty(CameraCaptureSession session) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onCaptureQueueEmpty");
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onCaptureQueueEmpty");
             super.onCaptureQueueEmpty(session);
         }
         @Override
         public void onReady(CameraCaptureSession session) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onReady");
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onReady");
             super.onReady(session);
         }
         @Override
         public void onSurfacePrepared(CameraCaptureSession session, Surface surface) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onSurfacePrepared");
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onSurfacePrepared");
             super.onSurfacePrepared(session, surface);
         }
         // endregion debug
@@ -653,7 +653,7 @@ public class MainActivity extends Activity {
 
             UIOperator.cameraControl_setCaptureButtonEnabled(false);
             captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
         }
@@ -662,7 +662,7 @@ public class MainActivity extends Activity {
     private static ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image available");  // debug
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image available");  // debug
             // TODO: make file name changeable in settings
             imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(imageFileTimeStampName);
@@ -727,7 +727,7 @@ public class MainActivity extends Activity {
                     }
                 }
             }
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image saved");  // debug
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image saved");  // debug
 
         }
     };
@@ -736,7 +736,7 @@ public class MainActivity extends Activity {
     private static CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureCompleted");  // debug
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureCompleted");  // debug
             // region debug in captureCallback
             captureDebugCounter++;
             captureDebugMessage = "# " + captureDebugCounter + " capture completed" + "\n" + totalResultDebugTool(result);
@@ -774,12 +774,12 @@ public class MainActivity extends Activity {
         // region debug
         @Override
         public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureProgressed");  // debug
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureProgressed");  // debug
             super.onCaptureProgressed(session, request, partialResult);
         }
         @Override
         public void onCaptureSequenceCompleted(CameraCaptureSession session, int sequenceId, long frameNumber) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureSequenceCompleted");  // debug
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureSequenceCompleted");  // debug
             super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
         }
         // endregion debug
