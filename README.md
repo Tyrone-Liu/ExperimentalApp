@@ -64,7 +64,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 
 ## Known Bugs (from oldest to newest)
 + [ ] The focus distance used for capture can not match the one used for request.  Seems to have hyper focal distance be the furthest focus distance.  
-+ [ ] The first capture in every capture request (both repeating and capture) will take more time than the exposure time.  <br \>The extended time depends on the previous capture's exposure time, usually triple of it.  
++ [ ] The first capture in every capture request (both repeating and capture) will take more time than the exposure time.  The extended time depends on the previous capture's exposure time, usually triple of it.  
 + [ ] If the capture format is JPEG, image can not be saved after called 'captureSession.abortCapture()'.  
 + [ ] On 'OnePlus 6', when the image format is RAW_SENSOR, the preview viewfinder will get anomalously brighter, but the captured image still have normal brightness.  
 + [ ] On 'OnePlus 6', when the image format is JPEG and the 'captureSize' is the max available value '4k x 3x', the edge of result image will be cut out.  
