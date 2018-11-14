@@ -187,6 +187,7 @@ public class MainActivity extends Activity {
 
     static SimpleDateFormat debugDateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
     static final String LOG_TAG_CAPTURE_LAG = "CAPTURE_LAG";
+    static final String LOG_TAG_LSA_DEBUG = "LSA_DEBUG";
     // endregion
 
     // region handle activity lifecycle
@@ -599,13 +600,13 @@ public class MainActivity extends Activity {
             super.onCaptureFailed(session, request, failure);
         }
     };
+
     // endregion process of creating preview
 
 
     // region process of taking photo(s)
     static void takePhoto() {
         try {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture button pressed");  // debug
             // TODO: make captureRequest template changeable between 'TEMPLATE_MANUAL' and 'TEMPLATE_STILL_CAPTURE' in settings.
             // 'TEMPLATE_MANUAL' has the least preset parameters, user
             // has the most control over camera.
@@ -697,6 +698,10 @@ public class MainActivity extends Activity {
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
                                 + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".DNG"
                 );
+
+                if (image.getTimestamp() != totalCaptureResult.get(CaptureResult.SENSOR_TIMESTAMP)) {
+                    Log.d(LOG_TAG_LSA_DEBUG, "image and totalCaptureResult timestamp mismatch");
+                }
                 DngCreator dngCreator = new DngCreator(cameraCharacteristics, totalCaptureResult);
 
                 if (sensorOrientation != 0) {
@@ -768,11 +773,6 @@ public class MainActivity extends Activity {
 
         // region debug
         @Override
-        public void onCaptureBufferLost(CameraCaptureSession session, CaptureRequest request, Surface target, long frameNumber) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureBufferLost");  // debug
-            super.onCaptureBufferLost(session, request, target, frameNumber);
-        }
-        @Override
         public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
             Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureProgressed");  // debug
             super.onCaptureProgressed(session, request, partialResult);
@@ -781,11 +781,6 @@ public class MainActivity extends Activity {
         public void onCaptureSequenceCompleted(CameraCaptureSession session, int sequenceId, long frameNumber) {
             Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureSequenceCompleted");  // debug
             super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
-        }
-        @Override
-        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
-            Log.d(LOG_TAG_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureStarted");  // debug
-            super.onCaptureStarted(session, request, timestamp, frameNumber);
         }
         // endregion debug
     };
