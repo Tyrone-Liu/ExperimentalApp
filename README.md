@@ -2,6 +2,15 @@
 This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/LongShoot)**, which is currently empty.🙄  
 
 
+## Reminder
+Before you try this app on your own device, make sure it fits the following requirements:
++ Android API Level >= 26 (>= 28 will have more feature)
++ Device has `android.hardware.camera2` support
++ `CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL` >= `FULL` (lower capability may encounter error or crash)
+
+Make sure to check out 'Known Bugs' section on the end of this file.  
+
+
 ## Features
 + Full control of shutter parameters
     * Focus
@@ -57,4 +66,7 @@ This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/Lon
 + [ ] The focus distance used for capture can not match the one used for request.  Seems to have hyper focal distance be the furthest focus distance.  
 + [ ] The first capture request go into pipeline will take triple times of exposure time.  
 + [ ] If the capture format is JPEG, image can not be saved after called 'captureSession.abortCapture()'.  
++ [ ] On 'OnePlus 6', when the image format is RAW_SENSOR, the preview viewfinder will get anomalously brighter, but the captured image still have normal brightness.  
++ [ ] On 'OnePlus 6', when the image format is JPEG and the 'captureSize' is the max available value '4k x 3x', the edge of result image will be cut out.  
++ [ ] When the image format is RAW_SENSOR, the 'captureSize' acquired from 'cameraCharacteristics' will be slightly bigger than then actual result.  
 
