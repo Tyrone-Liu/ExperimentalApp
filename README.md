@@ -23,7 +23,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
     * [x] White balance (When you have RAW output, white balance is not that demanded)
     * [x] Flash control (Flash lights on phones may not be a good choice for great lighting)
 + Photo output
-    * [ ] Choice between RAW (DNG) / JPEG output
+    * [x] Choice between RAW (DNG) / JPEG output
     * [x] Write correct metadata into files or embed in shot
     * [ ] Custom output file name with patterns
 + Capture Sequence (Replacement for BRK and Burst)

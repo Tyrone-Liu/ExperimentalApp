@@ -26,6 +26,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.util.Log;
@@ -301,8 +302,11 @@ public class MainActivity extends Activity {
             aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
             afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-            // TODO: make capture format changeable in settings, then make this default RAW_SENSOR
-            captureFormat = ImageFormat.RAW_SENSOR;
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_capture_raw", false)) {
+                captureFormat = ImageFormat.RAW_SENSOR;
+            } else {
+                captureFormat = ImageFormat.JPEG;
+            }
 
             try {
                 cameraManager = (CameraManager) context.getSystemService(CameraManager.class);

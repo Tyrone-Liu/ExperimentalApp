@@ -2,16 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/preference_category_title_1">
+        android:title="@string/preference_category_title_capture_and_storage">
         <SwitchPreference
-            android:key="preference_key_raw"
-            android:title="@string/preference_title_raw"
-            android:summary="@string/preference_summary_raw"
-            android:defaultValue="false" />
-        <ListPreference
-            android:key="preference_key_camera_id"
-            android:title="@string/preference_title_camera_id"
-            android:summary="@string/preference_summary_camera_id" />
+            android:key="preference_key_capture_raw"
+            android:title="@string/preference_title_capture_raw"
+            android:summary="@string/preference_summary_capture_raw"
+            android:defaultValue="true" />
     </PreferenceCategory>
 
     <!--

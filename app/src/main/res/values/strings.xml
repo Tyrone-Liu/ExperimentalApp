@@ -37,10 +37,8 @@
     <string name="button_list_control_dismiss">Dismiss</string>
 
     <!-- preferences -->
-    <string name="preference_category_title_1">later?</string>
-    <string name="preference_title_raw">Capture in RAW format</string>
-    <string name="preference_summary_raw">If not in RAW, will capture in JPEG</string>
-    <string name="preference_title_camera_id">Active camera</string>
-    <string name="preference_summary_camera_id">Which camera is used to capture</string>
+    <string name="preference_category_title_capture_and_storage">Capture &amp; Storage</string>
+    <string name="preference_title_capture_raw">Capture in RAW format</string>
+    <string name="preference_summary_capture_raw">If not, image will be captured in JPEG\n(Needs to reopen the APP, because it is still in dev state)</string>
 
 </resources>
