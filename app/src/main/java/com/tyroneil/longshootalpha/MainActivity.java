@@ -15,6 +15,9 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DngCreator;
 import android.hardware.camera2.TotalCaptureResult;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
@@ -54,6 +57,8 @@ public class MainActivity extends Activity {
     private static HandlerThread cameraBackgroundThread;
     static Handler cameraBackgroundHandler;
 
+    private static LocationManager locationManager;
+
     static final int CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE = 0;
     static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
     private static final int CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION = 2;
@@ -82,6 +87,7 @@ public class MainActivity extends Activity {
     private static ImageReader imageReader;
     private static Date imageTimeStamp;
     private static String imageFileTimeStampName;
+    private static Location captureLocation;
     // endregion
 
     // region capture parameters
@@ -188,6 +194,7 @@ public class MainActivity extends Activity {
     static SimpleDateFormat debugDateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
     static final String LOG_TAG_LSA_CAPTURE_LAG = "LSA_CAPTURE_LAG";
     static final String LOG_TAG_LSA_DEBUG = "LSA_DEBUG";
+    static final String LOG_TAG_LSA_WARN = "LSA_WARN";
     // endregion
 
     // region handle activity lifecycle
@@ -195,8 +202,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MainActivity.context = getApplicationContext();
-        MainActivity.activity = this;
+        context = getApplicationContext();
+        activity = this;
         scale = getResources().getDisplayMetrics().density;
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
@@ -286,6 +293,10 @@ public class MainActivity extends Activity {
     static void createPreview(int stage) {
         // region CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
         if (stage == CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE) {
+            locationManager = context.getSystemService(LocationManager.class);
+            // TODO: make 'provider', 'minTime', 'minDistance' changeable in the settings
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 1.0f, locationListener);
+
             autoMode = CameraMetadata.CONTROL_MODE_AUTO;
             aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
             afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
@@ -294,7 +305,7 @@ public class MainActivity extends Activity {
             captureFormat = ImageFormat.RAW_SENSOR;
 
             try {
-                cameraManager = (CameraManager) MainActivity.context.getSystemService(CameraManager.class);
+                cameraManager = (CameraManager) context.getSystemService(CameraManager.class);
                 cameraIdList = cameraManager.getCameraIdList();
                 // TODO: make camera changeable in settings
                 for (String e : cameraIdList) {
@@ -572,6 +583,24 @@ public class MainActivity extends Activity {
         focusDistance = 1000f / (((focalLength * focalLength) / (aperture * CIRCLE_OF_CONFUSION)) + focalLength);
     }
 
+    private static LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            captureLocation = location;
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+            captureLocation = null;
+        }
+    };
+
     // previewCaptureCallback is for debug purpose
     static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
@@ -623,6 +652,9 @@ public class MainActivity extends Activity {
             if (captureFormat == ImageFormat.JPEG) {
                 captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, sensorOrientation);
                 captureRequestBuilder.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
+                if (captureLocation != null) {
+                    captureRequestBuilder.set(CaptureRequest.JPEG_GPS_LOCATION, captureLocation);
+                }
             }
 
             if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
@@ -700,7 +732,7 @@ public class MainActivity extends Activity {
                 );
 
                 if (image.getTimestamp() != totalCaptureResult.get(CaptureResult.SENSOR_TIMESTAMP)) {
-                    Log.d(LOG_TAG_LSA_DEBUG, "image and totalCaptureResult timestamp mismatch");
+                    Log.d(LOG_TAG_LSA_WARN, "image and totalCaptureResult timestamp mismatch");
                 }
                 DngCreator dngCreator = new DngCreator(cameraCharacteristics, totalCaptureResult);
 
@@ -710,6 +742,9 @@ public class MainActivity extends Activity {
                         case 180: dngCreator.setOrientation(ExifInterface.ORIENTATION_ROTATE_180); break;
                         case 270: dngCreator.setOrientation(ExifInterface.ORIENTATION_ROTATE_270); break;
                     }
+                }
+                if (captureLocation != null) {
+                    dngCreator.setLocation(captureLocation);
                 }
 
                 try {

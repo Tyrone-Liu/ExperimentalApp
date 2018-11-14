@@ -19,7 +19,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
         - [ ] Touch to focus
     * [x] Exposure time (Shutter speed)
     * [x] ISO
-    * [ ] GPS record for shots
+    * [x] GPS record for shots
     * [x] White balance (When you have RAW output, white balance is not that demanded)
     * [x] Flash control (Flash lights on phones may not be a good choice for great lighting)
 + Photo output
