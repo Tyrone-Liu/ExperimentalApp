@@ -814,6 +814,11 @@ public class MainActivity extends Activity {
 
         // region debug
         @Override
+        public void onCaptureBufferLost(CameraCaptureSession session, CaptureRequest request, Surface target, long frameNumber) {
+            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureBufferLost");  // debug
+            super.onCaptureBufferLost(session, request, target, frameNumber);
+        }
+        @Override
         public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureProgressed");  // debug
             super.onCaptureProgressed(session, request, partialResult);
