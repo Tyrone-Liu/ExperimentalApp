@@ -52,13 +52,13 @@ public class MainActivity extends Activity {
     static float scale;
 
     // region shared variable
+    private static LocationManager locationManager;
+
     private static CameraManager cameraManager;
     private static String[] cameraIdList;
 
     private static HandlerThread cameraBackgroundThread;
     static Handler cameraBackgroundHandler;
-
-    private static LocationManager locationManager;
 
     static final int CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE = 0;
     static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
@@ -81,6 +81,7 @@ public class MainActivity extends Activity {
     // endregion
 
     // region variable for capture
+    private static Location captureLocation;
     private static CaptureRequest.Builder captureRequestBuilder;
     private static int captureFormat;
     private static Size captureSize;
@@ -88,7 +89,6 @@ public class MainActivity extends Activity {
     private static ImageReader imageReader;
     private static Date imageTimeStamp;
     private static String imageFileTimeStampName;
-    private static Location captureLocation;
     // endregion
 
     // region capture parameters
@@ -231,6 +231,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onStop() {
+        locationManager.removeUpdates(locationListener);
+
         if (captureSession != null) {
             captureSession.close();
             captureSession = null;
@@ -294,10 +296,6 @@ public class MainActivity extends Activity {
     static void createPreview(int stage) {
         // region CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
         if (stage == CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE) {
-            locationManager = context.getSystemService(LocationManager.class);
-            // TODO: make 'provider', 'minTime', 'minDistance' changeable in the settings
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 1.0f, locationListener);
-
             autoMode = CameraMetadata.CONTROL_MODE_AUTO;
             aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
             afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
@@ -343,6 +341,10 @@ public class MainActivity extends Activity {
 
         // region CREATE_PREVIEW_STAGE_OPEN_CAMERA
         else if (stage == CREATE_PREVIEW_STAGE_OPEN_CAMERA) {
+            locationManager = context.getSystemService(LocationManager.class);
+            // TODO: make 'provider', 'minTime', 'minDistance' changeable in the settings
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 1.0f, locationListener);
+
             try {
                 cameraManager.openCamera(cameraId, cameraStateCallback, cameraBackgroundHandler);
             } catch (CameraAccessException | SecurityException e) {
@@ -415,6 +417,24 @@ public class MainActivity extends Activity {
         }
         // endregion CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
     }
+
+    private static LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            captureLocation = location;
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+            captureLocation = null;
+        }
+    };
 
     /**
      * Produce a 'CameraDevice', then call 'createPreview(1)'
@@ -586,24 +606,6 @@ public class MainActivity extends Activity {
         focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
         focusDistance = 1000f / (((focalLength * focalLength) / (aperture * CIRCLE_OF_CONFUSION)) + focalLength);
     }
-
-    private static LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(final Location location) {
-            captureLocation = location;
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-            captureLocation = null;
-        }
-    };
 
     // previewCaptureCallback is for debug purpose
     static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
