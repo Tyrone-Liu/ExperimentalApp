@@ -50,13 +50,12 @@
     <Button
         android:id="@+id/button_parameters_indicator_setAutoWhiteBalance"
         style="@style/CameraTheme.Indicator"
-        android:layout_marginStart="8dp"
         android:layout_marginBottom="4dp"
         android:text="@string/button_parameters_indicator_setAutoWhiteBalance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_parameters_indicator_setOpticalStabilization"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/button_parameters_indicator_setExposureTime"
         app:layout_constraintTop_toBottomOf="@id/button_parameters_indicator_setExposureTime" />
 
     <Button
@@ -80,10 +79,9 @@
     <Button
         android:id="@+id/button_parameters_indicator_setFocusDistance"
         style="@style/CameraTheme.Indicator"
-        android:layout_marginEnd="8dp"
         android:text="@string/button_parameters_indicator_setFocusDistance"
         app:layout_constraintBottom_toBottomOf="@+id/button_parameters_indicator_setAutoWhiteBalance"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/button_parameters_indicator_setTorch"
         app:layout_constraintStart_toEndOf="@+id/button_parameters_indicator_setFocalLength"
         app:layout_constraintTop_toTopOf="@+id/button_parameters_indicator_setAutoWhiteBalance" />
 
