@@ -9,7 +9,6 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
@@ -133,15 +132,16 @@ public class MainActivity extends Activity {
     static int previewDebugCounter = 0;
     static int captureDebugCounter = 0;
 
-    private static String totalResultDebugTool(TotalCaptureResult result) {
+    private static String totalResultDebugTool(CaptureRequest request, TotalCaptureResult result) {
         String message = (
                 "ET:" + String.format("%.4f", (double) (result.get(CaptureResult.SENSOR_EXPOSURE_TIME) / 10000) / 100000) + ", "
                         + "SE:" + result.get(CaptureResult.SENSOR_SENSITIVITY) + ", "
                         + "AP:" + result.get(CaptureResult.LENS_APERTURE) + ", "
                         + "OS:" + result.get(CaptureResult.LENS_OPTICAL_STABILIZATION_MODE) + ", "
                         + "FL:" + result.get(CaptureResult.LENS_FOCAL_LENGTH) + ", "
-                        + "FD:" + String.format("%.5f", result.get(CaptureResult.LENS_FOCUS_DISTANCE)) + ", "
                         + "\n"
+                        + "Request FD:" + String.format("%.5f", request.get(CaptureRequest.LENS_FOCUS_DISTANCE)) + ", " + "\n"
+                        + "Result  FD:" + String.format("%.5f", result.get(CaptureResult.LENS_FOCUS_DISTANCE)) + ", " + "\n"
                         + "CONTROL_MODE: " + result.get(CaptureResult.CONTROL_MODE) + "\n"
                         + "AE_MODE: " + result.get(CaptureResult.CONTROL_AE_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AE_STATE", result.get(CaptureResult.CONTROL_AE_STATE)) + "\n"
                         + "AWB_MODE: " + result.get(CaptureResult.CONTROL_AWB_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AWB_STATE", result.get(CaptureResult.CONTROL_AWB_STATE)) + "\n"
@@ -154,38 +154,38 @@ public class MainActivity extends Activity {
         switch (key) {
             case "CONTROL_AE_STATE":
                 switch (state) {
-                    case CameraMetadata.CONTROL_AE_STATE_CONVERGED: message = "CONVERGED"; break;
-                    case CameraMetadata.CONTROL_AE_STATE_FLASH_REQUIRED: message = "FLASH_REQUIRED"; break;
-                    case CameraMetadata.CONTROL_AE_STATE_INACTIVE: message = "INACTIVE"; break;
-                    case CameraMetadata.CONTROL_AE_STATE_LOCKED: message = "LOCKED"; break;
-                    case CameraMetadata.CONTROL_AE_STATE_PRECAPTURE: message = "PRECAPTURE"; break;
-                    case CameraMetadata.CONTROL_AE_STATE_SEARCHING: message = "SEARCHING"; break;
+                    case CaptureResult.CONTROL_AE_STATE_CONVERGED: message = "CONVERGED"; break;
+                    case CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED: message = "FLASH_REQUIRED"; break;
+                    case CaptureResult.CONTROL_AE_STATE_INACTIVE: message = "INACTIVE"; break;
+                    case CaptureResult.CONTROL_AE_STATE_LOCKED: message = "LOCKED"; break;
+                    case CaptureResult.CONTROL_AE_STATE_PRECAPTURE: message = "PRECAPTURE"; break;
+                    case CaptureResult.CONTROL_AE_STATE_SEARCHING: message = "SEARCHING"; break;
                 }
                 break;
             case "CONTROL_AWB_STATE":
                 switch (state) {
-                    case CameraMetadata.CONTROL_AWB_STATE_CONVERGED: message = "CONVERGED"; break;
-                    case CameraMetadata.CONTROL_AWB_STATE_INACTIVE: message = "INACTIVE"; break;
-                    case CameraMetadata.CONTROL_AWB_STATE_LOCKED: message = "LOCKED"; break;
-                    case CameraMetadata.CONTROL_AWB_STATE_SEARCHING: message = "SEARCHING"; break;
+                    case CaptureResult.CONTROL_AWB_STATE_CONVERGED: message = "CONVERGED"; break;
+                    case CaptureResult.CONTROL_AWB_STATE_INACTIVE: message = "INACTIVE"; break;
+                    case CaptureResult.CONTROL_AWB_STATE_LOCKED: message = "LOCKED"; break;
+                    case CaptureResult.CONTROL_AWB_STATE_SEARCHING: message = "SEARCHING"; break;
                 }
                 break;
             case "CONTROL_AF_STATE":
                 switch (state) {
-                    case CameraMetadata.CONTROL_AF_STATE_ACTIVE_SCAN: message = "ACTIVE_SCAN"; break;
-                    case CameraMetadata.CONTROL_AF_STATE_FOCUSED_LOCKED: message = "FOCUSED_LOCKED"; break;
-                    case CameraMetadata.CONTROL_AF_STATE_INACTIVE: message = "INACTIVE"; break;
-                    case CameraMetadata.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED: message = "NOT_FOCUSED_LOCKED"; break;
-                    case CameraMetadata.CONTROL_AF_STATE_PASSIVE_FOCUSED: message = "PASSIVE_FOCUSED"; break;
-                    case CameraMetadata.CONTROL_AF_STATE_PASSIVE_SCAN: message = "PASSIVE_SCAN"; break;
-                    case CameraMetadata.CONTROL_AF_STATE_PASSIVE_UNFOCUSED: message = "PASSIVE_UNFOCUSED"; break;
+                    case CaptureResult.CONTROL_AF_STATE_ACTIVE_SCAN: message = "ACTIVE_SCAN"; break;
+                    case CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED: message = "FOCUSED_LOCKED"; break;
+                    case CaptureResult.CONTROL_AF_STATE_INACTIVE: message = "INACTIVE"; break;
+                    case CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED: message = "NOT_FOCUSED_LOCKED"; break;
+                    case CaptureResult.CONTROL_AF_STATE_PASSIVE_FOCUSED: message = "PASSIVE_FOCUSED"; break;
+                    case CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN: message = "PASSIVE_SCAN"; break;
+                    case CaptureResult.CONTROL_AF_STATE_PASSIVE_UNFOCUSED: message = "PASSIVE_UNFOCUSED"; break;
                 }
                 break;
             case "CONTROL_AF_TRIGGER":
                 switch (state) {
-                    case CameraMetadata.CONTROL_AF_TRIGGER_CANCEL: message = "CANCEL"; break;
-                    case CameraMetadata.CONTROL_AF_TRIGGER_IDLE: message = "IDLE"; break;
-                    case CameraMetadata.CONTROL_AF_TRIGGER_START: message = "START"; break;
+                    case CaptureResult.CONTROL_AF_TRIGGER_CANCEL: message = "CANCEL"; break;
+                    case CaptureResult.CONTROL_AF_TRIGGER_IDLE: message = "IDLE"; break;
+                    case CaptureResult.CONTROL_AF_TRIGGER_START: message = "START"; break;
                 }
                 break;
         }
@@ -296,9 +296,9 @@ public class MainActivity extends Activity {
     static void createPreview(int stage) {
         // region CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
         if (stage == CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE) {
-            autoMode = CameraMetadata.CONTROL_MODE_AUTO;
-            aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
-            afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
+            autoMode = CaptureRequest.CONTROL_MODE_AUTO;
+            aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
+            afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
             if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_capture_raw", false)) {
                 captureFormat = ImageFormat.RAW_SENSOR;
@@ -368,7 +368,7 @@ public class MainActivity extends Activity {
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
 
-                if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+                if (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                     previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
                 }
@@ -379,10 +379,10 @@ public class MainActivity extends Activity {
 
                 previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
                 previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
-                if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+                if (afMode == CaptureRequest.CONTROL_AF_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
                 } else {
-                    previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
+                    previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
                 }
                 previewRequestBuilder.addTarget(previewSurface);
                 // endregion setup preview request builder
@@ -592,8 +592,8 @@ public class MainActivity extends Activity {
         }
 
         aperture = LENS_INFO_AVAILABLE_APERTURES[0];
-        flashMode = CameraMetadata.FLASH_MODE_OFF;
-        awbMode = CameraMetadata.CONTROL_AWB_MODE_AUTO;
+        flashMode = CaptureRequest.FLASH_MODE_OFF;
+        awbMode = CaptureRequest.CONTROL_AWB_MODE_AUTO;
 
         opticalStabilizationMode = 0;
         for (int e : LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION) {
@@ -612,7 +612,7 @@ public class MainActivity extends Activity {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             previewDebugCounter++;
-            previewDebugMessage = "# " + previewDebugCounter + " preview completed" + "\n" + totalResultDebugTool(result);
+            previewDebugMessage = "# " + previewDebugCounter + " preview completed" + "\n" + totalResultDebugTool(request, result);
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -663,7 +663,7 @@ public class MainActivity extends Activity {
                 }
             }
 
-            if (aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+            if (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                 captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
             } else {
@@ -674,17 +674,17 @@ public class MainActivity extends Activity {
             captureRequestBuilder.set(CaptureRequest.FLASH_MODE, flashMode);
 
             captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
-            if (!(awbMode == CameraMetadata.CONTROL_AWB_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF)) {
+            if (!(awbMode == CaptureRequest.CONTROL_AWB_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_LOCK, true);
             }
 
             captureRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, opticalStabilizationMode);
             captureRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, focalLength);
 
-            if (afMode == CameraMetadata.CONTROL_AF_MODE_OFF || autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+            if (afMode == CaptureRequest.CONTROL_AF_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, focusDistance);
             } else {
-                captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
             // endregion setup capture request builder
@@ -780,7 +780,7 @@ public class MainActivity extends Activity {
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureCompleted");  // debug
             // region debug in captureCallback
             captureDebugCounter++;
-            captureDebugMessage = "# " + captureDebugCounter + " capture completed" + "\n" + totalResultDebugTool(result);
+            captureDebugMessage = "# " + captureDebugCounter + " capture completed" + "\n" + totalResultDebugTool(request, result);
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -788,7 +788,7 @@ public class MainActivity extends Activity {
                 }
             });
             // endregion debug in captureCallback
-            if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE) == CameraMetadata.SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN) {
+            if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE) == CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN) {
                 imageTimeStamp = new Date();
             } else {
                 imageTimeStamp = new Date(System.currentTimeMillis() - ((long) ((double) (result.get(CaptureResult.SENSOR_TIMESTAMP) - SystemClock.elapsedRealtimeNanos()) / 1000000d)));

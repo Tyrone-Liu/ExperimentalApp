@@ -6,7 +6,6 @@ import android.content.res.ColorStateList;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -166,7 +165,7 @@ class UIOperator {
     // endregion
 
     static void updateCaptureParametersIndicator() {
-        if (MainActivity.aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+        if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             if (MainActivity.exposureTime < 1000L) {
                 setExposureTimeButton_parameters_indicator.setText("S.S.\n" + MainActivity.exposureTime + "ns");
             } else if (MainActivity.exposureTime < 1000000L) {
@@ -188,7 +187,7 @@ class UIOperator {
         setOpticalStabilization_parameters_indicator.setText("OIS\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true));
         setFocalLengthButton_parameters_indicator.setText("F.L.\n" + String.format("%.2f", MainActivity.focalLength) + "mm");
 
-        if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+        if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             if (MainActivity.focusDistance == 0.0f) {
                 setFocusDistanceButton_parameters_indicator.setText("F.D.\n" + "Infi");
             } else {
@@ -204,7 +203,7 @@ class UIOperator {
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, MainActivity.aeMode);
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, MainActivity.afMode);
 
-        if (MainActivity.aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+        if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
             MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, MainActivity.sensitivity);
         }
@@ -215,10 +214,10 @@ class UIOperator {
 
         MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, MainActivity.opticalStabilizationMode);
         MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, MainActivity.focalLength);
-        if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+        if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, MainActivity.focusDistance);
         } else {
-            MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
+            MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
         }
 
         try {
@@ -287,10 +286,10 @@ class UIOperator {
         public void onClick(View view) {
             if (((Button) view).getId() == R.id.button_parameters_indicator_setTorch) {
                 if (MainActivity.FLASH_INFO_AVAILABLE) {
-                    if (MainActivity.flashMode == CameraMetadata.FLASH_MODE_OFF) {
-                        MainActivity.flashMode = CameraMetadata.FLASH_MODE_TORCH;
+                    if (MainActivity.flashMode == CaptureRequest.FLASH_MODE_OFF) {
+                        MainActivity.flashMode = CaptureRequest.FLASH_MODE_TORCH;
                     } else {
-                        MainActivity.flashMode = CameraMetadata.FLASH_MODE_OFF;
+                        MainActivity.flashMode = CaptureRequest.FLASH_MODE_OFF;
                     }
                     updateCaptureParametersIndicator();
                     updatePreviewParameters();
@@ -320,7 +319,7 @@ class UIOperator {
                        (((Button) view).getId() == R.id.button_parameters_indicator_setExposureTime)
                     || (((Button) view).getId() == R.id.button_parameters_indicator_setSensitivity)
             ) {
-                if (MainActivity.aeMode == CameraMetadata.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+                if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(true);
@@ -330,9 +329,9 @@ class UIOperator {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (((CheckBox) buttonView).isPressed()) {
                             if (isChecked) {
-                                MainActivity.aeMode = CameraMetadata.CONTROL_AE_MODE_ON;
+                                MainActivity.aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
                             } else {
-                                MainActivity.aeMode = CameraMetadata.CONTROL_AE_MODE_OFF;
+                                MainActivity.aeMode = CaptureRequest.CONTROL_AE_MODE_OFF;
                             }
                             rangeControlBottomSheet_setAutoCheckBoxChecked(isChecked);
                             updateCaptureParametersIndicator();
@@ -491,7 +490,7 @@ class UIOperator {
 
             // region parameters controlled by afMode
             else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
-                if (MainActivity.afMode == CameraMetadata.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CameraMetadata.CONTROL_MODE_OFF) {
+                if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(true);
@@ -501,9 +500,9 @@ class UIOperator {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (((CheckBox) buttonView).isPressed()) {
                             if (isChecked) {
-                                MainActivity.afMode = CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
+                                MainActivity.afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
                             } else {
-                                MainActivity.afMode = CameraMetadata.CONTROL_AF_MODE_OFF;
+                                MainActivity.afMode = CaptureRequest.CONTROL_AF_MODE_OFF;
                             }
                             rangeControlBottomSheet_setAutoCheckBoxChecked(isChecked);
                             updateCaptureParametersIndicator();
