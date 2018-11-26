@@ -1,7 +1,9 @@
 package com.tyroneil.longshootalpha;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -49,6 +51,13 @@ public class MainActivity extends Activity {
     private static Context context;
     static Activity activity;
     static float scale;
+
+    // region: android runtime permission request constant
+    private static final int PERMISSION_GROUP_REQUEST_CODE_ALL = 0;
+    private static final int PERMISSION_GROUP_REQUEST_CODE_CAMERA = 1;
+    private static final int PERMISSION_GROUP_REQUEST_CODE_STORAGE = 2;
+    private static final int PERMISSION_GROUP_REQUEST_CODE_LOCATION = 3;
+    // endregion: android runtime permission request constant
 
     // region shared variable
     private static LocationManager locationManager;
@@ -140,8 +149,9 @@ public class MainActivity extends Activity {
                         + "OS:" + result.get(CaptureResult.LENS_OPTICAL_STABILIZATION_MODE) + ", "
                         + "FL:" + result.get(CaptureResult.LENS_FOCAL_LENGTH) + ", "
                         + "\n"
-                        + "Request FD:" + String.format("%.5f", request.get(CaptureRequest.LENS_FOCUS_DISTANCE)) + ", " + "\n"
-                        + "Result  FD:" + String.format("%.5f", result.get(CaptureResult.LENS_FOCUS_DISTANCE)) + ", " + "\n"
+                        + "Request FD:" + String.format("%.5f", request.get(CaptureRequest.LENS_FOCUS_DISTANCE)) + ", "
+                        + "Result FD:" + String.format("%.5f", result.get(CaptureResult.LENS_FOCUS_DISTANCE))
+                        + "\n"
                         + "CONTROL_MODE: " + result.get(CaptureResult.CONTROL_MODE) + "\n"
                         + "AE_MODE: " + result.get(CaptureResult.CONTROL_AE_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AE_STATE", result.get(CaptureResult.CONTROL_AE_STATE)) + "\n"
                         + "AWB_MODE: " + result.get(CaptureResult.CONTROL_AWB_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AWB_STATE", result.get(CaptureResult.CONTROL_AWB_STATE)) + "\n"
@@ -211,9 +221,69 @@ public class MainActivity extends Activity {
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
         debugMessage1TextView = (TextView) findViewById(R.id.textView_debugMessage_1);  // debug
 
-        UIOperator.initiateContentCameraControl();
-        UIOperator.initiateContentRangeControl();
-        UIOperator.initiateContentListControl();
+        // region: android runtime permission
+        boolean allPermissionApproved = true;
+        String[] allPermissionDemanded = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+        };
+        for (String permission : allPermissionDemanded) {
+            if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                allPermissionApproved = false;
+            }
+        }
+        if (! allPermissionApproved) {
+            activity.requestPermissions(allPermissionDemanded, PERMISSION_GROUP_REQUEST_CODE_ALL);
+        }
+        // endregion: android runtime permission
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_GROUP_REQUEST_CODE_ALL) {
+            for (String permission : permissions) {
+                switch (permission) {
+                    case Manifest.permission.CAMERA:
+                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] == PackageManager.PERMISSION_GRANTED) {
+                            UIOperator.initiateContentCameraControl();
+                            UIOperator.initiateContentRangeControl();
+                            UIOperator.initiateContentListControl();
+                            createPreview(CREATE_PREVIEW_STAGE_OPEN_CAMERA);
+                        } else {
+                            // TODO: warn user this app is gonna close, because a camera app is pointless without the camera
+                        }
+                        break;
+
+                    case Manifest.permission.READ_EXTERNAL_STORAGE:
+                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: warn user this function will not work
+                        }
+                        break;
+                    case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: warn user they can not save the capture image
+                            if (UIOperator.captureButton_camera_control != null) {
+                                UIOperator.cameraControl_setCaptureButtonEnabled(false);
+                            }
+                        }
+                        break;
+
+                    case Manifest.permission.ACCESS_COARSE_LOCATION:
+                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: warn user they will not have location tag saved in the image file
+                        }
+                        break;
+                    case Manifest.permission.ACCESS_FINE_LOCATION:
+                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: warn user they will not have location tag saved in the image file
+                        }
+                        break;
+                }
+            }
+        }
     }
 
     @Override
@@ -224,14 +294,19 @@ public class MainActivity extends Activity {
         cameraBackgroundThread.start();
         cameraBackgroundHandler = new Handler(cameraBackgroundThread.getLooper());
 
-        if ((UIOperator.previewCRTV_camera_control).isAvailable()) {
+        if (
+                UIOperator.previewCRTV_camera_control != null
+                && (UIOperator.previewCRTV_camera_control).isAvailable()
+        ) {
             createPreview(CREATE_PREVIEW_STAGE_OPEN_CAMERA);
         }
     }
 
     @Override
     protected void onStop() {
-        locationManager.removeUpdates(locationListener);
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
 
         if (captureSession != null) {
             captureSession.close();
@@ -260,9 +335,15 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if ((UIOperator.rangeControlBottomSheet).getState() != BottomSheetBehavior.STATE_HIDDEN) {
+        if (
+                UIOperator.rangeControlBottomSheet != null
+                && (UIOperator.rangeControlBottomSheet).getState() != BottomSheetBehavior.STATE_HIDDEN
+        ) {
             (UIOperator.rangeControlBottomSheet).setState(BottomSheetBehavior.STATE_HIDDEN);
-        } else if ((UIOperator.listControlBottomSheet).getState() != BottomSheetBehavior.STATE_HIDDEN) {
+        } else if (
+                UIOperator.listControlBottomSheet != null
+                && (UIOperator.listControlBottomSheet).getState() != BottomSheetBehavior.STATE_HIDDEN
+        ) {
             (UIOperator.listControlBottomSheet).setState(BottomSheetBehavior.STATE_HIDDEN);
         } else {
             super.onBackPressed();
@@ -306,8 +387,9 @@ public class MainActivity extends Activity {
                 captureFormat = ImageFormat.JPEG;
             }
 
+            locationManager = context.getSystemService(LocationManager.class);
+            cameraManager = (CameraManager) context.getSystemService(CameraManager.class);
             try {
-                cameraManager = (CameraManager) context.getSystemService(CameraManager.class);
                 cameraIdList = cameraManager.getCameraIdList();
                 // TODO: make camera changeable in settings
                 for (String e : cameraIdList) {
@@ -341,9 +423,10 @@ public class MainActivity extends Activity {
 
         // region CREATE_PREVIEW_STAGE_OPEN_CAMERA
         else if (stage == CREATE_PREVIEW_STAGE_OPEN_CAMERA) {
-            locationManager = context.getSystemService(LocationManager.class);
-            // TODO: make 'provider', 'minTime', 'minDistance' changeable in the settings
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 1.0f, locationListener);
+            // TODO: make 'minTime', 'minDistance' changeable in the settings.  Can choose provider between 'gps' and 'network'
+            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 1.0f, locationListener);
+            }
 
             try {
                 cameraManager.openCamera(cameraId, cameraStateCallback, cameraBackgroundHandler);

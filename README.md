@@ -59,7 +59,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
 + [ ] Better handle of auto capture mode capture parameters
-+ [ ] Handle Android permission request
++ [x] Handle Android permission request
 
 
 ## Known Bugs (from oldest to newest)
