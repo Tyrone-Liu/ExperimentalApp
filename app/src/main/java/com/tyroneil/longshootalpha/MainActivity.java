@@ -222,7 +222,7 @@ public class MainActivity extends Activity {
         debugMessage1TextView = (TextView) findViewById(R.id.textView_debugMessage_1);  // debug
 
         // region: android runtime permission
-        boolean allPermissionApproved = true;
+        boolean allPermissionGranted = true;
         String[] allPermissionDemanded = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -232,10 +232,10 @@ public class MainActivity extends Activity {
         };
         for (String permission : allPermissionDemanded) {
             if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                allPermissionApproved = false;
+                allPermissionGranted = false;
             }
         }
-        if (! allPermissionApproved) {
+        if (! allPermissionGranted) {
             activity.requestPermissions(allPermissionDemanded, PERMISSION_GROUP_REQUEST_CODE_ALL);
         } else {
             UIOperator.initiateContentCameraControl();
