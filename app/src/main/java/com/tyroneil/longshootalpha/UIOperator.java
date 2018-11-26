@@ -359,7 +359,7 @@ class UIOperator {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                if (!((valueEditText_range_control.getText()).toString()).equals("")) {
+                                if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
@@ -374,7 +374,7 @@ class UIOperator {
                     applyButton_range_control.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!((valueEditText_range_control.getText()).toString()).equals("")) {
+                            if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -432,7 +432,7 @@ class UIOperator {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                if (!((valueEditText_range_control.getText()).toString()).equals("")) {
+                                if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
@@ -447,7 +447,7 @@ class UIOperator {
                     applyButton_range_control.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!((valueEditText_range_control.getText()).toString()).equals("")) {
+                            if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -529,7 +529,7 @@ class UIOperator {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            if (!((valueEditText_range_control.getText()).toString()).equals("")) {
+                            if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE);
                                 return true;
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
@@ -544,7 +544,7 @@ class UIOperator {
                 applyButton_range_control.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!((valueEditText_range_control.getText()).toString()).equals("")) {
+                        if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
                             rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE);
                         } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                             rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
