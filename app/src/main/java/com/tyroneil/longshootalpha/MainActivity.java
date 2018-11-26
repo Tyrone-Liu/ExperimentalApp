@@ -237,6 +237,10 @@ public class MainActivity extends Activity {
         }
         if (! allPermissionApproved) {
             activity.requestPermissions(allPermissionDemanded, PERMISSION_GROUP_REQUEST_CODE_ALL);
+        } else {
+            UIOperator.initiateContentCameraControl();
+            UIOperator.initiateContentRangeControl();
+            UIOperator.initiateContentListControl();
         }
         // endregion: android runtime permission
     }
@@ -757,7 +761,7 @@ public class MainActivity extends Activity {
             captureRequestBuilder.set(CaptureRequest.FLASH_MODE, flashMode);
 
             captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
-            if (!(awbMode == CaptureRequest.CONTROL_AWB_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
+            if (! (awbMode == CaptureRequest.CONTROL_AWB_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_LOCK, true);
             }
 
