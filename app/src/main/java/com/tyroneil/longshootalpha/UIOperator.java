@@ -27,13 +27,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 class UIOperator {
-    // region content camera control
+    // region: content camera control
     static ChangeableRatioTextureView previewCRTV_camera_control;
     static Button sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
     static ProgressBar capturingProgressBar_camera_control;
-    // endregion
+    // endregion: content camera control
 
-    // region content capture parameters indicator
+    // region: content capture parameters indicator
     static Button
             setExposureTimeButton_parameters_indicator,
             setSensitivityButton_parameters_indicator,
@@ -43,9 +43,9 @@ class UIOperator {
             setOpticalStabilization_parameters_indicator,
             setFocalLengthButton_parameters_indicator,
             setFocusDistanceButton_parameters_indicator;
-    // endregion
+    // endregion: content capture parameters indicator
 
-    // region content capture parameter range control
+    // region: content capture parameter range control
     static BottomSheetBehavior rangeControlBottomSheet;
     static TextView titleTextView_range_control, informationTextView_range_control, valueMinimumTextView_range_control, valueMaximumTextView_range_control;
     static SeekBar rangeSeekBar_range_control;
@@ -55,9 +55,9 @@ class UIOperator {
     static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME = 0;
     static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY = 1;
     static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE = 2;
-    // endregion
+    // endregion: content capture parameter range control
 
-    // region content capture parameter list control
+    // region: content capture parameter list control
     static BottomSheetBehavior listControlBottomSheet;
     static TextView titleTextView_list_control;
     static RadioGroup listRadioGroup_list_control;
@@ -65,9 +65,9 @@ class UIOperator {
     static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH = 0;
     static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES = 1;
     static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES = 2;
-    // endregion
+    // endregion: content capture parameter list control
 
-    // region initiate layouts (camera_control, range_control, list_control)
+    // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
         previewCRTV_camera_control = (ChangeableRatioTextureView) MainActivity.activity.findViewById(R.id.cRTV_camera_control_preview);
         sequenceButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_sequence);
@@ -162,7 +162,7 @@ class UIOperator {
 
         listControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
-    // endregion
+    // endregion: initiate layouts (camera_control, range_control, list_control)
 
     static void updateCaptureParametersIndicator() {
         if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
@@ -230,7 +230,7 @@ class UIOperator {
         }
     }
 
-    // region onClickListener, content_camera_control
+    // region: onClickListener, content_camera_control
     static View.OnClickListener onClickListener_camera_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -278,9 +278,9 @@ class UIOperator {
             });
         }
     }
-    // endregion onClickListener, content_camera_control
+    // endregion: onClickListener, content_camera_control
 
-    // region onClickListener, type toggle_control
+    // region: onClickListener, type toggle_control
     static View.OnClickListener onClickListener_parameters_indicator_toggle_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -297,9 +297,9 @@ class UIOperator {
             }
         }
     };
-    // endregion onClickListener, type toggle_control
+    // endregion: onClickListener, type toggle_control
 
-    // region onClickListener, type range_control
+    // region: onClickListener, type range_control
     static View.OnClickListener onClickListener_parameters_indicator_range_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -314,7 +314,7 @@ class UIOperator {
             valueMaximumTextView_range_control.setText(R.string.textView_range_control_valueMaximum);
             valueEditText_range_control.setText("");
 
-            // region parameters controlled by aeMode
+            // region: parameters controlled by aeMode
             if (
                        (((Button) view).getId() == R.id.button_parameters_indicator_setExposureTime)
                     || (((Button) view).getId() == R.id.button_parameters_indicator_setSensitivity)
@@ -486,9 +486,9 @@ class UIOperator {
                     });
                 }
             }
-            // endregion
+            // endregion: parameters controlled by aeMode
 
-            // region parameters controlled by afMode
+            // region: parameters controlled by afMode
             else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
                 if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
@@ -584,7 +584,7 @@ class UIOperator {
                     }
                 });
             }
-            // endregion
+            // endregion: parameters controlled by afMode
         }
     };
 
@@ -685,9 +685,9 @@ class UIOperator {
         );
         informationTextView_range_control.setText(informationText);
     }
-    // endregion onClickListener, type range_control
+    // endregion: onClickListener, type range_control
 
-    // region onClickListener, type list_control
+    // region: onClickListener, type list_control
     static View.OnClickListener onClickListener_parameters_indicator_list_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -706,14 +706,14 @@ class UIOperator {
                 for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_APERTURES).length; i ++) {
                     radioButton = new RadioButton(MainActivity.activity);
                     // TODO: find a way to apply style
-                    // region basic radio button settings
+                    // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
                     radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                    // endregion
+                    // endregion: basic radio button settings
                     radioButton.setText("f/" + MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]);
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
@@ -738,14 +738,14 @@ class UIOperator {
                 radioButtonIdArray = new int[(MainActivity.CONTROL_AWB_AVAILABLE_MODES).length];
                 for (int i = 0; i < (MainActivity.CONTROL_AWB_AVAILABLE_MODES).length; i ++) {
                     radioButton = new RadioButton(MainActivity.activity);
-                    // region basic radio button settings
+                    // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
                     radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                    // endregion
+                    // endregion: basic radio button settings
                     radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.CONTROL_AWB_AVAILABLE_MODES[i], false));
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
@@ -770,14 +770,14 @@ class UIOperator {
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length];
                 for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length; i ++) {
                     radioButton = new RadioButton(MainActivity.activity);
-                    // region basic radio button settings
+                    // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
                     radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                    // endregion
+                    // endregion: basic radio button settings
                     radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[i], false));
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
@@ -802,14 +802,14 @@ class UIOperator {
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length];
                 for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length; i ++) {
                     radioButton = new RadioButton(MainActivity.activity);
-                    // region basic radio button settings
+                    // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
                     radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                    // endregion
+                    // endregion: basic radio button settings
                     radioButton.setText(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[i] + " mm");
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
@@ -859,6 +859,6 @@ class UIOperator {
 
         return string;
     }
-    // endregion onClickListener, type list_control
+    // endregion: onClickListener, type list_control
 
 }

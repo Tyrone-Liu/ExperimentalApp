@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
     private static final int PERMISSION_GROUP_REQUEST_CODE_LOCATION = 3;
     // endregion: android runtime permission request constant
 
-    // region shared variable
+    // region: shared variable
     private static LocationManager locationManager;
 
     private static CameraManager cameraManager;
@@ -72,23 +72,23 @@ public class MainActivity extends Activity {
     static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
     private static final int CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION = 2;
     private static final int CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST = 3;
-    // endregion
+    // endregion: shared variable
 
-    // region current cameraDevice variable
+    // region: current cameraDevice variable
     private static String cameraId;
     private static CameraDevice cameraDevice;
     private static CameraCharacteristics cameraCharacteristics;
 
     static CameraCaptureSession captureSession;
     private static int sensorOrientation;
-    // endregion
+    // endregion: current cameraDevice variable
 
-    // region variable for preview
+    // region: variable for preview
     static CaptureRequest.Builder previewRequestBuilder;
     private static Size previewSize;
-    // endregion
+    // endregion: variable for preview
 
-    // region variable for capture
+    // region: variable for capture
     private static Location captureLocation;
     private static CaptureRequest.Builder captureRequestBuilder;
     private static int captureFormat;
@@ -97,9 +97,9 @@ public class MainActivity extends Activity {
     private static ImageReader imageReader;
     private static Date imageTimeStamp;
     private static String imageFileTimeStampName;
-    // endregion
+    // endregion: variable for capture
 
-    // region capture parameters
+    // region: capture parameters
     static int autoMode;  // CONTROL_MODE (0/1 OFF/AUTO)
     static int aeMode;  // CONTROL_AE_MODE (0/1 OFF/ON)
 
@@ -128,11 +128,11 @@ public class MainActivity extends Activity {
     static float focusDistance;  // LENS_FOCUS_DISTANCE
     static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
     static float CIRCLE_OF_CONFUSION;  // unit: mm, constant for each camera device
-    // endregion
+    // endregion: capture parameters
 
     static TextView errorMessageTextView;
 
-    // region debug Tool
+    // region: debug Tool
     static TextView debugMessage0TextView;
     static TextView debugMessage1TextView;
     static String debugMessage = "";
@@ -206,9 +206,9 @@ public class MainActivity extends Activity {
     static final String LOG_TAG_LSA_CAPTURE_LAG = "LSA_CAPTURE_LAG";
     static final String LOG_TAG_LSA_DEBUG = "LSA_DEBUG";
     static final String LOG_TAG_LSA_WARN = "LSA_WARN";
-    // endregion
+    // endregion: debug Tool
 
-    // region handle activity lifecycle
+    // region: handle activity lifecycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -349,10 +349,10 @@ public class MainActivity extends Activity {
             super.onBackPressed();
         }
     }
-    // endregion handle activity lifecycle
+    // endregion: handle activity lifecycle
 
 
-    // region process of creating preview
+    // region: process of creating preview
     /**
      * The process to create a preview needs to wait for 'CameraDevice', 'CameraCaptureSession' to
      * callback, so there will be three stages.
@@ -375,7 +375,7 @@ public class MainActivity extends Activity {
      * @param stage the stage of creating preview (int 0, 1, 2, 3)
      */
     static void createPreview(int stage) {
-        // region CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
+        // region: CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
         if (stage == CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE) {
             autoMode = CaptureRequest.CONTROL_MODE_AUTO;
             aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
@@ -419,9 +419,9 @@ public class MainActivity extends Activity {
                 (UIOperator.previewCRTV_camera_control).setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
             }
         }
-        // endregion CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
+        // endregion: CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
 
-        // region CREATE_PREVIEW_STAGE_OPEN_CAMERA
+        // region: CREATE_PREVIEW_STAGE_OPEN_CAMERA
         else if (stage == CREATE_PREVIEW_STAGE_OPEN_CAMERA) {
             // TODO: make 'minTime', 'minDistance' changeable in the settings.  Can choose provider between 'gps' and 'network'
             if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -434,9 +434,9 @@ public class MainActivity extends Activity {
                 displayErrorMessage(e);
             }
         }
-        // endregion CREATE_PREVIEW_STAGE_OPEN_CAMERA
+        // endregion: CREATE_PREVIEW_STAGE_OPEN_CAMERA
 
-        // region CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION
+        // region: CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION
         else if (stage == CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION) {
             // got cameraDevice
             // this stage will also be used to refresh the preview parameters after changed camera device
@@ -446,7 +446,7 @@ public class MainActivity extends Activity {
             try {
                 previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
 
-                // region setup preview request builder
+                // region: setup preview request builder
                 previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
@@ -468,7 +468,7 @@ public class MainActivity extends Activity {
                     previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
                 }
                 previewRequestBuilder.addTarget(previewSurface);
-                // endregion setup preview request builder
+                // endregion: setup preview request builder
 
                 // prepare output surface for capture
                 imageReader = ImageReader.newInstance(captureSize.getWidth(), captureSize.getHeight(), captureFormat, 1);
@@ -486,9 +486,9 @@ public class MainActivity extends Activity {
                 displayErrorMessage(e);
             }
         }
-        // endregion CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION
+        // endregion: CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION
 
-        // region CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
+        // region: CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
         else if (stage == CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST) {  // got captureSession
             try {
                 // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
@@ -498,7 +498,7 @@ public class MainActivity extends Activity {
                 displayErrorMessage(e);
             }
         }
-        // endregion CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
+        // endregion: CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST
     }
 
     private static LocationListener locationListener = new LocationListener() {
@@ -557,7 +557,7 @@ public class MainActivity extends Activity {
             captureSession = null;
         }
 
-        // region debug
+        // region: debug
         @Override
         public void onActive(CameraCaptureSession session) {
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onActive");
@@ -578,10 +578,10 @@ public class MainActivity extends Activity {
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onSurfacePrepared");
             super.onSurfacePrepared(session, surface);
         }
-        // endregion debug
+        // endregion: debug
     };
 
-    // region method to choose preview size
+    // region: method to choose preview size
     /**
      * First, get the sensor pixel array size, which is the maximum
      * available size and the output size in RAW_SENSOR format.
@@ -642,7 +642,7 @@ public class MainActivity extends Activity {
             return Integer.compare(size0.getWidth() * size0.getHeight(), size1.getWidth() * size1.getHeight());
         }
     };
-    // endregion method to choose preview size
+    // endregion: method to choose preview size
 
     private static void initiateCaptureParameters(CameraCharacteristics cameraCharacteristics) {
         SENSOR_INFO_EXPOSURE_TIME_RANGE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE);
@@ -719,10 +719,10 @@ public class MainActivity extends Activity {
         }
     };
 
-    // endregion process of creating preview
+    // endregion: process of creating preview
 
 
-    // region process of taking photo(s)
+    // region: process of taking photo(s)
     static void takePhoto() {
         try {
             // TODO: make captureRequest template changeable between 'TEMPLATE_MANUAL' and 'TEMPLATE_STILL_CAPTURE' in settings.
@@ -733,7 +733,7 @@ public class MainActivity extends Activity {
             // problems in capture parameters hard to discover.
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_MANUAL);
 
-            // region setup capture request builder
+            // region: setup capture request builder
             captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
             captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, aeMode);
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
@@ -770,7 +770,7 @@ public class MainActivity extends Activity {
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
             }
             captureRequestBuilder.addTarget(imageReader.getSurface());
-            // endregion setup capture request builder
+            // endregion: setup capture request builder
 
             UIOperator.cameraControl_setCaptureButtonEnabled(false);
             captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
@@ -861,7 +861,7 @@ public class MainActivity extends Activity {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureCompleted");  // debug
-            // region debug in captureCallback
+            // region: debug in captureCallback
             captureDebugCounter++;
             captureDebugMessage = "# " + captureDebugCounter + " capture completed" + "\n" + totalResultDebugTool(request, result);
             activity.runOnUiThread(new Runnable() {
@@ -870,7 +870,7 @@ public class MainActivity extends Activity {
                     debugMessage1TextView.setText(captureDebugMessage);
                 }
             });
-            // endregion debug in captureCallback
+            // endregion: debug in captureCallback
             if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE) == CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN) {
                 imageTimeStamp = new Date();
             } else {
@@ -882,7 +882,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
-            // region debug in captureCallback
+            // region: debug in captureCallback
             captureDebugCounter++;
             captureDebugMessage = "# " + captureDebugCounter + " capture failed" + "\n";
             activity.runOnUiThread(new Runnable() {
@@ -891,11 +891,11 @@ public class MainActivity extends Activity {
                     debugMessage1TextView.setText(captureDebugMessage);
                 }
             });
-            // endregion debug in captureCallback
+            // endregion: debug in captureCallback
             super.onCaptureFailed(session, request, failure);
         }
 
-        // region debug
+        // region: debug
         @Override
         public void onCaptureBufferLost(CameraCaptureSession session, CaptureRequest request, Surface target, long frameNumber) {
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureBufferLost");  // debug
@@ -911,9 +911,9 @@ public class MainActivity extends Activity {
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureSequenceCompleted");  // debug
             super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
         }
-        // endregion debug
+        // endregion: debug
     };
-    // endregion process of taking photo(s)
+    // endregion: process of taking photo(s)
 
 
     static void displayErrorMessage(final Exception error) {

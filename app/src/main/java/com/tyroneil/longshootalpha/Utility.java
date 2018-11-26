@@ -1,6 +1,7 @@
 package com.tyroneil.longshootalpha;
 
 class Utility {
+    // region: {@function arrayIndexOf}
     static int arrayIndexOf(int[] array, int value) {
         for (int i = 0; i < array.length; i ++) {
             if (array[i] == value) {return i;}
@@ -21,4 +22,5 @@ class Utility {
         }
         return -1;
     }
+    // endregion: {@function arrayIndexOf}
 }

@@ -3,7 +3,7 @@ package com.tyroneil.longshootalpha;
 import android.app.Activity;
 import android.os.Bundle;
 
-class SettingsActivity extends Activity {
+public class SettingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
