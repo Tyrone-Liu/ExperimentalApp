@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.MaterialComponents">
         <item name="android:windowFullscreen">true</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">monospace</item>
@@ -9,6 +9,8 @@
         <item name="android:colorBackground">@color/colorSurface</item>
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorAccent">@color/colorSecondary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorSecondary</item>
     </style>
 
     <style name="CameraTheme" parent="AppTheme">
@@ -27,22 +29,30 @@
         <item name="android:textColor">@color/colorSecondaryVariant</item>
     </style>
 
-    <style name="CameraTheme.ButtonColoredAccentColor" parent="@style/Widget.AppCompat.Button.Colored">
+    <style name="CameraTheme.ButtonColoredAccentColor" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/colorSecondary</item>
+        <item name="rippleColor">@color/colorSecondaryVariant</item>
     </style>
 
+    <style name="CameraTheme.ButtonOutlinedAccentColor" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="rippleColor">@color/colorSecondaryVariant</item>
+        <item name="strokeColor">@color/colorSecondary</item>
+    </style>
+
+    <!-- Material Version of SeekBar not finished -->
     <style name="CameraTheme.SeekBarAccentColor" parent="@style/Widget.AppCompat.SeekBar">
         <item name="android:progressBackgroundTint">@color/colorSecondary</item>
         <item name="android:progressTint">@color/colorSecondary</item>
         <item name="android:thumbTint">@color/colorSecondary</item>
     </style>
 
-    <style name="CameraTheme.CheckBoxAccentColor" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+    <style name="CameraTheme.CheckBoxAccentColor" parent="@style/Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="android:buttonTint">@color/colorSecondary</item>
         <item name="android:textColor">@color/colorSecondary</item>
     </style>
 
-    <style name="CameraTheme.EditTextAccentColor" parent="@style/Widget.AppCompat.EditText">
+    <style name="CameraTheme.EditTextAccentColor" parent="@style/Widget.MaterialComponents.TextInputEditText.FilledBox">
         <item name="android:backgroundTint">@color/colorSecondary</item>
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textColorHint">@color/colorSecondaryVariant</item>
@@ -62,12 +72,13 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="CameraTheme.Indicator" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
+    <style name="CameraTheme.Indicator" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:includeFontPadding">false</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minWidth">56dp</item>
         <item name="android:minHeight">0dp</item>
+        <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textSize">10sp</item>
     </style>
 
