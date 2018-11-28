@@ -69,7 +69,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 + [ ] On `OnePlus 6 (enchilada)`, when the image format is RAW_SENSOR, the preview viewfinder will get anomalously brighter, but the captured image still have normal brightness.  
 + [ ] On `OnePlus 6 (enchilada)`, when the image format is JPEG and the 'captureSize' is the max available value '4k x 3x', the edge of result image will be cut out.  
 + [ ] When the image format is RAW_SENSOR, the 'captureSize' acquired from 'cameraCharacteristics' will be slightly bigger than then actual result.  
-+ [ ] Settings will not be initialized the first time opening the APP, needs to set at least once.  
 + [ ] On `OnePlus 6 (enchilada)`, after captured single image several times, the `imageReader` will suddenly not recceive the capture result.  This will not happen in `repeatingRequest` or after stopped the repeatingRequest of preview.  
++ [x] Settings will not be initialized the first time opening the APP, needs to set at least once.  
 
 
