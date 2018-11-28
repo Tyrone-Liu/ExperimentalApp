@@ -28,11 +28,15 @@
 
     <ProgressBar
         android:id="@+id/progressBar_camera_control_capturing"
-        style="@android:style/Widget.Material.ProgressBar.Small"
+        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorBackground"
+        android:maxWidth="16dp"
+        android:maxHeight="16dp"
+        android:minWidth="16dp"
+        android:minHeight="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/button_camera_control_capture"
         app:layout_constraintEnd_toEndOf="@+id/button_camera_control_capture"
         app:layout_constraintStart_toStartOf="@+id/button_camera_control_capture"
@@ -40,7 +44,7 @@
 
     <Button
         android:id="@+id/button_camera_control_sequence"
-        style="@android:style/Widget.Material.Button.Borderless.Colored"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -50,7 +54,7 @@
 
     <Button
         android:id="@+id/button_camera_control_settings"
-        style="@android:style/Widget.Material.Button.Borderless.Colored"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

@@ -1,7 +1,6 @@
 package com.tyroneil.longshootalpha;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
@@ -30,6 +29,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Range;
 import android.util.Size;
@@ -47,9 +47,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     private static Context context;
-    static Activity activity;
+    static AppCompatActivity activity;
     static float scale;
 
     // region: android runtime permission request constant
@@ -385,7 +385,7 @@ public class MainActivity extends Activity {
             aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
             afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_capture_raw", false)) {
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_capture_raw", true)) {
                 captureFormat = ImageFormat.RAW_SENSOR;
             } else {
                 captureFormat = ImageFormat.JPEG;
