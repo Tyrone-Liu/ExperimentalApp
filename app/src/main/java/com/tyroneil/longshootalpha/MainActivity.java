@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         activity = this;
         scale = getResources().getDisplayMetrics().density;
+        PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
@@ -385,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
             aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
             afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_capture_raw", true)) {
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_capture_raw", false)) {
                 captureFormat = ImageFormat.RAW_SENSOR;
             } else {
                 captureFormat = ImageFormat.JPEG;
