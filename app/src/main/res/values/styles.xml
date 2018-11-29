@@ -51,7 +51,7 @@
         <item name="android:textColor">@color/colorSecondary</item>
     </style>
 
-    <style name="CameraTheme.EditTextAccentColor" parent="@style/Widget.MaterialComponents.TextInputEditText.FilledBox">
+    <style name="CameraTheme.EditTextAccentColor" parent="@android:style/Widget.Material.EditText">
         <item name="android:backgroundTint">@color/colorSecondary</item>
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textColorHint">@color/colorSecondaryVariant</item>
