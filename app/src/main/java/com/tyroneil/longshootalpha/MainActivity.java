@@ -386,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
             aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
             afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_capture_raw", false)) {
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_raw_capture", false)) {
                 captureFormat = ImageFormat.RAW_SENSOR;
             } else {
                 captureFormat = ImageFormat.JPEG;
