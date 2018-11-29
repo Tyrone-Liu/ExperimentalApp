@@ -21,6 +21,7 @@
         <item name="android:colorAccent">@color/colorSecondary</item>
     </style>
 
+
     <style name="CameraTheme.TextAccentColor">
         <item name="android:textColor">@color/colorSecondary</item>
     </style>
