@@ -41,4 +41,7 @@
     <string name="preference_title_capture_raw">Capture in RAW format</string>
     <string name="preference_summary_capture_raw">If not, image will be captured in JPEG\n(Needs to reopen the APP, because it is still in dev state)</string>
 
+    <!-- menu_activity_settings -->
+    <string name="action_about">About</string>
+
 </resources>

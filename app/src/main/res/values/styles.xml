@@ -19,6 +19,12 @@
         <item name="android:colorAccent">@color/colorSecondary</item>
     </style>
 
+    <style name="ActionBarTitleMonospaceTextAppearance">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
     <style name="CameraTheme.TextAccentColor">
         <item name="android:textColor">@color/colorSecondary</item>
