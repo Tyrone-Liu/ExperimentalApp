@@ -1,5 +1,7 @@
 package com.tyroneil.longshootalpha;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +12,8 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CaptureRequest;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.textfield.TextInputEditText;
+
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -17,10 +21,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -29,12 +30,12 @@ import android.widget.TextView;
 class UIOperator {
     // region: content camera control
     static ChangeableRatioTextureView previewCRTV_camera_control;
-    static Button sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
+    static MaterialButton sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
     static ProgressBar capturingProgressBar_camera_control;
     // endregion: content camera control
 
     // region: content capture parameters indicator
-    static Button
+    static MaterialButton
             setExposureTimeButton_parameters_indicator,
             setSensitivityButton_parameters_indicator,
             setApertureButton_parameters_indicator,
@@ -49,9 +50,9 @@ class UIOperator {
     static BottomSheetBehavior rangeControlBottomSheet;
     static TextView titleTextView_range_control, informationTextView_range_control, valueMinimumTextView_range_control, valueMaximumTextView_range_control;
     static SeekBar rangeSeekBar_range_control;
-    static CheckBox autoCheckBox_range_control;
-    static EditText valueEditText_range_control;
-    static Button applyButton_range_control;
+    static MaterialCheckBox autoCheckBox_range_control;
+    static TextInputEditText valueEditText_range_control;
+    static MaterialButton applyButton_range_control;
     static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME = 0;
     static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY = 1;
     static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE = 2;
@@ -61,7 +62,7 @@ class UIOperator {
     static BottomSheetBehavior listControlBottomSheet;
     static TextView titleTextView_list_control;
     static RadioGroup listRadioGroup_list_control;
-    static Button dismissButton_list_control;
+    static MaterialButton dismissButton_list_control;
     static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH = 0;
     static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES = 1;
     static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES = 2;
@@ -70,20 +71,20 @@ class UIOperator {
     // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
         previewCRTV_camera_control = (ChangeableRatioTextureView) MainActivity.activity.findViewById(R.id.cRTV_camera_control_preview);
-        sequenceButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_sequence);
-        captureButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_capture);
-        settingsButton_camera_control = (Button) MainActivity.activity.findViewById(R.id.button_camera_control_settings);
+        sequenceButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_sequence);
+        captureButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_capture);
+        settingsButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_settings);
         capturingProgressBar_camera_control = (ProgressBar) MainActivity.activity.findViewById(R.id.progressBar_camera_control_capturing);
 
         // content parameters indicator
-        setExposureTimeButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
-        setSensitivityButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
-        setApertureButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAperture);
-        setTorchButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setTorch);
-        setAutoWhiteBalance_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
-        setOpticalStabilization_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
-        setFocalLengthButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
-        setFocusDistanceButton_parameters_indicator = (Button) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
+        setExposureTimeButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
+        setSensitivityButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
+        setApertureButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAperture);
+        setTorchButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setTorch);
+        setAutoWhiteBalance_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
+        setOpticalStabilization_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
+        setFocalLengthButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
+        setFocusDistanceButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
 
         MainActivity.createPreview(MainActivity.CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE);
         previewCRTV_camera_control.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
@@ -126,9 +127,9 @@ class UIOperator {
         valueMinimumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMinimum);
         valueMaximumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMaximum);
         rangeSeekBar_range_control = (SeekBar) MainActivity.activity.findViewById(R.id.seekBar_range_control_range);
-        autoCheckBox_range_control = (CheckBox) MainActivity.activity.findViewById(R.id.checkBox_range_control_auto);
-        valueEditText_range_control = (EditText) MainActivity.activity.findViewById(R.id.editText_range_control_value);
-        applyButton_range_control = (Button) MainActivity.activity.findViewById(R.id.button_range_control_apply);
+        autoCheckBox_range_control = (MaterialCheckBox) MainActivity.activity.findViewById(R.id.checkBox_range_control_auto);
+        valueEditText_range_control = (TextInputEditText) MainActivity.activity.findViewById(R.id.editText_range_control_value);
+        applyButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_apply);
 
         rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
         rangeControlBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -151,7 +152,7 @@ class UIOperator {
 
         titleTextView_list_control = (TextView) MainActivity.activity.findViewById(R.id.textView_list_control_title);
         listRadioGroup_list_control = (RadioGroup) MainActivity.activity.findViewById(R.id.radioGroup_list_control_list);
-        dismissButton_list_control = (Button) MainActivity.activity.findViewById(R.id.button_list_control_dismiss);
+        dismissButton_list_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_list_control_dismiss);
 
         dismissButton_list_control.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,7 +235,7 @@ class UIOperator {
     static View.OnClickListener onClickListener_camera_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (((Button) view).getId() == R.id.button_camera_control_sequence) {
+            if (((MaterialButton) view).getId() == R.id.button_camera_control_sequence) {
                 try {
                     MainActivity.captureSession.stopRepeating();  // debug
                 } catch (CameraAccessException e) {
@@ -242,11 +243,11 @@ class UIOperator {
                 }
             }
 
-            else if (((Button) view).getId() == R.id.button_camera_control_capture) {
+            else if (((MaterialButton) view).getId() == R.id.button_camera_control_capture) {
                 MainActivity.takePhoto();
             }
 
-            else if (((Button) view).getId() == R.id.button_camera_control_settings) {
+            else if (((MaterialButton) view).getId() == R.id.button_camera_control_settings) {
                 Intent openSettings = new Intent(MainActivity.activity, SettingsActivity.class);
                 MainActivity.activity.startActivity(openSettings);
             }
@@ -284,7 +285,7 @@ class UIOperator {
     static View.OnClickListener onClickListener_parameters_indicator_toggle_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (((Button) view).getId() == R.id.button_parameters_indicator_setTorch) {
+            if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setTorch) {
                 if (MainActivity.FLASH_INFO_AVAILABLE) {
                     if (MainActivity.flashMode == CaptureRequest.FLASH_MODE_OFF) {
                         MainActivity.flashMode = CaptureRequest.FLASH_MODE_TORCH;
@@ -316,8 +317,8 @@ class UIOperator {
 
             // region: parameters controlled by aeMode
             if (
-                       (((Button) view).getId() == R.id.button_parameters_indicator_setExposureTime)
-                    || (((Button) view).getId() == R.id.button_parameters_indicator_setSensitivity)
+                       (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime)
+                    || (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity)
             ) {
                 if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
@@ -327,7 +328,7 @@ class UIOperator {
                 autoCheckBox_range_control.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (((CheckBox) buttonView).isPressed()) {
+                        if (((MaterialCheckBox) buttonView).isPressed()) {
                             if (isChecked) {
                                 MainActivity.aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
                             } else {
@@ -340,7 +341,7 @@ class UIOperator {
                     }
                 });
 
-                if (((Button) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
+                if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
                     valueMinimumTextView_range_control.setText("MIN\n" + MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + " ns");
                     valueMaximumTextView_range_control.setText("MAX\n" + String.format("%.4f", (double) (MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() / 10000) / 100000) + " s");
@@ -421,7 +422,7 @@ class UIOperator {
                     });
                 }
 
-                else if (((Button) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
+                else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_sensitivity);
                     valueMinimumTextView_range_control.setText("MIN\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()));
                     valueMaximumTextView_range_control.setText("MAX\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()));
@@ -489,7 +490,7 @@ class UIOperator {
             // endregion: parameters controlled by aeMode
 
             // region: parameters controlled by afMode
-            else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
+            else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
                 if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
@@ -498,7 +499,7 @@ class UIOperator {
                 autoCheckBox_range_control.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (((CheckBox) buttonView).isPressed()) {
+                        if (((MaterialCheckBox) buttonView).isPressed()) {
                             if (isChecked) {
                                 MainActivity.afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
                             } else {
@@ -699,7 +700,7 @@ class UIOperator {
             MaterialRadioButton radioButton;
             final int[] radioButtonIdArray;
 
-            if (((Button) view).getId() == R.id.button_parameters_indicator_setAperture) {
+            if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAperture) {
                 titleTextView_list_control.setText(R.string.textView_list_control_title_aperture);
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_APERTURES).length];
@@ -732,7 +733,7 @@ class UIOperator {
                 });
             }
 
-            else if (((Button) view).getId() == R.id.button_parameters_indicator_setAutoWhiteBalance) {
+            else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAutoWhiteBalance) {
                 titleTextView_list_control.setText(R.string.textView_list_control_title_autoWhiteBalance);
 
                 radioButtonIdArray = new int[(MainActivity.CONTROL_AWB_AVAILABLE_MODES).length];
@@ -764,7 +765,7 @@ class UIOperator {
                 });
             }
 
-            else if (((Button) view).getId() == R.id.button_parameters_indicator_setOpticalStabilization) {
+            else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setOpticalStabilization) {
                 titleTextView_list_control.setText(R.string.textView_list_control_title_opticalStabilization);
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length];
@@ -796,7 +797,7 @@ class UIOperator {
                 });
             }
 
-            else if (((Button) view).getId() == R.id.button_parameters_indicator_setFocalLength) {
+            else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setFocalLength) {
                 titleTextView_list_control.setText(R.string.textView_list_control_title_focalLength);
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length];

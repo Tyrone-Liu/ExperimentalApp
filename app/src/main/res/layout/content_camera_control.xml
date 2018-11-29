@@ -45,23 +45,27 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_camera_control_sequence"
-        style="@style/CameraTheme.ButtonOutlinedAccentColor"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/button_camera_control_sequence"
+        android:textColor="@color/colorSecondary"
         app:layout_constraintEnd_toStartOf="@+id/button_camera_control_capture"
-        app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture" />
+        app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture"
+        app:rippleColor="@color/colorSecondaryVariant" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_camera_control_settings"
-        style="@style/CameraTheme.ButtonOutlinedAccentColor"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/button_camera_control_settings"
+        android:textColor="@color/colorSecondary"
         app:layout_constraintStart_toEndOf="@+id/button_camera_control_capture"
-        app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture" />
+        app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture"
+        app:rippleColor="@color/colorSecondaryVariant" />
 
     <!-- capture parameters indicator -->
     <include

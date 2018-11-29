@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents">
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">monospace</item>
@@ -14,8 +14,6 @@
     </style>
 
     <style name="CameraTheme" parent="AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
         <item name="android:navigationBarColor">@color/colorBackgroundVariant</item>
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:colorAccent">@color/colorSecondary</item>
@@ -33,12 +31,6 @@
     <style name="CameraTheme.ButtonColoredAccentColor" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/colorSecondary</item>
         <item name="rippleColor">@color/colorSecondaryVariant</item>
-    </style>
-
-    <style name="CameraTheme.ButtonOutlinedAccentColor" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/colorSecondary</item>
-        <item name="rippleColor">@color/colorSecondaryVariant</item>
-        <item name="strokeColor">@color/colorSecondary</item>
     </style>
 
     <!-- Material Version of SeekBar not finished -->
