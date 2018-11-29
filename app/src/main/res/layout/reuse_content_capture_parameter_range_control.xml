@@ -70,7 +70,7 @@
         app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_range"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_range_control_apply"
         style="@style/CameraTheme.ButtonColoredAccentColor"
         android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_range_control_range" />
 
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/checkBox_range_control_auto"
         style="@style/CameraTheme.CheckBoxAccentColor"
         android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/button_range_control_apply"
         app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editText_range_control_value"
         style="@style/CameraTheme.EditTextAccentColor"
         android:layout_width="0dp"

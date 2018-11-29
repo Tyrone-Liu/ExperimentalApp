@@ -80,6 +80,7 @@
         <item name="android:minHeight">0dp</item>
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textSize">10sp</item>
+        <item name="rippleColor">@color/colorSecondaryVariant</item>
     </style>
 
 </resources>

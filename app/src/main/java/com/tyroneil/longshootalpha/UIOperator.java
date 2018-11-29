@@ -1,5 +1,6 @@
 package com.tyroneil.longshootalpha;
 
+import com.google.android.material.radiobutton.MaterialRadioButton;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -21,7 +22,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -696,7 +696,7 @@ class UIOperator {
             titleTextView_list_control.setText(R.string.textView_list_control_title);
             listRadioGroup_list_control.removeAllViews();
 
-            RadioButton radioButton;
+            MaterialRadioButton radioButton;
             final int[] radioButtonIdArray;
 
             if (((Button) view).getId() == R.id.button_parameters_indicator_setAperture) {
@@ -704,7 +704,7 @@ class UIOperator {
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_APERTURES).length];
                 for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_APERTURES).length; i ++) {
-                    radioButton = new RadioButton(MainActivity.activity);
+                    radioButton = new MaterialRadioButton(MainActivity.activity);
                     // TODO: find a way to apply style
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
@@ -723,7 +723,7 @@ class UIOperator {
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                        if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
                             MainActivity.aperture = MainActivity.LENS_INFO_AVAILABLE_APERTURES[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
@@ -737,7 +737,7 @@ class UIOperator {
 
                 radioButtonIdArray = new int[(MainActivity.CONTROL_AWB_AVAILABLE_MODES).length];
                 for (int i = 0; i < (MainActivity.CONTROL_AWB_AVAILABLE_MODES).length; i ++) {
-                    radioButton = new RadioButton(MainActivity.activity);
+                    radioButton = new MaterialRadioButton(MainActivity.activity);
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
@@ -755,7 +755,7 @@ class UIOperator {
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                        if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
                             MainActivity.awbMode = MainActivity.CONTROL_AWB_AVAILABLE_MODES[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
@@ -769,7 +769,7 @@ class UIOperator {
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length];
                 for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length; i ++) {
-                    radioButton = new RadioButton(MainActivity.activity);
+                    radioButton = new MaterialRadioButton(MainActivity.activity);
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
@@ -787,7 +787,7 @@ class UIOperator {
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                        if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
                             MainActivity.opticalStabilizationMode = MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
@@ -801,7 +801,7 @@ class UIOperator {
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length];
                 for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length; i ++) {
-                    radioButton = new RadioButton(MainActivity.activity);
+                    radioButton = new MaterialRadioButton(MainActivity.activity);
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}}, new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}));
@@ -819,7 +819,7 @@ class UIOperator {
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        if (((RadioButton) group.findViewById(checkedId)).isPressed()) {
+                        if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
                             MainActivity.focalLength = MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();

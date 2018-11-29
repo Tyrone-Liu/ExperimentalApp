@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_camera_control_capture"
         style="@style/CameraTheme.ButtonColoredAccentColor"
         android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
         app:layout_constraintStart_toStartOf="@+id/button_camera_control_capture"
         app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_camera_control_sequence"
         style="@style/CameraTheme.ButtonOutlinedAccentColor"
         android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
         app:layout_constraintEnd_toStartOf="@+id/button_camera_control_capture"
         app:layout_constraintTop_toTopOf="@+id/button_camera_control_capture" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_camera_control_settings"
         style="@style/CameraTheme.ButtonOutlinedAccentColor"
         android:layout_width="wrap_content"

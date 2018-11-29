@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_list_control_dismiss" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_list_control_dismiss"
         style="@style/CameraTheme.ButtonColoredAccentColor"
         android:layout_width="wrap_content"

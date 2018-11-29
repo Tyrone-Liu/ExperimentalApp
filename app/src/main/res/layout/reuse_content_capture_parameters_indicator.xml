@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <!-- Row #1 -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setExposureTime"
         style="@style/CameraTheme.Indicator"
         android:layout_marginStart="8dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setSensitivity"
         style="@style/CameraTheme.Indicator"
         android:text="@string/button_parameters_indicator_setSensitivity"
@@ -27,7 +27,7 @@
         app:layout_constraintStart_toEndOf="@+id/button_parameters_indicator_setExposureTime"
         app:layout_constraintTop_toTopOf="@+id/button_parameters_indicator_setExposureTime" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setAperture"
         style="@style/CameraTheme.Indicator"
         android:text="@string/button_parameters_indicator_setAperture"
@@ -36,7 +36,7 @@
         app:layout_constraintStart_toEndOf="@+id/button_parameters_indicator_setSensitivity"
         app:layout_constraintTop_toTopOf="@+id/button_parameters_indicator_setExposureTime" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setTorch"
         style="@style/CameraTheme.Indicator"
         android:layout_marginEnd="8dp"
@@ -47,7 +47,7 @@
         app:layout_constraintTop_toTopOf="@+id/button_parameters_indicator_setExposureTime" />
 
     <!-- Row #2 -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setAutoWhiteBalance"
         style="@style/CameraTheme.Indicator"
         android:layout_marginBottom="4dp"
@@ -58,7 +58,7 @@
         app:layout_constraintStart_toStartOf="@id/button_parameters_indicator_setExposureTime"
         app:layout_constraintTop_toBottomOf="@id/button_parameters_indicator_setExposureTime" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setOpticalStabilization"
         style="@style/CameraTheme.Indicator"
         android:text="@string/button_parameters_indicator_setOpticalStabilization"
@@ -67,7 +67,7 @@
         app:layout_constraintStart_toEndOf="@+id/button_parameters_indicator_setAutoWhiteBalance"
         app:layout_constraintTop_toTopOf="@+id/button_parameters_indicator_setAutoWhiteBalance" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setFocalLength"
         style="@style/CameraTheme.Indicator"
         android:text="@string/button_parameters_indicator_setFocalLength"
@@ -76,7 +76,7 @@
         app:layout_constraintStart_toEndOf="@+id/button_parameters_indicator_setOpticalStabilization"
         app:layout_constraintTop_toTopOf="@+id/button_parameters_indicator_setAutoWhiteBalance" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_parameters_indicator_setFocusDistance"
         style="@style/CameraTheme.Indicator"
         android:text="@string/button_parameters_indicator_setFocusDistance"
