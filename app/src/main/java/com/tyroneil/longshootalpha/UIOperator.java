@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -580,29 +581,33 @@ class UIOperator {
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
-                        MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                (int) (MainActivity.focusAssistantWidthCenter - (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) (MainActivity.focusAssistantHeightCenter - (MainActivity.focusAssistantHeight / 2.0f)),
-                                (int) (MainActivity.focusAssistantWidthCenter + (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) (MainActivity.focusAssistantHeightCenter + (MainActivity.focusAssistantHeight / 2.0f))
-                        ));
+                        if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
+                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                    (int) (MainActivity.focusAssistantWidthCenter - (MainActivity.focusAssistantWidth / 2.0f)),
+                                    (int) (MainActivity.focusAssistantHeightCenter - (MainActivity.focusAssistantHeight / 2.0f)),
+                                    (int) (MainActivity.focusAssistantWidthCenter + (MainActivity.focusAssistantWidth / 2.0f)),
+                                    (int) (MainActivity.focusAssistantHeightCenter + (MainActivity.focusAssistantHeight / 2.0f))
+                            ));
+                        }
                     }
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        if (
-                                MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
-                                || MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
-                        ) {
-                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                    0, 0, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT
-                            ));
-                        } else {
-                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                    0, 0, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT
-                            ));
+                        if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
+                            if (
+                                    MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
+                                    || MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
+                            ) {
+                                MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                        0, 0, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT
+                                ));
+                            } else {
+                                MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                        0, 0, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT
+                                ));
+                            }
+                            updatePreviewParameters();
                         }
-                        updatePreviewParameters();
                     }
                 });
             }

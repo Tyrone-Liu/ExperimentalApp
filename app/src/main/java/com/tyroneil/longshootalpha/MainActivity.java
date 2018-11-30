@@ -49,7 +49,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    private static Context context;
+    static Context context;
     static AppCompatActivity activity;
     static float scale;
 
@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
             aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
             afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_raw_capture", false)) {
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_raw_capture", true)) {
                 captureFormat = ImageFormat.RAW_SENSOR;
             } else {
                 captureFormat = ImageFormat.JPEG;
