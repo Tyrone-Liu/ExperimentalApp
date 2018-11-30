@@ -169,14 +169,14 @@ class UIOperator {
 
     static void updateCaptureParametersIndicator() {
         if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-            if (MainActivity.exposureTime < 1000L) {
+            if (MainActivity.exposureTime < 1E3) {
                 setExposureTimeButton_parameters_indicator.setText("S.S.\n" + MainActivity.exposureTime + "ns");
-            } else if (MainActivity.exposureTime < 1000000L) {
-                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 10) / 100) + "µs");
-            } else if (MainActivity.exposureTime < 1000000000L) {
-                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 10000) / 100) + "ms");
+            } else if (MainActivity.exposureTime < 1E6) {
+                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 1E1) / 1E2) + "µs");
+            } else if (MainActivity.exposureTime < 1E9) {
+                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 1E4) / 1E2) + "ms");
             } else {
-                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 10000000) / 100) + "s");
+                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + "s");
             }
             setSensitivityButton_parameters_indicator.setText("ISO\n" + MainActivity.sensitivity);
         } else {
@@ -207,7 +207,17 @@ class UIOperator {
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, MainActivity.afMode);
 
         if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-            MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
+            if (
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_preview_exposure_time_limit", true)
+                    && MainActivity.exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_key_preview_exposure_time_limit_value", "0.5"))
+            ) {
+                MainActivity.previewRequestBuilder.set(
+                        CaptureRequest.SENSOR_EXPOSURE_TIME,
+                        (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_key_preview_exposure_time_limit_value", "0.5")))
+                );
+            } else {
+                MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
+            }
             MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, MainActivity.sensitivity);
         }
         MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, MainActivity.aperture);
@@ -346,17 +356,17 @@ class UIOperator {
                 if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
                     valueMinimumTextView_range_control.setText("MIN\n" + MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + " ns");
-                    valueMaximumTextView_range_control.setText("MAX\n" + String.format("%.4f", (double) (MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() / 10000) / 100000) + " s");
+                    valueMaximumTextView_range_control.setText("MAX\n" + String.format("%.4f", (double) (MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() / 1E4) / 1E5) + " s");
 
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                    if (MainActivity.exposureTime < 1000L) {
-                        valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1000000000d) + " s");
-                    } else if (MainActivity.exposureTime < 1000000L) {
-                        valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 10L) / 100000000d) + " s");
-                    } else if (MainActivity.exposureTime < 1000000000L) {
-                        valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 10000L) / 100000d) + " s");
+                    if (MainActivity.exposureTime < 1E3) {
+                        valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1E9) + " s");
+                    } else if (MainActivity.exposureTime < 1E6) {
+                        valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 1E1) / 1E8) + " s");
+                    } else if (MainActivity.exposureTime < 1E9) {
+                        valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 1E4) / 1E5) + " s");
                     } else {
-                        valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 10000000L) / 100d) + " s");
+                        valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + " s");
                     }
                     valueEditText_range_control.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
@@ -401,14 +411,14 @@ class UIOperator {
                                 } else if (MainActivity.exposureTime > MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
                                     MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
                                 }
-                                if (MainActivity.exposureTime < 1000L) {
-                                    valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1000000000d) + " s");
-                                } else if (MainActivity.exposureTime < 1000000L) {
-                                    valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 10L) / 100000000d) + " s");
-                                } else if (MainActivity.exposureTime < 1000000000L) {
-                                    valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 10000L) / 100000d) + " s");
+                                if (MainActivity.exposureTime < 1E3) {
+                                    valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1E9) + " s");
+                                } else if (MainActivity.exposureTime < 1E6) {
+                                    valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 1E1) / 1E8) + " s");
+                                } else if (MainActivity.exposureTime < 1E9) {
+                                    valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 1E4) / 1E5) + " s");
                                 } else {
-                                    valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 10000000L) / 100d) + " s");
+                                    valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + " s");
                                 }
                                 updateCaptureParametersIndicator();
                             }
@@ -632,7 +642,7 @@ class UIOperator {
     static void rangeControlBottomSheet_applyValueEditTextValue(int valueEditTextType) {
         if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME) {
             double rawValue = Double.valueOf((valueEditText_range_control.getText()).toString());
-            MainActivity.exposureTime = (long) (rawValue * 1000000000L);
+            MainActivity.exposureTime = (long) (rawValue * 1E9);
             if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
                 MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
             } else if (MainActivity.exposureTime > MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {

@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static String totalResultDebugTool(CaptureRequest request, TotalCaptureResult result) {
         String message = (
-                "ET:" + String.format("%.4f", (double) (result.get(CaptureResult.SENSOR_EXPOSURE_TIME) / 10000) / 100000) + ", "
+                "ET:" + String.format("%.4f", (double) (result.get(CaptureResult.SENSOR_EXPOSURE_TIME) / 1E4) / 1E5) + ", "
                         + "SE:" + result.get(CaptureResult.SENSOR_SENSITIVITY) + ", "
                         + "AP:" + result.get(CaptureResult.LENS_APERTURE) + ", "
                         + "OS:" + result.get(CaptureResult.LENS_OPTICAL_STABILIZATION_MODE) + ", "
@@ -470,7 +470,17 @@ public class MainActivity extends AppCompatActivity {
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, afMode);
 
                 if (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-                    previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
+                    if (
+                            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_preview_exposure_time_limit", true)
+                            && exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_key_preview_exposure_time_limit_value", "0.5"))
+                    ) {
+                        previewRequestBuilder.set(
+                                CaptureRequest.SENSOR_EXPOSURE_TIME,
+                                (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_key_preview_exposure_time_limit_value", "0.5")))
+                        );
+                    } else {
+                        previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
+                    }
                     previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
                 }
                 previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
@@ -690,8 +700,8 @@ public class MainActivity extends AppCompatActivity {
         SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_ACTIVE_ARRAY_RECT.top;
         // coordinate range for zoom and focus assistant
 
-        if (SENSOR_INFO_EXPOSURE_TIME_RANGE.contains(100000000L)) {
-            exposureTime = 100000000L;  // 0.1s
+        if (SENSOR_INFO_EXPOSURE_TIME_RANGE.contains((long) 1E8)) {
+            exposureTime = (long) 1E8;  // 0.1s
         } else {
             exposureTime = SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
         }
@@ -927,7 +937,7 @@ public class MainActivity extends AppCompatActivity {
             if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE) == CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN) {
                 imageTimeStamp = new Date();
             } else {
-                imageTimeStamp = new Date(System.currentTimeMillis() - ((long) ((double) (result.get(CaptureResult.SENSOR_TIMESTAMP) - SystemClock.elapsedRealtimeNanos()) / 1000000d)));
+                imageTimeStamp = new Date(System.currentTimeMillis() - ((long) ((double) (result.get(CaptureResult.SENSOR_TIMESTAMP) - SystemClock.elapsedRealtimeNanos()) / 1E6)));
             }
             totalCaptureResult = result;
             super.onCaptureCompleted(session, request, result);

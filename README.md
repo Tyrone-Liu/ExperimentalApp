@@ -53,9 +53,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 + [ ] Controller in UI for:
     * [ ] Switch camera
     * [x] Open torch
-    * [ ] Change magnification
     * [ ] Gallery
-    * [ ] Preview parameters match capture
 + [ ] Another thread for storing image file
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
