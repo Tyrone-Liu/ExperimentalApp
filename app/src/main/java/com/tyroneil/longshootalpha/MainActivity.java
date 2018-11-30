@@ -129,6 +129,17 @@ public class MainActivity extends AppCompatActivity {
     static float focusDistance;  // LENS_FOCUS_DISTANCE
     static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
     static float CIRCLE_OF_CONFUSION;  // unit: mm, constant for each camera device
+
+    static Rect SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
+    static Rect SENSOR_INFO_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
+    static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;  // coordinate range for zoom and focus assistant
+    static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;  // coordinate range for zoom and focus assistant
+    static int SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;  // coordinate range for zoom and focus assistant
+    static int SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;  // coordinate range for zoom and focus assistant
+    static float focusAssistantWidth;
+    static float focusAssistantHeight;
+    static float focusAssistantWidthCenter;
+    static float focusAssistantHeightCenter;
     // endregion: capture parameters
 
     static TextView errorMessageTextView;
@@ -451,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
             Surface previewSurface = new Surface(previewSurfaceTexture);
             try {
                 previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                initiateFocusAssistant();
 
                 // region: setup preview request builder
                 previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, autoMode);
@@ -599,10 +611,9 @@ public class MainActivity extends AppCompatActivity {
      * with the same aspect ratio as the size found in the second step.
      */
     private static Size chooseOutputSize(CameraCharacteristics cameraCharacteristics, int captureFormat, boolean forPreview) {
-        final Rect SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE);
         final Size SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE = new Size(
-                SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.right - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.left,
-                SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.bottom - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.top
+                SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.left,
+                SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.top
         );
         Size[] outputSizes;
         Size[] outputSizesFiltered;
@@ -670,6 +681,15 @@ public class MainActivity extends AppCompatActivity {
         CIRCLE_OF_CONFUSION = SENSOR_INFO_PHYSICAL_SIZE.getWidth() * (2f / SENSOR_INFO_PIXEL_ARRAY_SIZE.getWidth());
         // calculate circle of confusion
 
+        // coordinate range for zoom and focus assistant
+        SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE);
+        SENSOR_INFO_ACTIVE_ARRAY_RECT = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+        SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.left;
+        SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.top;
+        SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_ACTIVE_ARRAY_RECT.left;
+        SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_ACTIVE_ARRAY_RECT.top;
+        // coordinate range for zoom and focus assistant
+
         if (SENSOR_INFO_EXPOSURE_TIME_RANGE.contains(100000000L)) {
             exposureTime = 100000000L;  // 0.1s
         } else {
@@ -698,6 +718,29 @@ public class MainActivity extends AppCompatActivity {
 
         focalLength = LENS_INFO_AVAILABLE_FOCAL_LENGTHS[0];
         focusDistance = 1000f / (((focalLength * focalLength) / (aperture * CIRCLE_OF_CONFUSION)) + focalLength);
+    }
+
+    private static void initiateFocusAssistant() {
+        float previewCRTV_DP_width = UIOperator.previewCRTV_camera_control.getWidth() / scale;
+        float previewCRTV_DP_height = UIOperator.previewCRTV_camera_control.getHeight() / scale;
+        if (sensorOrientation == 90 || sensorOrientation == 270) {
+            focusAssistantWidth = previewCRTV_DP_height;
+            focusAssistantHeight = previewCRTV_DP_width;
+        } else {
+            focusAssistantWidth = previewCRTV_DP_width;
+            focusAssistantHeight = previewCRTV_DP_height;
+        }
+
+        if (
+                previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
+                || previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
+        ) {
+            focusAssistantWidthCenter = SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH / 2.0f;
+            focusAssistantHeightCenter = SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT / 2.0f;
+        } else {
+            focusAssistantWidthCenter = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH / 2.0f;
+            focusAssistantHeightCenter = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT / 2.0f;
+        }
     }
 
     // previewCaptureCallback is for debug purpose

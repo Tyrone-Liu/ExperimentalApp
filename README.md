@@ -16,7 +16,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
     * Focus
         - [x] Auto focus
         - [x] Manual focus
-        - [ ] Manual Focus Assistant (zoom in when adjust the SeekBar)
+        - [x] Manual Focus Assistant (zoom in when adjust the SeekBar)
         - [ ] Touch to focus
     * [x] Exposure time (Shutter speed)
     * [x] ISO

@@ -6,6 +6,7 @@ import com.google.android.material.radiobutton.MaterialRadioButton;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
@@ -579,9 +580,29 @@ class UIOperator {
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
+                        MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                (int) (MainActivity.focusAssistantWidthCenter - (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) (MainActivity.focusAssistantHeightCenter - (MainActivity.focusAssistantHeight / 2.0f)),
+                                (int) (MainActivity.focusAssistantWidthCenter + (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) (MainActivity.focusAssistantHeightCenter + (MainActivity.focusAssistantHeight / 2.0f))
+                        ));
                     }
+
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
+                        if (
+                                MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
+                                || MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
+                        ) {
+                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                    0, 0, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT
+                            ));
+                        } else {
+                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                    0, 0, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT
+                            ));
+                        }
+                        updatePreviewParameters();
                     }
                 });
             }
