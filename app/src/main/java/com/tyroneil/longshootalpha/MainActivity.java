@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -588,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
 
     // region: method to choose preview size
     /**
-     * First, get the sensor pixel array size, which is the maximum
+     * First, get the SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE, which is the maximum
      * available size and the output size in RAW_SENSOR format.
      *
      * Second, get the available size in capture format (if it is not RAW_SENSOR (32)), and find
@@ -598,14 +599,18 @@ public class MainActivity extends AppCompatActivity {
      * with the same aspect ratio as the size found in the second step.
      */
     private static Size chooseOutputSize(CameraCharacteristics cameraCharacteristics, int captureFormat, boolean forPreview) {
-        final Size SENSOR_INFO_PIXEL_ARRAY_SIZE = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE);
+        final Rect SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE);
+        final Size SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE = new Size(
+                SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.right - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.left,
+                SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.bottom - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE_Rect.top
+        );
         Size[] outputSizes;
         Size[] outputSizesFiltered;
         if (forPreview) {
             int maxPreviewResolution = 1440;  // TODO: make max preview resolution changeable in settings
             outputSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(SurfaceTexture.class);
             Size[] captureSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(captureFormat);
-            Size[] captureSizesFiltered = sizesFilter(captureSizes, SENSOR_INFO_PIXEL_ARRAY_SIZE);
+            Size[] captureSizesFiltered = sizesFilter(captureSizes, SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE);
             outputSizesFiltered = sizesFilter(outputSizes, captureSizesFiltered[0]);
             for (Size e : outputSizesFiltered) {
                 if ((e.getWidth() <= e.getHeight()) && (e.getWidth() <= maxPreviewResolution)) {
@@ -616,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             outputSizes = (cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(captureFormat);
-            outputSizesFiltered = sizesFilter(outputSizes, SENSOR_INFO_PIXEL_ARRAY_SIZE);
+            outputSizesFiltered = sizesFilter(outputSizes, SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE);
         }
         return outputSizesFiltered[0];
     }
