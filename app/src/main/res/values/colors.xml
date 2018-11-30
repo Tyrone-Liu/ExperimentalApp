@@ -9,4 +9,5 @@
     <color name="colorSurface">#1B1B1B</color>  <!-- Material GREY_800 Dark_Variant -->
     <color name="colorBackground">#000000</color>  <!-- Material Black -->
     <color name="colorBackgroundVariant">#010101</color>  <!-- Almost Black, prevent turning white on some system -->
+    <color name="colorBackgroundTransparent">#AA000000</color>  <!-- Material Black, 2/3 alpha -->
 </resources>
