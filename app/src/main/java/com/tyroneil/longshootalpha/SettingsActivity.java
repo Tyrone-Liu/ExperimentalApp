@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.action_about:
+            case R.id.action_settings_about:
                 // TODO: show 'about app' information
                 return true;
 

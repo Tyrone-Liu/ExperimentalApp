@@ -248,11 +248,8 @@ class UIOperator {
         @Override
         public void onClick(View view) {
             if (((MaterialButton) view).getId() == R.id.button_camera_control_sequence) {
-                try {
-                    MainActivity.captureSession.stopRepeating();  // debug
-                } catch (CameraAccessException e) {
-                    MainActivity.displayErrorMessage(e);
-                }
+                Intent openSequence = new Intent(MainActivity.context, SequenceActivity.class);
+                MainActivity.activity.startActivity(openSequence);
             }
 
             else if (((MaterialButton) view).getId() == R.id.button_camera_control_capture) {
