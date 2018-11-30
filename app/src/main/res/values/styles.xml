@@ -7,9 +7,9 @@
         <item name="android:fontFamily">monospace</item>
         <item name="android:navigationBarColor">@color/colorSurface</item>
         <item name="android:colorBackground">@color/colorSurface</item>
-        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimary">@color/colorSecondary</item>
         <item name="android:colorAccent">@color/colorSecondary</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorSecondary</item>
         <item name="colorAccent">@color/colorSecondary</item>
     </style>
 
