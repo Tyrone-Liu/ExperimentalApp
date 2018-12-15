@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
         else if (stage == CREATE_PREVIEW_STAGE_OPEN_CAMERA) {
             // TODO: make 'minTime', 'minDistance' changeable in the settings.  Can choose provider between 'gps' and 'network'
             if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000L, 1.0f, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 30E3, 1.0f, locationListener);
             }
 
             try {
