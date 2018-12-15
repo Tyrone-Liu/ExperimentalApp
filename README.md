@@ -17,14 +17,15 @@ Make sure to check out 'Known Bugs' section on the end of this file.
         - [x] Auto focus
         - [x] Manual focus
         - [x] Manual Focus Assistant (zoom in when adjust the SeekBar)
+        - [ ] Touch to set Focus Assistant center
         - [ ] Touch to focus
     * [x] Exposure time (Shutter speed)
     * [x] ISO
-    * [x] GPS record for shots
     * [x] White balance (When you have RAW output, white balance is not that demanded)
     * [x] Flash control (Flash lights on phones may not be a good choice for great lighting)
 + Photo output
     * [x] Choice between RAW (DNG) / JPEG output
+    * [x] GPS record for shots
     * [x] Write correct metadata into files or embed in shot
     * [ ] Custom output file name with patterns
 + Capture Sequence (Replacement for BRK and Burst)
@@ -35,6 +36,11 @@ Make sure to check out 'Known Bugs' section on the end of this file.
         - [ ] Repeat interval (a start and an end entry) (Repeat basic elements within the interval for a specified time)
         - [ ] Time condition (proceed next element not before a apecific time)
     * Both basic and special elements (except 'Time condition') have their own 'repeat count', can be endless
++ Additional Tools for Capture
+    * [ ] OSD of **Elevation Angle** and **Azimuth**
+    * [ ] OSD of GPS information (Longtitude, Latitude, Altitude)
+    * [ ] Bluetooth or Network remote control (reduce vibration)
+    * [ ] Alternative seekbar mode, improve accuracy within small range
 
 
 ## TODO
@@ -69,6 +75,6 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 + [ ] On `OnePlus 6 (enchilada)`, when the image format is JPEG and the 'captureSize' is the max available value '4k x 3x', the edge of result image will be cut out.  
 + [ ] When the image format is RAW_SENSOR, the 'captureSize' acquired from 'cameraCharacteristics' will be slightly bigger than then actual result.  
 + [ ] On `OnePlus 6 (enchilada)`, after captured single image several times, the `imageReader` will suddenly not recceive the capture result.  This will not happen in `repeatingRequest` or after stopped the repeatingRequest of preview.  
-+ [x] Settings will not be initialized the first time opening the APP, needs to set at least once.  
++ [x] ~Settings will not be initialized the first time opening the APP, needs to set at least once.  ~
 
 
