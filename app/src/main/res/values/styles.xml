@@ -7,16 +7,15 @@
         <item name="android:fontFamily">monospace</item>
         <item name="android:navigationBarColor">@color/colorSurface</item>
         <item name="android:colorBackground">@color/colorSurface</item>
-        <item name="android:colorPrimary">@color/colorSecondary</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorAccent">@color/colorSecondary</item>
-        <item name="colorPrimary">@color/colorSecondary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorSecondary</item>
     </style>
 
     <style name="CameraTheme" parent="AppTheme">
         <item name="android:navigationBarColor">@color/colorBackgroundVariant</item>
         <item name="android:colorBackground">@color/colorBackground</item>
-        <item name="android:colorAccent">@color/colorSecondary</item>
     </style>
 
     <style name="ActionBarTitleMonospaceTextAppearance">
@@ -31,12 +30,12 @@
     </style>
 
     <style name="CameraTheme.TextAccentColorDark">
-        <item name="android:textColor">@color/colorSecondaryVariant</item>
+        <item name="android:textColor">@color/colorSecondaryDown</item>
     </style>
 
     <style name="CameraTheme.ButtonColoredAccentColor" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/colorSecondary</item>
-        <item name="rippleColor">@color/colorSecondaryVariant</item>
+        <item name="rippleColor">@color/colorSecondaryUp</item>
     </style>
 
     <!-- Material Version of SeekBar not finished -->
@@ -54,11 +53,11 @@
     <style name="CameraTheme.EditTextAccentColor" parent="@android:style/Widget.Material.EditText">
         <item name="android:backgroundTint">@color/colorSecondary</item>
         <item name="android:textColor">@color/colorSecondary</item>
-        <item name="android:textColorHint">@color/colorSecondaryVariant</item>
+        <item name="android:textColorHint">@color/colorSecondaryDown</item>
     </style>
 
     <style name="CameraTheme.ScrollbarThumbAccentColor">
-        <item name="android:scrollbarThumbVertical">@color/colorSecondaryVariant</item>
+        <item name="android:scrollbarThumbVertical">@color/colorSecondaryDown</item>
     </style>
 
     <style name="CameraTheme.InformationLog">
@@ -77,9 +76,9 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minWidth">56dp</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">10sp</item>
-        <item name="rippleColor">@color/colorSecondaryVariant</item>
+        <item name="rippleColor">@color/colorSecondaryDown</item>
     </style>
 
 </resources>
