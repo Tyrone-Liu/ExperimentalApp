@@ -394,7 +394,10 @@ class UIOperator {
 
                     long progressLeftLength = MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
                     final long progressLength = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                    rangeSeekBar_range_control.setProgress((int) (rangeSeekBar_range_control.getMax() * ((double) progressLeftLength / progressLength)) + rangeSeekBar_range_control.getMin());
+                    rangeSeekBar_range_control.setProgress((int)
+                            ((rangeSeekBar_range_control.getMax() - rangeSeekBar_range_control.getMin()) * ((double) progressLeftLength / progressLength))
+                            + rangeSeekBar_range_control.getMin()
+                    );
                     rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -467,7 +470,10 @@ class UIOperator {
 
                     long progressLeftLength = MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
                     final long progressLength = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                    rangeSeekBar_range_control.setProgress((int) (rangeSeekBar_range_control.getMax() * ((float) progressLeftLength / progressLength)) + rangeSeekBar_range_control.getMin());
+                    rangeSeekBar_range_control.setProgress((int)
+                            ((rangeSeekBar_range_control.getMax() - rangeSeekBar_range_control.getMin()) * ((double) progressLeftLength / progressLength))
+                            + rangeSeekBar_range_control.getMin()
+                    );
                     rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -564,7 +570,11 @@ class UIOperator {
 
                 //  TODO: present focus distance better on the seek bar
                 float progressLeftLength = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE - MainActivity.focusDistance;
-                rangeSeekBar_range_control.setProgress((int) (rangeSeekBar_range_control.getMax() * (progressLeftLength / MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE)) + rangeSeekBar_range_control.getMin());
+                final float progressLength = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
+                rangeSeekBar_range_control.setProgress((int)
+                        ((rangeSeekBar_range_control.getMax() - rangeSeekBar_range_control.getMin()) * (progressLeftLength / progressLength))
+                        + rangeSeekBar_range_control.getMin()
+                );
                 rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
