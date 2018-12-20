@@ -398,7 +398,7 @@ class UIOperator {
                     long progressLeftOffset = 0L;
                     long progressRightOffset = 0L;
                     long progressLeftLength = MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                    rangeControlBottomSheet_setUpRangeSeekBar(RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
+                    rangeControlBottomSheet_setupRangeSeekBar(RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
                 }
 
                 else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
@@ -439,7 +439,7 @@ class UIOperator {
                     int progressLeftOffset = 0;
                     int progressRightOffset = 0;
                     int progressLeftLength = MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                    rangeControlBottomSheet_setUpRangeSeekBar(RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
+                    rangeControlBottomSheet_setupRangeSeekBar(RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
                 }
             }
             // endregion: parameters controlled by aeMode
@@ -512,7 +512,7 @@ class UIOperator {
                 float progressLeftOffset = 0.0f;
                 float progressRightOffset = 0.0f;
                 float progressRightLength = MainActivity.focusDistance;
-                rangeControlBottomSheet_setUpRangeSeekBar(RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressRightLength);
+                rangeControlBottomSheet_setupRangeSeekBar(RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressRightLength);
             }
             // endregion: parameters controlled by afMode
         }
@@ -565,7 +565,7 @@ class UIOperator {
         updatePreviewParameters();
     }
 
-    static void rangeControlBottomSheet_setUpRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, long progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, long progressLeftOrRightLength) {
         if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
             long progressLeftLength = progressLeftOrRightLength;
             rangeSeekBar_range_control.setProgress((int)
@@ -610,7 +610,7 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setUpRangeSeekBar(int type, final int seekBarLength, final int progressLength, final int progressLeftOffset, final int progressRightOffset, int progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final int progressLength, final int progressLeftOffset, final int progressRightOffset, int progressLeftOrRightLength) {
         if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
             int progressLeftLength = progressLeftOrRightLength;
             rangeSeekBar_range_control.setProgress((int)
@@ -647,7 +647,7 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setUpRangeSeekBar(int type, final int seekBarLength, final float progressLength, final float progressLeftOffset, final float progressRightOffset, float progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final float progressLength, final float progressLeftOffset, final float progressRightOffset, float progressLeftOrRightLength) {
         if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
             final float progressRightLength = progressLeftOrRightLength;
             rangeSeekBar_range_control.setProgress(
