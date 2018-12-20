@@ -356,8 +356,6 @@ class UIOperator {
 
                 if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
-                    valueMinimumTextView_range_control.setText("MIN\n" + MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + " ns");
-                    valueMaximumTextView_range_control.setText("MAX\n" + String.format("%.4f", (double) (MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() / 1E4) / 1E5) + " s");
 
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                     if (MainActivity.exposureTime < 1E3) {
@@ -396,17 +394,42 @@ class UIOperator {
                         }
                     });
 
-                    long progressLength = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                    long progressLeftOffset = 0L;
-                    long progressRightOffset = 0L;
-                    long progressLeftLength = MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                    rangeControlBottomSheet_setupRangeSeekBar(RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
+                    final long progressLength = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
+                    final VariableContainer<Long> progressLeftOffset = new VariableContainer<Long>(0L);
+                    final VariableContainer<Long> progressRightOffset = new VariableContainer<Long>(0L);
+                    final VariableContainer<Long> progressLeftLength = new VariableContainer<Long>(
+                            MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                    );
+                    rangeControlBottomSheet_setupRangeSeekBar(
+                            RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
+                            progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                            progressLeftLength
+                    );
+
+                    zoomOutButton_range_control.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            rangeControlBottomSheet_zoomOutRangeSeekBar(
+                                    RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
+                                    progressLeftOffset, progressRightOffset,
+                                    progressLeftLength
+                            );
+                        }
+                    });
+                    zoomInButton_range_control.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            rangeControlBottomSheet_zoomInRangeSeekBar(
+                                    RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
+                                    progressLeftOffset, progressRightOffset,
+                                    progressLeftLength
+                            );
+                        }
+                    });
                 }
 
                 else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_sensitivity);
-                    valueMinimumTextView_range_control.setText("MIN\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()));
-                    valueMaximumTextView_range_control.setText("MAX\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()));
 
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
                     valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
@@ -437,11 +460,38 @@ class UIOperator {
                         }
                     });
 
-                    int progressLength = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                    int progressLeftOffset = 0;
-                    int progressRightOffset = 0;
-                    int progressLeftLength = MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                    rangeControlBottomSheet_setupRangeSeekBar(RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
+                    final int progressLength = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+                    final VariableContainer<Integer> progressLeftOffset = new VariableContainer<Integer>(0);
+                    final VariableContainer<Integer> progressRightOffset = new VariableContainer<Integer>(0);
+                    final VariableContainer<Integer> progressLeftLength = new VariableContainer<Integer>(
+                            MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                    );
+                    rangeControlBottomSheet_setupRangeSeekBar(
+                            RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength,
+                            progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                            progressLeftLength
+                    );
+
+                    zoomOutButton_range_control.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            rangeControlBottomSheet_zoomOutRangeSeekBar(
+                                    RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength,
+                                    progressLeftOffset, progressRightOffset,
+                                    progressLeftLength
+                            );
+                        }
+                    });
+                    zoomInButton_range_control.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            rangeControlBottomSheet_zoomInRangeSeekBar(
+                                    RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength,
+                                    progressLeftOffset, progressRightOffset,
+                                    progressLeftLength
+                            );
+                        }
+                    });
                 }
             }
             // endregion: parameters controlled by aeMode
@@ -474,8 +524,6 @@ class UIOperator {
                 rangeControlBottomSheet_setInformationTextViewText();
                 informationTextView_range_control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 // setup information TextView
-                valueMinimumTextView_range_control.setText("MIN\n" + String.format("%.2f", (1f / MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) * 100) + " cm");
-                valueMaximumTextView_range_control.setText("MAX\n" + "Infinity");
 
                 valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 if (MainActivity.focusDistance == 0.0f) {
@@ -510,11 +558,36 @@ class UIOperator {
                     }
                 });
 
-                float progressLength = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
-                float progressLeftOffset = 0.0f;
-                float progressRightOffset = 0.0f;
-                float progressRightLength = MainActivity.focusDistance;
-                rangeControlBottomSheet_setupRangeSeekBar(RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressRightLength);
+                final float progressLength = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
+                final VariableContainer<Float> progressLeftOffset = new VariableContainer<Float>(0.0f);
+                final VariableContainer<Float> progressRightOffset = new VariableContainer<Float>(0.0f);
+                final VariableContainer<Float> progressRightLength = new VariableContainer<Float>(MainActivity.focusDistance);
+                rangeControlBottomSheet_setupRangeSeekBar(
+                        RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
+                        progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                        progressRightLength
+                );
+
+                zoomOutButton_range_control.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        rangeControlBottomSheet_zoomOutRangeSeekBar(
+                                RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
+                                progressLeftOffset, progressRightOffset,
+                                progressRightLength
+                        );
+                    }
+                });
+                zoomInButton_range_control.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        rangeControlBottomSheet_zoomInRangeSeekBar(
+                                RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
+                                progressLeftOffset, progressRightOffset,
+                                progressRightLength
+                        );
+                    }
+                });
             }
             // endregion: parameters controlled by afMode
         }
@@ -575,9 +648,25 @@ class UIOperator {
         updatePreviewParameters();
     }
 
-    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, long progressLeftOrRightLength) {
+    // region: rangeControlBottomSheet_setupRangeSeekBar
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, final VariableContainer<Long> progressLeftOrRightLength) {
+        if (progressLeftOffset != 0L || progressRightOffset != 0L) {
+            valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
+            valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
+            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+        } else {
+            valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+            valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+        }
+
         if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
-            long progressLeftLength = progressLeftOrRightLength;
+            valueMinimumTextView_range_control.setText("MIN\n" + rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + progressLeftOffset));
+            valueMaximumTextView_range_control.setText("MAX\n" + rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - progressRightOffset));
+
+            long progressLeftLength = progressLeftOrRightLength.getVariable();
             rangeSeekBar_range_control.setProgress((int)
                     (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
                     + rangeSeekBar_range_control.getMin()
@@ -596,6 +685,8 @@ class UIOperator {
                         } else if (MainActivity.exposureTime > MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
                             MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
                         }
+                        progressLeftOrRightLength.setVariable(MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower());
+
                         if (MainActivity.exposureTime < 1E3) {
                             valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1E9) + " s");
                         } else if (MainActivity.exposureTime < 1E6) {
@@ -620,9 +711,24 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final int progressLength, final int progressLeftOffset, final int progressRightOffset, int progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final int progressLength, final int progressLeftOffset, final int progressRightOffset, final VariableContainer<Integer> progressLeftOrRightLength) {
+        if (progressLeftOffset != 0 || progressRightOffset != 0) {
+            valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
+            valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
+            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+        } else {
+            valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+            valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+        }
+
         if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
-            int progressLeftLength = progressLeftOrRightLength;
+            valueMinimumTextView_range_control.setText("MIN\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower() + progressLeftOffset));
+            valueMaximumTextView_range_control.setText("MAX\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - progressRightOffset));
+
+            int progressLeftLength = progressLeftOrRightLength.getVariable();
             rangeSeekBar_range_control.setProgress((int)
                     (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
                     + rangeSeekBar_range_control.getMin()
@@ -641,6 +747,8 @@ class UIOperator {
                         } else if (MainActivity.sensitivity > MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) {
                             MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
                         }
+                        progressLeftOrRightLength.setVariable(MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower());
+
                         valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
                         updateCaptureParametersIndicator();
                         updatePreviewParameters();
@@ -657,9 +765,28 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final float progressLength, final float progressLeftOffset, final float progressRightOffset, float progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final float progressLength, final float progressLeftOffset, final float progressRightOffset, final VariableContainer<Float> progressLeftOrRightLength) {
+        if (progressLeftOffset != 0.0f || progressRightOffset != 0.0f) {
+            valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
+            valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
+            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+        } else {
+            valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+            valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+        }
+
         if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
-            final float progressRightLength = progressLeftOrRightLength;
+            valueMinimumTextView_range_control.setText("MIN\n" + String.format("%.4f", 1f / (MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE - progressLeftOffset)) + " m");
+            if (progressRightOffset == 0.0f) {
+                valueMaximumTextView_range_control.setText("MAX\n" + "Infinity");
+            } else {
+                valueMaximumTextView_range_control.setText("MAX\n" + String.format("%.4f", 1f / progressRightOffset) + " m");
+            }
+
+            float progressRightLength = progressLeftOrRightLength.getVariable();
             rangeSeekBar_range_control.setProgress(
                     rangeSeekBar_range_control.getMax() - (int)
                     (seekBarLength * (progressRightLength - progressRightOffset) / (progressLength - progressLeftOffset - progressRightOffset))
@@ -678,6 +805,8 @@ class UIOperator {
                         } else if (MainActivity.focusDistance > MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
                             MainActivity.focusDistance = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
                         }
+                        progressLeftOrRightLength.setVariable(MainActivity.focusDistance);
+
                         if (MainActivity.focusDistance == 0.0f) {
                             valueEditText_range_control.setHint("Infinity");
                         } else {
@@ -724,6 +853,235 @@ class UIOperator {
                     }
                 }
             });
+        }
+    }
+    // endregion: rangeControlBottomSheet_setupRangeSeekBar
+
+    // region: rangeControlBottomSheet_zoomRangeSeekBar
+    static void rangeControlBottomSheet_zoomOutRangeSeekBar(
+            int type, int seekBarLength, long progressLength,
+            VariableContainer<Long> progressLeftOffset, VariableContainer<Long> progressRightOffset,
+            VariableContainer<Long> progressLeftOrRightLength
+    ) {
+        if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+            long progressLeftLength = progressLeftOrRightLength.getVariable();
+
+            long newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) * 2;
+            if (newProgressLength > progressLength) {
+                newProgressLength = progressLength;
+            } else if (newProgressLength / 2 < 1L) {
+                newProgressLength = 1L * 2;
+            }
+            long newProgressLeftOffset;
+            long newProgressRightOffset;
+
+            if (progressLeftLength - (newProgressLength / 2) <= 0L) {
+                newProgressLeftOffset = - progressLeftOffset.getVariable();
+                newProgressRightOffset = - progressRightOffset.getVariable() + progressLength - newProgressLength;
+            } else if (progressLeftLength + (newProgressLength / 2) >= progressLength) {
+                newProgressLeftOffset = - progressLeftOffset.getVariable() + progressLength - newProgressLength;
+                newProgressRightOffset = - progressRightOffset.getVariable();
+            } else {
+                newProgressLeftOffset = progressLeftLength - (newProgressLength / 2) - progressLeftOffset.getVariable();
+                newProgressRightOffset = (progressLength - progressLeftLength) - (newProgressLength / 2) - progressRightOffset.getVariable();
+            }
+
+            progressLeftOffset.setVariable(progressLeftOffset.getVariable() + newProgressLeftOffset);
+            progressRightOffset.setVariable(progressRightOffset.getVariable() + newProgressRightOffset);
+
+            rangeControlBottomSheet_setupRangeSeekBar(
+                    type, seekBarLength, progressLength,
+                    progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                    progressLeftOrRightLength
+            );
+        }
+    }
+
+    static void rangeControlBottomSheet_zoomOutRangeSeekBar(
+            int type, int seekBarLength, int progressLength,
+            VariableContainer<Integer> progressLeftOffset, VariableContainer<Integer> progressRightOffset,
+            VariableContainer<Integer> progressLeftOrRightLength
+    ) {
+        if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
+            int progressLeftLength = progressLeftOrRightLength.getVariable();
+
+            int newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) * 2;
+            if (newProgressLength > progressLength) {
+                newProgressLength = progressLength;
+            } else if (newProgressLength / 2 < 1) {
+                newProgressLength = 1 * 2;
+            }
+            int newProgressLeftOffset;
+            int newProgressRightOffset;
+
+            if (progressLeftLength - (newProgressLength / 2) <= 0) {
+                newProgressLeftOffset = - progressLeftOffset.getVariable();
+                newProgressRightOffset = - progressRightOffset.getVariable() + progressLength - newProgressLength;
+            } else if (progressLeftLength + (newProgressLength / 2) >= progressLength) {
+                newProgressLeftOffset = - progressLeftOffset.getVariable() + progressLength - newProgressLength;
+                newProgressRightOffset = - progressRightOffset.getVariable();
+            } else {
+                newProgressLeftOffset = progressLeftLength - (newProgressLength / 2) - progressLeftOffset.getVariable();
+                newProgressRightOffset = (progressLength - progressLeftLength) - (newProgressLength / 2) - progressRightOffset.getVariable();
+            }
+
+            progressLeftOffset.setVariable(progressLeftOffset.getVariable() + newProgressLeftOffset);
+            progressRightOffset.setVariable(progressRightOffset.getVariable() + newProgressRightOffset);
+
+            rangeControlBottomSheet_setupRangeSeekBar(
+                    type, seekBarLength, progressLength,
+                    progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                    progressLeftOrRightLength
+            );
+        }
+    }
+
+    static void rangeControlBottomSheet_zoomOutRangeSeekBar(
+            int type, int seekBarLength, float progressLength,
+            VariableContainer<Float> progressLeftOffset, VariableContainer<Float> progressRightOffset,
+            VariableContainer<Float> progressLeftOrRightLength
+    ) {
+        if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+            float progressRightLength = progressLeftOrRightLength.getVariable();
+
+            float newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) * 2;
+            if (newProgressLength > progressLength) {
+                newProgressLength = progressLength;
+            } else if (newProgressLength / 2 < Float.MIN_NORMAL) {
+                newProgressLength = (float) 1E-6;
+            }
+            float newProgressLeftOffset;
+            float newProgressRightOffset;
+
+            if (progressRightLength + (newProgressLength / 2) >= progressLength) {
+                newProgressLeftOffset = - progressLeftOffset.getVariable();
+                newProgressRightOffset = - progressRightOffset.getVariable() + progressLength - newProgressLength;
+            } else if (progressRightLength - (newProgressLength / 2) <= 0.0f) {
+                newProgressLeftOffset = - progressLeftOffset.getVariable() + progressLength - newProgressLength;
+                newProgressRightOffset = - progressRightOffset.getVariable();
+            } else {
+                newProgressLeftOffset = (progressLength - progressRightLength) - (newProgressLength / 2) - progressLeftOffset.getVariable();
+                newProgressRightOffset = progressRightLength - (newProgressLength / 2) - progressRightOffset.getVariable();
+            }
+
+            progressLeftOffset.setVariable(progressLeftOffset.getVariable() + newProgressLeftOffset);
+            progressRightOffset.setVariable(progressRightOffset.getVariable() + newProgressRightOffset);
+
+            rangeControlBottomSheet_setupRangeSeekBar(
+                    type, seekBarLength, progressLength,
+                    progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                    progressLeftOrRightLength
+            );
+        }
+    }
+
+
+    static void rangeControlBottomSheet_zoomInRangeSeekBar(
+            int type, int seekBarLength, long progressLength,
+            VariableContainer<Long> progressLeftOffset, VariableContainer<Long> progressRightOffset,
+            VariableContainer<Long> progressLeftOrRightLength
+    ) {
+        if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+            long progressLeftLength = progressLeftOrRightLength.getVariable();
+
+            long newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) / 2;
+            long newProgressLeftOffset = 0L;
+            long newProgressRightOffset = 0L;
+
+            if (progressLeftLength + (newProgressLength / 2) >= progressLength - progressRightOffset.getVariable()) {
+                newProgressLeftOffset = newProgressLength;
+            } else if (progressLeftLength - (newProgressLength / 2) <= progressLeftOffset.getVariable()) {
+                newProgressRightOffset = newProgressLength;
+            } else {
+                newProgressLeftOffset = progressLeftLength - (newProgressLength / 2) - progressLeftOffset.getVariable();
+                newProgressRightOffset = (progressLength - progressLeftLength) - (newProgressLength / 2) - progressRightOffset.getVariable();
+            }
+
+            progressLeftOffset.setVariable(progressLeftOffset.getVariable() + newProgressLeftOffset);
+            progressRightOffset.setVariable(progressRightOffset.getVariable() + newProgressRightOffset);
+
+            rangeControlBottomSheet_setupRangeSeekBar(
+                    type, seekBarLength, progressLength,
+                    progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                    progressLeftOrRightLength
+            );
+        }
+    }
+
+    static void rangeControlBottomSheet_zoomInRangeSeekBar(
+            int type, int seekBarLength, int progressLength,
+            VariableContainer<Integer> progressLeftOffset, VariableContainer<Integer> progressRightOffset,
+            VariableContainer<Integer> progressLeftOrRightLength
+    ) {
+        if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
+            int progressLeftLength = progressLeftOrRightLength.getVariable();
+
+            int newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) / 2;
+            int newProgressLeftOffset = 0;
+            int newProgressRightOffset = 0;
+
+            if (progressLeftLength + (newProgressLength / 2) >= progressLength - progressRightOffset.getVariable()) {
+                newProgressLeftOffset = newProgressLength;
+            } else if (progressLeftLength - (newProgressLength / 2) <= progressLeftOffset.getVariable()) {
+                newProgressRightOffset = newProgressLength;
+            } else {
+                newProgressLeftOffset = progressLeftLength - (newProgressLength / 2) - progressLeftOffset.getVariable();
+                newProgressRightOffset = (progressLength - progressLeftLength) - (newProgressLength / 2) - progressRightOffset.getVariable();
+            }
+
+            progressLeftOffset.setVariable(progressLeftOffset.getVariable() + newProgressLeftOffset);
+            progressRightOffset.setVariable(progressRightOffset.getVariable() + newProgressRightOffset);
+
+            rangeControlBottomSheet_setupRangeSeekBar(
+                    type, seekBarLength, progressLength,
+                    progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                    progressLeftOrRightLength
+            );
+        }
+    }
+
+    static void rangeControlBottomSheet_zoomInRangeSeekBar(
+            int type, int seekBarLength, float progressLength,
+            VariableContainer<Float> progressLeftOffset, VariableContainer<Float> progressRightOffset,
+            VariableContainer<Float> progressLeftOrRightLength
+    ) {
+        if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+            float progressRightLength = progressLeftOrRightLength.getVariable();
+
+            float newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) / 2;
+            float newProgressLeftOffset = 0.0f;
+            float newProgressRightOffset = 0.0f;
+
+            if (progressRightLength - (newProgressLength / 2) <= progressRightOffset.getVariable()) {
+                newProgressLeftOffset = newProgressLength;
+            } else if (progressRightLength + (newProgressLength / 2) >= progressLength - progressLeftOffset.getVariable()) {
+                newProgressRightOffset = newProgressLength;
+            } else {
+                newProgressLeftOffset = (progressLength - progressRightLength) - (newProgressLength / 2) - progressLeftOffset.getVariable();
+                newProgressRightOffset = progressRightLength - (newProgressLength / 2) - progressRightOffset.getVariable();
+            }
+
+            progressLeftOffset.setVariable(progressLeftOffset.getVariable() + newProgressLeftOffset);
+            progressRightOffset.setVariable(progressRightOffset.getVariable() + newProgressRightOffset);
+
+            rangeControlBottomSheet_setupRangeSeekBar(
+                    type, seekBarLength, progressLength,
+                    progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
+                    progressLeftOrRightLength
+            );
+        }
+    }
+    // endregion: rangeControlBottomSheet_zoomOutRangeSeekBar
+
+    static String rangeControlBottomSheet_formatTimeString(long time) {
+        if (time < 1E3) {
+            return time + " ns";
+        } else if (time < 1E6) {
+            return String.format("%.2f", (double) (time / 1E0) / 1E3) + " µs";
+        } else if (time < 1E9) {
+            return String.format("%.2f", (double) (time / 1E3) / 1E3) + " ms";
+        } else {
+            return String.format("%.2f", (double) (time / 1E6) / 1E3) + " s";
         }
     }
 

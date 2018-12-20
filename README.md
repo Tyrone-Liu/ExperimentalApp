@@ -60,6 +60,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
     * [ ] Switch camera
     * [x] Open torch
     * [ ] Gallery
++ [x] Zoom in SeekBar for preciser adjust
 + [ ] Another thread for storing image file
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
