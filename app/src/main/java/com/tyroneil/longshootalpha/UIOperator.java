@@ -55,9 +55,9 @@ class UIOperator {
     static MaterialCheckBox autoCheckBox_range_control;
     static TextInputEditText valueEditText_range_control;
     static MaterialButton applyButton_range_control;
-    static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME = 0;
-    static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY = 1;
-    static final int RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE = 2;
+    static final int RANGE_CONTROL_TYPE_EXPOSURE_TIME = 0;
+    static final int RANGE_CONTROL_TYPE_SENSITIVITY = 1;
+    static final int RANGE_CONTROL_TYPE_FOCUS_DISTANCE = 2;
     // endregion: content capture parameter range control
 
     // region: content capture parameter list control
@@ -372,7 +372,7 @@ class UIOperator {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
                                 if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME);
+                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -387,53 +387,18 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME);
+                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                             }
                         }
                     });
 
+                    long progressLength = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
+                    long progressLeftOffset = 0L;
+                    long progressRightOffset = 0L;
                     long progressLeftLength = MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                    final long progressLength = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                    rangeSeekBar_range_control.setProgress((int)
-                            (seekBarLength * ((double) progressLeftLength / progressLength))
-                            + rangeSeekBar_range_control.getMin()
-                    );
-                    rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                        @Override
-                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                            if (fromUser) {
-                                MainActivity.exposureTime = (
-                                        (long) (progressLength * ((double) (progress - rangeSeekBar_range_control.getMin()) / seekBarLength))
-                                        + MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
-                                );
-                                if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
-                                    MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                                } else if (MainActivity.exposureTime > MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
-                                    MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
-                                }
-                                if (MainActivity.exposureTime < 1E3) {
-                                    valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1E9) + " s");
-                                } else if (MainActivity.exposureTime < 1E6) {
-                                    valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 1E1) / 1E8) + " s");
-                                } else if (MainActivity.exposureTime < 1E9) {
-                                    valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 1E4) / 1E5) + " s");
-                                } else {
-                                    valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + " s");
-                                }
-                                updateCaptureParametersIndicator();
-                            }
-                        }
-
-                        @Override
-                        public void onStartTrackingTouch(SeekBar seekBar) {
-                        }
-                        @Override
-                        public void onStopTrackingTouch(SeekBar seekBar) {
-                            updatePreviewParameters();
-                        }
-                    });
+                    rangeControlBottomSheet_setUpRangeSeekBar(RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
                 }
 
                 else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
@@ -448,7 +413,7 @@ class UIOperator {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
                                 if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY);
+                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_SENSITIVITY);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -463,45 +428,18 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY);
+                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_SENSITIVITY);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                             }
                         }
                     });
 
-                    long progressLeftLength = MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                    final long progressLength = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                    rangeSeekBar_range_control.setProgress((int)
-                            (seekBarLength * ((double) progressLeftLength / progressLength))
-                            + rangeSeekBar_range_control.getMin()
-                    );
-                    rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                        @Override
-                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                            if (fromUser) {
-                                MainActivity.sensitivity = (
-                                        (int) (progressLength * ((float) (progress - rangeSeekBar_range_control.getMin()) / seekBarLength))
-                                        + MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
-                                );
-                                if (MainActivity.sensitivity < MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
-                                    MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                                } else if (MainActivity.sensitivity > MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) {
-                                    MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
-                                }
-                                valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
-                                updateCaptureParametersIndicator();
-                                updatePreviewParameters();
-                            }
-                        }
-
-                        @Override
-                        public void onStartTrackingTouch(SeekBar seekBar) {
-                        }
-                        @Override
-                        public void onStopTrackingTouch(SeekBar seekBar) {
-                        }
-                    });
+                    int progressLength = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+                    int progressLeftOffset = 0;
+                    int progressRightOffset = 0;
+                    int progressLeftLength = MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+                    rangeControlBottomSheet_setUpRangeSeekBar(RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressLeftLength);
                 }
             }
             // endregion: parameters controlled by aeMode
@@ -548,7 +486,7 @@ class UIOperator {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE);
+                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
                                 return true;
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -563,72 +501,18 @@ class UIOperator {
                     @Override
                     public void onClick(View v) {
                         if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                            rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE);
+                            rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
                         } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                             rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                         }
                     }
                 });
 
-                //  TODO: present focus distance better on the seek bar
+                float progressLength = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
+                float progressLeftOffset = 0.0f;
+                float progressRightOffset = 0.0f;
                 float progressRightLength = MainActivity.focusDistance;
-                final float progressLength = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
-                rangeSeekBar_range_control.setProgress(
-                        rangeSeekBar_range_control.getMax()
-                        - (int) (seekBarLength * (progressRightLength / progressLength))
-                );
-                rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (fromUser) {
-                            MainActivity.focusDistance = progressLength * ((float) (rangeSeekBar_range_control.getMax() - progress) / seekBarLength);
-                            if (MainActivity.focusDistance < 0.0f) {
-                                MainActivity.focusDistance = 0.0f;
-                            } else if (MainActivity.focusDistance > MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
-                                MainActivity.focusDistance = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
-                            }
-                            if (MainActivity.focusDistance == 0.0f) {
-                                valueEditText_range_control.setHint("Infinity");
-                            } else {
-                                valueEditText_range_control.setHint(String.format("%.4f", 1f / MainActivity.focusDistance) + " m");
-                            }
-                            rangeControlBottomSheet_setInformationTextViewText();
-                            updateCaptureParametersIndicator();
-                            updatePreviewParameters();
-                        }
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
-                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                    (int) (MainActivity.focusAssistantWidthCenter - (MainActivity.focusAssistantWidth / 2.0f)),
-                                    (int) (MainActivity.focusAssistantHeightCenter - (MainActivity.focusAssistantHeight / 2.0f)),
-                                    (int) (MainActivity.focusAssistantWidthCenter + (MainActivity.focusAssistantWidth / 2.0f)),
-                                    (int) (MainActivity.focusAssistantHeightCenter + (MainActivity.focusAssistantHeight / 2.0f))
-                            ));
-                        }
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
-                            if (
-                                    MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
-                                    || MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
-                            ) {
-                                MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                        0, 0, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT
-                                ));
-                            } else {
-                                MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                        0, 0, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH, MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT
-                                ));
-                            }
-                            updatePreviewParameters();
-                        }
-                    }
-                });
+                rangeControlBottomSheet_setUpRangeSeekBar(RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength, progressLeftOffset, progressRightOffset, progressRightLength);
             }
             // endregion: parameters controlled by afMode
         }
@@ -649,7 +533,7 @@ class UIOperator {
     }
 
     static void rangeControlBottomSheet_applyValueEditTextValue(int valueEditTextType) {
-        if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_EXPOSURE_TIME) {
+        if (valueEditTextType == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
             double rawValue = Double.valueOf((valueEditText_range_control.getText()).toString());
             MainActivity.exposureTime = (long) (rawValue * 1E9);
             if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
@@ -658,7 +542,7 @@ class UIOperator {
                 MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
             }
 
-        } else if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_SENSITIVITY) {
+        } else if (valueEditTextType == RANGE_CONTROL_TYPE_SENSITIVITY) {
             MainActivity.sensitivity = Integer.valueOf((valueEditText_range_control.getText()).toString());
             if (MainActivity.sensitivity < MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
                 MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
@@ -666,7 +550,7 @@ class UIOperator {
                 MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
             }
 
-        } else if (valueEditTextType == RANGE_CONTROL_VALUE_EDIT_TEXT_TYPE_FOCUS_DISTANCE) {
+        } else if (valueEditTextType == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
             float rawValue = Float.valueOf((valueEditText_range_control.getText()).toString());
             MainActivity.focusDistance = 1f / rawValue;
             if (MainActivity.focusDistance < 0.0f) {
@@ -679,6 +563,158 @@ class UIOperator {
         rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
         updateCaptureParametersIndicator();
         updatePreviewParameters();
+    }
+
+    static void rangeControlBottomSheet_setUpRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, long progressLeftOrRightLength) {
+        if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+            long progressLeftLength = progressLeftOrRightLength;
+            rangeSeekBar_range_control.setProgress((int)
+                    (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
+                    + rangeSeekBar_range_control.getMin()
+            );
+            rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (fromUser) {
+                        MainActivity.exposureTime = ((long) (
+                                (progressLength - progressLeftOffset - progressRightOffset)
+                                * ((double) (progress - rangeSeekBar_range_control.getMin()) / seekBarLength)
+                                ) + progressLeftOffset + MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                        );
+                        if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
+                            MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
+                        } else if (MainActivity.exposureTime > MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
+                            MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
+                        }
+                        if (MainActivity.exposureTime < 1E3) {
+                            valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1E9) + " s");
+                        } else if (MainActivity.exposureTime < 1E6) {
+                            valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 1E1) / 1E8) + " s");
+                        } else if (MainActivity.exposureTime < 1E9) {
+                            valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 1E4) / 1E5) + " s");
+                        } else {
+                            valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + " s");
+                        }
+                        updateCaptureParametersIndicator();
+                    }
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    updatePreviewParameters();
+                }
+            });
+        }
+    }
+
+    static void rangeControlBottomSheet_setUpRangeSeekBar(int type, final int seekBarLength, final int progressLength, final int progressLeftOffset, final int progressRightOffset, int progressLeftOrRightLength) {
+        if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
+            int progressLeftLength = progressLeftOrRightLength;
+            rangeSeekBar_range_control.setProgress((int)
+                    (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
+                    + rangeSeekBar_range_control.getMin()
+            );
+            rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (fromUser) {
+                        MainActivity.sensitivity = ((int) (
+                                (progressLength - progressLeftOffset - progressRightOffset)
+                                * ((float) (progress - rangeSeekBar_range_control.getMin()) / seekBarLength)
+                                ) + progressLeftOffset + MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                        );
+                        if (MainActivity.sensitivity < MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
+                            MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+                        } else if (MainActivity.sensitivity > MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) {
+                            MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
+                        }
+                        valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
+                        updateCaptureParametersIndicator();
+                        updatePreviewParameters();
+                    }
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            });
+        }
+    }
+
+    static void rangeControlBottomSheet_setUpRangeSeekBar(int type, final int seekBarLength, final float progressLength, final float progressLeftOffset, final float progressRightOffset, float progressLeftOrRightLength) {
+        if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+            final float progressRightLength = progressLeftOrRightLength;
+            rangeSeekBar_range_control.setProgress(
+                    rangeSeekBar_range_control.getMax() - (int)
+                    (seekBarLength * (progressRightLength - progressRightOffset) / (progressLength - progressLeftOffset - progressRightOffset))
+            );
+            rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (fromUser) {
+                        MainActivity.focusDistance = (
+                                (progressLength - progressLeftOffset - progressRightOffset)
+                                * ((float) (rangeSeekBar_range_control.getMax() - progress) / seekBarLength)
+                                + progressRightOffset
+                        );
+                        if (MainActivity.focusDistance < 0.0f) {
+                            MainActivity.focusDistance = 0.0f;
+                        } else if (MainActivity.focusDistance > MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
+                            MainActivity.focusDistance = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
+                        }
+                        if (MainActivity.focusDistance == 0.0f) {
+                            valueEditText_range_control.setHint("Infinity");
+                        } else {
+                            valueEditText_range_control.setHint(String.format("%.4f", 1f / MainActivity.focusDistance) + " m");
+                        }
+                        rangeControlBottomSheet_setInformationTextViewText();
+                        updateCaptureParametersIndicator();
+                        updatePreviewParameters();
+                    }
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
+                        MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                (int) (MainActivity.focusAssistantWidthCenter - (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) (MainActivity.focusAssistantHeightCenter - (MainActivity.focusAssistantHeight / 2.0f)),
+                                (int) (MainActivity.focusAssistantWidthCenter + (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) (MainActivity.focusAssistantHeightCenter + (MainActivity.focusAssistantHeight / 2.0f))
+                        ));
+                    }
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
+                        if (
+                                MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
+                                || MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
+                        ) {
+                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                    0, 0,
+                                    MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH,
+                                    MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT
+                            ));
+                        } else {
+                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                    0, 0,
+                                    MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH,
+                                    MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT
+                            ));
+                        }
+                        updatePreviewParameters();
+                    }
+                }
+            });
+        }
     }
 
     static void rangeControlBottomSheet_setInformationTextViewText() {
