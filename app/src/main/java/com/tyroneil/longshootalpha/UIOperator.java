@@ -54,7 +54,7 @@ class UIOperator {
     static SeekBar rangeSeekBar_range_control;
     static MaterialCheckBox autoCheckBox_range_control;
     static TextInputEditText valueEditText_range_control;
-    static MaterialButton applyButton_range_control;
+    static MaterialButton zoomOutButton_range_control, zoomInButton_range_control, applyButton_range_control;
     static final int RANGE_CONTROL_TYPE_EXPOSURE_TIME = 0;
     static final int RANGE_CONTROL_TYPE_SENSITIVITY = 1;
     static final int RANGE_CONTROL_TYPE_FOCUS_DISTANCE = 2;
@@ -131,6 +131,8 @@ class UIOperator {
         rangeSeekBar_range_control = (SeekBar) MainActivity.activity.findViewById(R.id.seekBar_range_control_range);
         autoCheckBox_range_control = (MaterialCheckBox) MainActivity.activity.findViewById(R.id.checkBox_range_control_auto);
         valueEditText_range_control = (TextInputEditText) MainActivity.activity.findViewById(R.id.editText_range_control_value);
+        zoomOutButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_zoomOut);
+        zoomInButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_zoomIn);
         applyButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_apply);
 
         rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -522,11 +524,19 @@ class UIOperator {
         if (isChecked) {
             autoCheckBox_range_control.setChecked(true);
             rangeSeekBar_range_control.setEnabled(false);
+            zoomOutButton_range_control.setEnabled(false);
+            zoomInButton_range_control.setEnabled(false);
+            zoomOutButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            zoomInButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
             applyButton_range_control.setEnabled(false);
             valueEditText_range_control.setEnabled(false);
         } else {
             autoCheckBox_range_control.setChecked(false);
             rangeSeekBar_range_control.setEnabled(true);
+            zoomOutButton_range_control.setEnabled(true);
+            zoomInButton_range_control.setEnabled(true);
+            zoomOutButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            zoomInButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
             applyButton_range_control.setEnabled(true);
             valueEditText_range_control.setEnabled(true);
         }

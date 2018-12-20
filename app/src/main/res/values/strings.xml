@@ -26,16 +26,26 @@
     <string name="textView_range_control_title_focusDistance">Focus Distance</string>
     <string name="textView_range_control_valueMinimum">MIN\n--</string>
     <string name="textView_range_control_valueMaximum">MAX\n--</string>
+    <string name="textView_range_control_zoomOut">-</string>
+    <string name="textView_range_control_zoomIn">+</string>
     <string name="button_range_control_apply">OK</string>
     <string name="checkBox_range_control_auto">AUTO</string>
 
-    <!-- content capture parameter range control -->
+    <!-- content capture parameter list control -->
     <string name="textView_list_control_title">List Control Title</string>
     <string name="textView_list_control_title_aperture">Aperture</string>
     <string name="textView_list_control_title_autoWhiteBalance">Auto White Balance</string>
     <string name="textView_list_control_title_opticalStabilization">Optical Image Stabilization</string>
     <string name="textView_list_control_title_focalLength">Focal Length</string>
     <string name="button_list_control_dismiss">Dismiss</string>
+
+    <!-- menu_activity_settings -->
+    <string name="action_settings_about">About</string>
+
+    <!-- menu_activity_sequence -->
+    <string name="action_sequence_start">Start</string>
+    <string name="action_sequence_loop">Loop</string>
+    <string name="action_sequence_clear">Clear All</string>
 
     <!-- preferences -->
     <string name="preference_category_title_capture_and_storage">Capture &amp; Storage</string>
@@ -49,13 +59,5 @@
     <string name="preference_title_preview_exposure_time_limit">Limit exposure time for preview</string>
     <string name="preference_summary_preview_exposure_time_limit">Using long exposure time in preview will cause high latency between captureRequest been submitted and performed.  </string>
     <string name="preference_title_preview_exposure_time_limit_value">Preview exposure time limit (s)</string>
-
-    <!-- menu_activity_settings -->
-    <string name="action_settings_about">About</string>
-
-    <!-- menu_activity_sequence -->
-    <string name="action_sequence_start">Start</string>
-    <string name="action_sequence_loop">Loop</string>
-    <string name="action_sequence_clear">Clear All</string>
 
 </resources>

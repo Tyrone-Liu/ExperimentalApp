@@ -13,8 +13,8 @@
         android:text="@string/textView_range_control_title"
         android:textAlignment="center"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range"
-        app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range"
+        app:layout_constraintEnd_toEndOf="@+id/button_range_control_zoomIn"
+        app:layout_constraintStart_toStartOf="@+id/button_range_control_zoomOut"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -36,14 +36,11 @@
         style="@style/CameraTheme.SeekBarAccentColor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
         android:max="20000"
         android:min="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_range_control_zoomIn"
+        app:layout_constraintStart_toEndOf="@+id/button_range_control_zoomOut"
         app:layout_constraintTop_toBottomOf="@+id/textView_range_control_information" />
 
     <TextView
@@ -51,24 +48,22 @@
         style="@style/CameraTheme.TextAccentColorDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/textView_range_control_valueMinimum"
         android:textAlignment="textStart"
         app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_range"
-        app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range" />
+        app:layout_constraintStart_toStartOf="@+id/button_range_control_zoomOut" />
 
     <TextView
         android:id="@+id/textView_range_control_valueMaximum"
         style="@style/CameraTheme.TextAccentColorDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/textView_range_control_valueMaximum"
         android:textAlignment="textEnd"
         app:layout_constraintBottom_toTopOf="@+id/seekBar_range_control_range"
-        app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range" />
+        app:layout_constraintEnd_toEndOf="@+id/button_range_control_zoomIn" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_range_control_apply"
@@ -81,7 +76,7 @@
         android:minHeight="48dp"
         android:text="@string/button_range_control_apply"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/seekBar_range_control_range"
+        app:layout_constraintEnd_toEndOf="@+id/button_range_control_zoomIn"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_range_control_range" />
 
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -92,7 +87,7 @@
         android:checked="false"
         android:text="@string/checkBox_range_control_auto"
         app:layout_constraintBaseline_toBaselineOf="@+id/button_range_control_apply"
-        app:layout_constraintStart_toStartOf="@+id/seekBar_range_control_range" />
+        app:layout_constraintStart_toStartOf="@+id/button_range_control_zoomOut" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editText_range_control_value"
@@ -106,5 +101,39 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/button_range_control_apply"
         app:layout_constraintEnd_toStartOf="@+id/button_range_control_apply"
         app:layout_constraintStart_toEndOf="@+id/checkBox_range_control_auto" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_range_control_zoomOut"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:includeFontPadding="false"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="@string/textView_range_control_zoomOut"
+        android:textColor="@color/colorSecondary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/seekBar_range_control_range"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/seekBar_range_control_range"
+        app:rippleColor="@color/colorSecondaryUp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_range_control_zoomIn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:includeFontPadding="false"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="@string/textView_range_control_zoomIn"
+        android:textColor="@color/colorSecondary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/seekBar_range_control_range"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/seekBar_range_control_range"
+        app:rippleColor="@color/colorSecondaryUp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
