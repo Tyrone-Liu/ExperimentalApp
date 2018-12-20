@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.TypedValue;
@@ -834,8 +835,10 @@ class UIOperator {
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
                         if (
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (
                                 MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
                                 || MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
+                                )
                         ) {
                             MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
                                     0, 0,

@@ -22,6 +22,7 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -742,8 +743,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (
                 previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
                 || previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
+                )
         ) {
             focusAssistantWidthCenter = SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH / 2.0f;
             focusAssistantHeightCenter = SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT / 2.0f;
