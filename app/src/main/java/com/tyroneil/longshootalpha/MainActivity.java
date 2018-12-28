@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
      * transform matrix based on screen orientation, do not bother to use {@param sensorOrientation}
      * in this case.
      */
-    private static int sensorOrientation;
+    static int sensorOrientation;
     // endregion: current cameraDevice variable
 
     // region: variable for preview
@@ -153,11 +153,11 @@ public class MainActivity extends AppCompatActivity {
     static int SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;  // get from Rect, more convenient to use
     static int SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;  // get from Rect, more convenient to use
 
-    static int viewfinderWidth;  // depending on CaptureRequest.DISTORTION_CORRECTION_MODE
-    static int viewfinderHeight;  // depending on CaptureRequest.DISTORTION_CORRECTION_MODE
+    static int previewViewWidth;  // depending on CaptureRequest.DISTORTION_CORRECTION_MODE
+    static int previewViewHeight;  // depending on CaptureRequest.DISTORTION_CORRECTION_MODE
 
-    static float focusAssistantX;  // set by touch, or from viewfinderWidth
-    static float focusAssistantY;  // set by touch, or from viewfinderHeight
+    static float focusAssistantX;  // set by touch, or from previewViewWidth
+    static float focusAssistantY;  // set by touch, or from previewViewHeight
     static float focusAssistantWidth;  // decided by previewCRTV_DP width
     static float focusAssistantHeight;  // decided by previewCRTV_DP height
     // endregion: focus assistant
@@ -714,10 +714,6 @@ public class MainActivity extends AppCompatActivity {
         // coordinate range for zoom and focus assistant
         SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_SIZE);
         SENSOR_INFO_ACTIVE_ARRAY_RECT = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
-        SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.left;
-        SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.top;
-        SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_ACTIVE_ARRAY_RECT.left;
-        SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_ACTIVE_ARRAY_RECT.top;
         // coordinate range for zoom and focus assistant
 
         if (SENSOR_INFO_EXPOSURE_TIME_RANGE.contains((long) 1E8)) {
@@ -751,6 +747,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void initiateFocusAssistant() {
+        SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.left;
+        SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT.top;
+        SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_ACTIVE_ARRAY_RECT.left;
+        SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_ACTIVE_ARRAY_RECT.top;
+
         float previewCRTV_DP_width = UIOperator.previewCRTV_camera_control.getWidth() / scale;
         float previewCRTV_DP_height = UIOperator.previewCRTV_camera_control.getHeight() / scale;
         if (sensorOrientation == 90 || sensorOrientation == 270) {
@@ -767,15 +768,15 @@ public class MainActivity extends AppCompatActivity {
                 || previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
                 )
         ) {
-            viewfinderWidth = SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;
-            viewfinderHeight = SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;
+            previewViewWidth = SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;
+            previewViewHeight = SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;
         } else {
-            viewfinderWidth = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;
-            viewfinderHeight = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;
+            previewViewWidth = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;
+            previewViewHeight = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;
         }
 
-        focusAssistantX = viewfinderWidth / 2.0f;
-        focusAssistantY = viewfinderHeight / 2.0f;
+        focusAssistantX = previewViewWidth / 2.0f;
+        focusAssistantY = previewViewHeight / 2.0f;
     }
 
     // previewCaptureCallback is for debug purpose

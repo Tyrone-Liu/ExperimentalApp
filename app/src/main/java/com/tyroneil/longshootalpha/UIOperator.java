@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -104,6 +105,75 @@ class UIOperator {
             }
             @Override
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+            }
+        });
+        previewCRTV_camera_control.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    float displayX = event.getX();
+                    float displayY = event.getY();
+                    if (displayX > v.getWidth()) {displayX = v.getWidth();}
+                    if (displayY > v.getHeight()) {displayY = v.getHeight();}
+
+                    float scaledX;
+                    float scaledY;
+
+                    switch (MainActivity.sensorOrientation) {
+                        default:
+                        case 0:
+                        case 180:
+                            scaledX = displayX * ((float) MainActivity.previewViewWidth / v.getWidth());
+                            scaledY = displayY * ((float) MainActivity.previewViewHeight / v.getHeight());
+                            break;
+
+                        case 90:
+                        case 270:
+                            scaledX = displayX * ((float) MainActivity.previewViewHeight / v.getWidth());
+                            scaledY = displayY * ((float) MainActivity.previewViewWidth / v.getHeight());
+                            break;
+                    }
+
+                    switch (MainActivity.sensorOrientation) {
+                        case 0:
+                            MainActivity.focusAssistantX = scaledX;
+                            MainActivity.focusAssistantY = scaledY;
+                            break;
+
+                        case 180:
+                            MainActivity.focusAssistantX = (float) MainActivity.previewViewWidth - scaledX;
+                            MainActivity.focusAssistantY = (float) MainActivity.previewViewHeight - scaledY;
+                            break;
+
+                        case 90:
+                            MainActivity.focusAssistantX = scaledY;
+                            MainActivity.focusAssistantY = (float) MainActivity.previewViewHeight - scaledX;
+                            break;
+
+                        case 270:
+                            MainActivity.focusAssistantX = (float) MainActivity.previewViewWidth - scaledY;
+                            MainActivity.focusAssistantY = scaledX;
+                            break;
+                    }
+
+                    // left
+                    if (MainActivity.focusAssistantX - (MainActivity.focusAssistantWidth / 2.0f) < 0.0f) {
+                        MainActivity.focusAssistantX = MainActivity.focusAssistantWidth / 2.0f;
+                    }
+                    // top
+                    if (MainActivity.focusAssistantY - (MainActivity.focusAssistantHeight / 2.0f) < 0.0f) {
+                        MainActivity.focusAssistantY = MainActivity.focusAssistantHeight / 2.0f;
+                    }
+                    // right
+                    if (MainActivity.focusAssistantX + (MainActivity.focusAssistantWidth / 2.0f) > (float) MainActivity.previewViewWidth) {
+                        MainActivity.focusAssistantX = (float) MainActivity.previewViewWidth - (MainActivity.focusAssistantWidth / 2.0f);
+                    }
+                    // bottom
+                    if (MainActivity.focusAssistantY + (MainActivity.focusAssistantHeight / 2.0f) > (float) MainActivity.previewViewHeight) {
+                        MainActivity.focusAssistantY = (float) MainActivity.previewViewHeight - (MainActivity.focusAssistantHeight / 2.0f);
+                    }
+                }
+                return true;
             }
         });
 
@@ -834,7 +904,7 @@ class UIOperator {
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
                         MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                0, 0, MainActivity.viewfinderWidth, MainActivity.viewfinderHeight
+                                0, 0, MainActivity.previewViewWidth, MainActivity.previewViewHeight
                         ));
                         updatePreviewParameters();
                     }
