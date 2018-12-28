@@ -839,7 +839,11 @@ public class MainActivity extends AppCompatActivity {
             // endregion: setup capture request builder
 
             UIOperator.cameraControl_setCaptureButtonEnabled(false);
-            captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_consecutive_capture", false)) {
+                captureSession.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+            } else {
+                captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+            }
             Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
