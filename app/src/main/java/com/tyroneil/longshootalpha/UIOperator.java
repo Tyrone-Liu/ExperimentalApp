@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.TypedValue;
@@ -823,10 +822,10 @@ class UIOperator {
                 public void onStartTrackingTouch(SeekBar seekBar) {
                     if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
                         MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                (int) (MainActivity.focusAssistantWidthCenter - (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) (MainActivity.focusAssistantHeightCenter - (MainActivity.focusAssistantHeight / 2.0f)),
-                                (int) (MainActivity.focusAssistantWidthCenter + (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) (MainActivity.focusAssistantHeightCenter + (MainActivity.focusAssistantHeight / 2.0f))
+                                (int) ((MainActivity.viewfinderWidth / 2.0f) - (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) ((MainActivity.viewfinderHeight / 2.0f) - (MainActivity.focusAssistantHeight / 2.0f)),
+                                (int) ((MainActivity.viewfinderWidth / 2.0f) + (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) ((MainActivity.viewfinderHeight / 2.0f) + (MainActivity.focusAssistantHeight / 2.0f))
                         ));
                     }
                 }
@@ -834,24 +833,9 @@ class UIOperator {
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
-                        if (
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (
-                                MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null
-                                || MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
-                                )
-                        ) {
-                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                    0, 0,
-                                    MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH,
-                                    MainActivity.SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT
-                            ));
-                        } else {
-                            MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                    0, 0,
-                                    MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH,
-                                    MainActivity.SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT
-                            ));
-                        }
+                        MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                0, 0, MainActivity.viewfinderWidth, MainActivity.viewfinderHeight
+                        ));
                         updatePreviewParameters();
                     }
                 }

@@ -144,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
     static float focusAssistantWidth;  // decided by previewCRTV_DP width
     static float focusAssistantHeight;  // decided by previewCRTV_DP height
 
-    static float focusAssistantWidthCenter;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
-    static float focusAssistantHeightCenter;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
+    static int viewfinderWidth;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
+    static int viewfinderHeight;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
     // endregion: focus assistant
 
     static TextView errorMessageTextView;
@@ -753,11 +753,11 @@ public class MainActivity extends AppCompatActivity {
                 || previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) != CaptureRequest.DISTORTION_CORRECTION_MODE_OFF
                 )
         ) {
-            focusAssistantWidthCenter = SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH / 2.0f;
-            focusAssistantHeightCenter = SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT / 2.0f;
+            viewfinderWidth = SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;
+            viewfinderHeight = SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;
         } else {
-            focusAssistantWidthCenter = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH / 2.0f;
-            focusAssistantHeightCenter = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT / 2.0f;
+            viewfinderWidth = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;
+            viewfinderHeight = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;
         }
     }
 
