@@ -211,12 +211,12 @@ class UIOperator {
 
         if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             if (
-                    PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_preview_exposure_time_limit", true)
-                    && MainActivity.exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_key_preview_exposure_time_limit_value", "0.5"))
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_preview_exposure_time_limit", true)
+                    && MainActivity.exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_preview_exposure_time_limit_value", "0.5"))
             ) {
                 MainActivity.previewRequestBuilder.set(
                         CaptureRequest.SENSOR_EXPOSURE_TIME,
-                        (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_key_preview_exposure_time_limit_value", "0.5")))
+                        (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_preview_exposure_time_limit_value", "0.5")))
                 );
             } else {
                 MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
@@ -821,7 +821,7 @@ class UIOperator {
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
+                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
                         MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
                                 (int) (MainActivity.focusAssistantWidthCenter - (MainActivity.focusAssistantWidth / 2.0f)),
                                 (int) (MainActivity.focusAssistantHeightCenter - (MainActivity.focusAssistantHeight / 2.0f)),
@@ -833,7 +833,7 @@ class UIOperator {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_key_focus_assistant", true)) {
+                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
                         if (
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (
                                 MainActivity.previewRequestBuilder.get(CaptureRequest.DISTORTION_CORRECTION_MODE) == null

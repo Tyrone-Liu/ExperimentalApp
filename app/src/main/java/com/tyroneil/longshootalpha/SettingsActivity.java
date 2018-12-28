@@ -13,10 +13,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        // setup ActionBar
         Toolbar toolbar_activity_settings = (Toolbar) findViewById(R.id.toolbar_activity_settings);
         setSupportActionBar(toolbar_activity_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // setup preference content
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.preference_content, new SettingsFragment())

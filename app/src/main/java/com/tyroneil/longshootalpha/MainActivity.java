@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
             aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
             afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_raw_capture", true)) {
+            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_raw_capture", true)) {
                 captureFormat = ImageFormat.RAW_SENSOR;
             } else {
                 captureFormat = ImageFormat.JPEG;
@@ -472,12 +472,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     if (
-                            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_key_preview_exposure_time_limit", true)
-                            && exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_key_preview_exposure_time_limit_value", "0.5"))
+                            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_preview_exposure_time_limit", true)
+                            && exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_preview_exposure_time_limit_value", "0.5"))
                     ) {
                         previewRequestBuilder.set(
                                 CaptureRequest.SENSOR_EXPOSURE_TIME,
-                                (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_key_preview_exposure_time_limit_value", "0.5")))
+                                (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_preview_exposure_time_limit_value", "0.5")))
                         );
                     } else {
                         previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
