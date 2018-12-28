@@ -24,7 +24,6 @@
 
         <EditTextPreference
             android:defaultValue="0.5"
-            android:dialogLayout="@layout/preference_dialog_number_decimal"
             android:dependency="preference_preview_exposure_time_limit"
             android:key="preference_preview_exposure_time_limit_value"
             android:title="@string/preference_title_preview_exposure_time_limit_value"
