@@ -82,6 +82,17 @@ public class MainActivity extends AppCompatActivity {
     private static CameraCharacteristics cameraCharacteristics;
 
     static CameraCaptureSession captureSession;
+
+    /**
+     * It seems that we only need {@param sensorOrientation} when we save the photo.
+     *
+     * For preview orientation, when we use {@link TextView} as the output target, the default
+     * output will always already been rotated by {@param sensorOrientation} to be upright on the
+     * device screen in its native orientation.  This means if we want to rotate the preview (when
+     * the device screen is not in its native orientation), we just need to set the {@link TextView}
+     * transform matrix based on screen orientation, do not bother to use {@param sensorOrientation}
+     * in this case.
+     */
     private static int sensorOrientation;
     // endregion: current cameraDevice variable
 
@@ -434,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
 
             /**
              * Check the 'SENSOR_ORIENTATION' to set width and height appropriately.
-             * (Switch width and height if necessary.  )
+             * (Switch width and height if necessary.)
              */
             previewSize = chooseOutputSize(cameraCharacteristics, captureFormat, true);
             captureSize = chooseOutputSize(cameraCharacteristics, captureFormat, false);  // find optimal size for capture

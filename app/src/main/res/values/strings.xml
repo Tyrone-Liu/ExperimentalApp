@@ -52,13 +52,13 @@
     <string name="preference_category_title_capture_and_storage">Capture &amp; Storage</string>
 
     <string name="preference_title_raw_capture">RAW Capture</string>
-    <string name="preference_summary_raw_capture">Capture in RAW format, otherwise JPEG.  Needs to reload the APP for now (because of dev state).  </string>
+    <string name="preference_summary_raw_capture">Capture in RAW format, otherwise JPEG.  Needs to reload the APP for now (because of dev state).</string>
 
     <string name="preference_title_focus_assistant">Focus Assistant</string>
-    <string name="preference_summary_focus_assistant">Zoom in preview when using manual focus.  </string>
+    <string name="preference_summary_focus_assistant">Zoom in preview when using manual focus.</string>
 
     <string name="preference_title_preview_exposure_time_limit">Limit Exposure Time for Preview</string>
-    <string name="preference_summary_preview_exposure_time_limit">Using long exposure time in preview will cause high latency between captureRequest been submitted and performed.  </string>
+    <string name="preference_summary_preview_exposure_time_limit">Using long exposure time in preview will cause high latency between captureRequest been submitted and performed.</string>
     <string name="preference_title_preview_exposure_time_limit_value">Preview exposure time limit (s)</string>
 
 
