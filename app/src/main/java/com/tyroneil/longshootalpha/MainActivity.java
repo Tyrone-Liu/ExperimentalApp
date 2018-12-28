@@ -130,18 +130,23 @@ public class MainActivity extends AppCompatActivity {
     static float focusDistance;  // LENS_FOCUS_DISTANCE
     static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
     static float CIRCLE_OF_CONFUSION;  // unit: mm, constant for each camera device
-
-    static Rect SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
-    static Rect SENSOR_INFO_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
-    static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;  // coordinate range for zoom and focus assistant
-    static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;  // coordinate range for zoom and focus assistant
-    static int SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;  // coordinate range for zoom and focus assistant
-    static int SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;  // coordinate range for zoom and focus assistant
-    static float focusAssistantWidth;
-    static float focusAssistantHeight;
-    static float focusAssistantWidthCenter;
-    static float focusAssistantHeightCenter;
     // endregion: capture parameters
+
+    // region: focus assistant
+    static Rect SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
+    static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;  // get from Rect, more convenient to use
+    static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;  // get from Rect, more convenient to use
+
+    static Rect SENSOR_INFO_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
+    static int SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;  // get from Rect, more convenient to use
+    static int SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;  // get from Rect, more convenient to use
+
+    static float focusAssistantWidth;  // decided by previewCRTV_DP width
+    static float focusAssistantHeight;  // decided by previewCRTV_DP height
+
+    static float focusAssistantWidthCenter;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
+    static float focusAssistantHeightCenter;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
+    // endregion: focus assistant
 
     static TextView errorMessageTextView;
 
