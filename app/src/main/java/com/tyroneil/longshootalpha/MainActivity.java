@@ -752,8 +752,8 @@ public class MainActivity extends AppCompatActivity {
         SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_ACTIVE_ARRAY_RECT.left;
         SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_ACTIVE_ARRAY_RECT.top;
 
-        float previewCRTV_DP_width = UIOperator.previewCRTV_camera_control.getWidth() / scale;
-        float previewCRTV_DP_height = UIOperator.previewCRTV_camera_control.getHeight() / scale;
+        float previewCRTV_DP_width = (float) UIOperator.previewCRTV_camera_control.getWidth() / scale;
+        float previewCRTV_DP_height = (float) UIOperator.previewCRTV_camera_control.getHeight() / scale;
         if (sensorOrientation == 90 || sensorOrientation == 270) {
             focusAssistantWidth = previewCRTV_DP_height;
             focusAssistantHeight = previewCRTV_DP_width;
