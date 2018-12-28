@@ -12,6 +12,8 @@ import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CaptureRequest;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -50,6 +52,7 @@ class UIOperator {
     // endregion: content capture parameters indicator
 
     // region: content capture parameter range control
+    static ConstraintLayout rangeControlConstraintLayout;
     static BottomSheetBehavior rangeControlBottomSheet;
     static TextView titleTextView_range_control, informationTextView_range_control, valueMinimumTextView_range_control, valueMaximumTextView_range_control;
     static SeekBar rangeSeekBar_range_control;
@@ -172,8 +175,10 @@ class UIOperator {
                     if (MainActivity.focusAssistantY + (MainActivity.focusAssistantHeight / 2.0f) > (float) MainActivity.previewViewHeight) {
                         MainActivity.focusAssistantY = (float) MainActivity.previewViewHeight - (MainActivity.focusAssistantHeight / 2.0f);
                     }
+
+                    // QUESTION: why not return true here, and return false down there?
                 }
-                return true;
+                return true;  // QUESTION: why this needs to be true to prevent weird problems?
             }
         });
 
@@ -192,6 +197,7 @@ class UIOperator {
     }
 
     static void initiateContentRangeControl() {
+        rangeControlConstraintLayout = MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control);
         rangeControlBottomSheet = BottomSheetBehavior.from(MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control));
 
         titleTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_title);
@@ -204,6 +210,16 @@ class UIOperator {
         zoomOutButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_zoomOut);
         zoomInButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_zoomIn);
         applyButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_apply);
+
+        rangeControlConstraintLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    return previewCRTV_camera_control.dispatchTouchEvent(event);
+                }
+                return true;  // QUESTION: why this needs to be true to prevent weird problems?
+            }
+        });
 
         rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
         rangeControlBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
