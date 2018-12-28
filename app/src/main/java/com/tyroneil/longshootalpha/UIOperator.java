@@ -306,7 +306,6 @@ class UIOperator {
         }
 
         try {
-            MainActivity.captureSession.stopRepeating();
             // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
             // previewCaptureCallback is for debug purpose
             MainActivity.captureSession.setRepeatingRequest(MainActivity.previewRequestBuilder.build(), MainActivity.previewCaptureCallback, MainActivity.cameraBackgroundHandler);
