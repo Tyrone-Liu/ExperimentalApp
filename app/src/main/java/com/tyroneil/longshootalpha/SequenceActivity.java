@@ -1,16 +1,11 @@
 package com.tyroneil.longshootalpha;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
 
-import com.google.android.material.checkbox.MaterialCheckBox;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class SequenceActivity extends AppCompatActivity {
 
