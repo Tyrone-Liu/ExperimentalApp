@@ -822,10 +822,10 @@ class UIOperator {
                 public void onStartTrackingTouch(SeekBar seekBar) {
                     if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
                         MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                (int) ((MainActivity.viewfinderWidth / 2.0f) - (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) ((MainActivity.viewfinderHeight / 2.0f) - (MainActivity.focusAssistantHeight / 2.0f)),
-                                (int) ((MainActivity.viewfinderWidth / 2.0f) + (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) ((MainActivity.viewfinderHeight / 2.0f) + (MainActivity.focusAssistantHeight / 2.0f))
+                                (int) (MainActivity.focusAssistantX - (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) (MainActivity.focusAssistantY - (MainActivity.focusAssistantHeight / 2.0f)),
+                                (int) (MainActivity.focusAssistantX + (MainActivity.focusAssistantWidth / 2.0f)),
+                                (int) (MainActivity.focusAssistantY + (MainActivity.focusAssistantHeight / 2.0f))
                         ));
                     }
                 }

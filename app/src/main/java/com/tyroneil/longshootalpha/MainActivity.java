@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
     // endregion: capture parameters
 
     // region: focus assistant
+    // EVERYTHING here is in sensor pixel coordinate, not screen pixel
     static Rect SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
     static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;  // get from Rect, more convenient to use
     static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;  // get from Rect, more convenient to use
@@ -141,11 +142,13 @@ public class MainActivity extends AppCompatActivity {
     static int SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH;  // get from Rect, more convenient to use
     static int SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT;  // get from Rect, more convenient to use
 
+    static int viewfinderWidth;  // depending on CaptureRequest.DISTORTION_CORRECTION_MODE
+    static int viewfinderHeight;  // depending on CaptureRequest.DISTORTION_CORRECTION_MODE
+
+    static float focusAssistantX;  // set by touch, or from viewfinderWidth
+    static float focusAssistantY;  // set by touch, or from viewfinderHeight
     static float focusAssistantWidth;  // decided by previewCRTV_DP width
     static float focusAssistantHeight;  // decided by previewCRTV_DP height
-
-    static int viewfinderWidth;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
-    static int viewfinderHeight;  // calculated depending on CaptureRequest.DISTORTION_CORRECTION_MODE, or set by touch
     // endregion: focus assistant
 
     static TextView errorMessageTextView;
@@ -759,6 +762,9 @@ public class MainActivity extends AppCompatActivity {
             viewfinderWidth = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;
             viewfinderHeight = SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_HEIGHT;
         }
+
+        focusAssistantX = viewfinderWidth / 2.0f;
+        focusAssistantY = viewfinderHeight / 2.0f;
     }
 
     // previewCaptureCallback is for debug purpose
