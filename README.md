@@ -37,7 +37,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
         - [ ] Time condition (proceed next element not before a apecific time)
     * Both basic and special elements (except 'Time condition') have their own 'repeat count', can be endless
 + Additional Tools for Capture
-    * [ ] OSD of **Elevation Angle** and **Azimuth**
+    * [ ] On Screen Display (OSD) of **Elevation Angle** and **Azimuth**
     * [ ] OSD of GPS information (Longtitude, Latitude, Altitude)
     * [ ] Bluetooth or Network remote control (reduce vibration)
     * [ ] Alternative seekbar mode, improve accuracy within small range
