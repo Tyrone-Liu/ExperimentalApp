@@ -1,6 +1,8 @@
 # Long Shoot Alpha
 This is the alpha repository of **[Long Shoot](https://github.com/Tyrone-Liu/LongShoot)**, which is currently empty.  🙄
 
+For the latest signed APK file(s), please check the [Release Page](https://github.com/Tyrone-Liu/LongShootAlpha/releases/latest).
+
 Should works great on Pixel and Nexus, or any manufacturer that doesn't do too much modifications to stock Android.
 
 
