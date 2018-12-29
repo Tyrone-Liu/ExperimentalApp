@@ -144,7 +144,10 @@ class UIOperator {
         previewCRTV_camera_control.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                if (
+                        PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)
+                        && event.getActionMasked() == MotionEvent.ACTION_UP
+                ) {
                     float displayX = event.getX();
                     float displayY = event.getY();
                     if (displayX > v.getWidth()) {displayX = v.getWidth();}
