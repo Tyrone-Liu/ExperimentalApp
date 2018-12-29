@@ -606,26 +606,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // region: debug
-        @Override
-        public void onActive(CameraCaptureSession session) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onActive");
-            super.onActive(session);
-        }
-        @Override
-        public void onCaptureQueueEmpty(CameraCaptureSession session) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onCaptureQueueEmpty");
-            super.onCaptureQueueEmpty(session);
-        }
-        @Override
-        public void onReady(CameraCaptureSession session) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onReady");
-            super.onReady(session);
-        }
-        @Override
-        public void onSurfacePrepared(CameraCaptureSession session, Surface surface) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onSurfacePrepared");
-            super.onSurfacePrepared(session, surface);
-        }
+//        @Override
+//        public void onActive(CameraCaptureSession session) {
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onActive");
+//            super.onActive(session);
+//        }
+//        @Override
+//        public void onCaptureQueueEmpty(CameraCaptureSession session) {
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onCaptureQueueEmpty");
+//            super.onCaptureQueueEmpty(session);
+//        }
+//        @Override
+//        public void onReady(CameraCaptureSession session) {
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onReady");
+//            super.onReady(session);
+//        }
+//        @Override
+//        public void onSurfacePrepared(CameraCaptureSession session, Surface surface) {
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureSessionStateCallback #onSurfacePrepared");
+//            super.onSurfacePrepared(session, surface);
+//        }
         // endregion: debug
     };
 
@@ -877,7 +877,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
             }
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
         }
@@ -886,7 +886,7 @@ public class MainActivity extends AppCompatActivity {
     private static ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image available");  // debug
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image available");  // debug
             // TODO: make file name changeable in settings
             imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(imageFileTimeStampName);
@@ -954,7 +954,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image saved");  // debug
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image saved");  // debug
 
         }
     };
@@ -963,7 +963,7 @@ public class MainActivity extends AppCompatActivity {
     private static CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureCompleted");  // debug
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureCompleted");  // debug
             // region: debug in captureCallback
             captureDebugCounter++;
             captureDebugMessage = "# " + captureDebugCounter + " capture completed" + "\n" + totalResultDebugTool(request, result);
@@ -999,21 +999,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // region: debug
-        @Override
-        public void onCaptureBufferLost(CameraCaptureSession session, CaptureRequest request, Surface target, long frameNumber) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureBufferLost");  // debug
-            super.onCaptureBufferLost(session, request, target, frameNumber);
-        }
-        @Override
-        public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureProgressed");  // debug
-            super.onCaptureProgressed(session, request, partialResult);
-        }
-        @Override
-        public void onCaptureSequenceCompleted(CameraCaptureSession session, int sequenceId, long frameNumber) {
-            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureSequenceCompleted");  // debug
-            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
-        }
+//        @Override
+//        public void onCaptureBufferLost(CameraCaptureSession session, CaptureRequest request, Surface target, long frameNumber) {
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureBufferLost");  // debug
+//            super.onCaptureBufferLost(session, request, target, frameNumber);
+//        }
+//        @Override
+//        public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureProgressed");  // debug
+//            super.onCaptureProgressed(session, request, partialResult);
+//        }
+//        @Override
+//        public void onCaptureSequenceCompleted(CameraCaptureSession session, int sequenceId, long frameNumber) {
+//            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " captureCallback #onCaptureSequenceCompleted");  // debug
+//            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
+//        }
         // endregion: debug
     };
     // endregion: process of taking photo(s)
