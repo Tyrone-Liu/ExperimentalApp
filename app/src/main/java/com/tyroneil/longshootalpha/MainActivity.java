@@ -777,6 +777,16 @@ public class MainActivity extends AppCompatActivity {
 
         focusAssistantX = previewViewWidth / 2.0f;
         focusAssistantY = previewViewHeight / 2.0f;
+
+        UIOperator.focusAssistantIndicatorImageView_camera_control.setTranslationX(
+                ((float) UIOperator.previewCRTV_camera_control.getWidth() / 2.0f)
+                - ((float) UIOperator.focusAssistantIndicatorImageView_camera_control.getWidth() / 2.0f)
+        );
+        UIOperator.focusAssistantIndicatorImageView_camera_control.setTranslationY(
+                ((float) UIOperator.previewCRTV_camera_control.getHeight() / 2.0f)
+                - ((float) UIOperator.focusAssistantIndicatorImageView_camera_control.getHeight() / 2.0f)
+        );
+        UIOperator.focusAssistantIndicatorImageView_camera_control.startAnimation(UIOperator.focusAssistantIndicatorFadeIn);
     }
 
     // previewCaptureCallback is for debug purpose

@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CaptureRequest;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -24,6 +25,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
@@ -34,6 +37,9 @@ import android.widget.TextView;
 
 class UIOperator {
     // region: content camera control
+    static Animation focusAssistantIndicatorFadeOut;
+    static Animation focusAssistantIndicatorFadeIn;
+    static AppCompatImageView focusAssistantIndicatorImageView_camera_control;
     static ChangeableRatioTextureView previewCRTV_camera_control;
     static MaterialButton sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
     static ProgressBar capturingProgressBar_camera_control;
@@ -76,6 +82,7 @@ class UIOperator {
 
     // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
+        focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) MainActivity.activity.findViewById(R.id.imageView_camera_control_focusAssistantIndicator);
         previewCRTV_camera_control = (ChangeableRatioTextureView) MainActivity.activity.findViewById(R.id.cRTV_camera_control_preview);
         sequenceButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_sequence);
         captureButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_capture);
@@ -91,6 +98,30 @@ class UIOperator {
         setOpticalStabilization_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
         setFocalLengthButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
         setFocusDistanceButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
+
+        /**
+         * The {@link AlphaAnimation} starts form {@value 15.00f} will make the view fully visible
+         * for some time at the beginning of the animation.
+         */
+        focusAssistantIndicatorFadeOut = new AlphaAnimation(15.00f, 0.00f);
+        focusAssistantIndicatorFadeOut.setDuration((long) 3E3);
+
+        focusAssistantIndicatorFadeIn = new AlphaAnimation(0.00f, 1.00f);
+        focusAssistantIndicatorFadeIn.setDuration((long) (0.5d * 1E3));
+        focusAssistantIndicatorFadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                focusAssistantIndicatorImageView_camera_control.startAnimation(focusAssistantIndicatorFadeOut);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        focusAssistantIndicatorImageView_camera_control.setVisibility(View.INVISIBLE);
 
         MainActivity.createPreview(MainActivity.CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE);
         previewCRTV_camera_control.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
@@ -118,6 +149,14 @@ class UIOperator {
                     float displayY = event.getY();
                     if (displayX > v.getWidth()) {displayX = v.getWidth();}
                     if (displayY > v.getHeight()) {displayY = v.getHeight();}
+
+                    focusAssistantIndicatorImageView_camera_control.setTranslationX(
+                            displayX - ((float) focusAssistantIndicatorImageView_camera_control.getWidth() / 2.0f)
+                    );
+                    focusAssistantIndicatorImageView_camera_control.setTranslationY(
+                            displayY - ((float) focusAssistantIndicatorImageView_camera_control.getHeight() / 2.0f)
+                    );
+                    focusAssistantIndicatorImageView_camera_control.startAnimation(focusAssistantIndicatorFadeOut);
 
                     float scaledX;
                     float scaledY;
@@ -906,6 +945,7 @@ class UIOperator {
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
                     if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
+                        focusAssistantIndicatorImageView_camera_control.clearAnimation();
                         MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
                                 (int) (MainActivity.focusAssistantX - (MainActivity.focusAssistantWidth / 2.0f)),
                                 (int) (MainActivity.focusAssistantY - (MainActivity.focusAssistantHeight / 2.0f)),
@@ -922,6 +962,7 @@ class UIOperator {
                                 0, 0, MainActivity.previewViewWidth, MainActivity.previewViewHeight
                         ));
                         updatePreviewParameters();
+                        focusAssistantIndicatorImageView_camera_control.startAnimation(focusAssistantIndicatorFadeIn);
                     }
                 }
             });
