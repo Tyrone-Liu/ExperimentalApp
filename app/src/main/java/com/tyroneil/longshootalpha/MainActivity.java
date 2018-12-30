@@ -541,7 +541,6 @@ public class MainActivity extends AppCompatActivity {
         else if (stage == CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST) {  // got captureSession
             try {
                 // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
-                // previewCaptureCallback is for debug purpose
                 captureSession.setRepeatingRequest(previewRequestBuilder.build(), previewCaptureCallback, cameraBackgroundHandler);
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
@@ -796,6 +795,7 @@ public class MainActivity extends AppCompatActivity {
     static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            // region: debug in captureCallback
             previewDebugCounter++;
             previewDebugMessage = "# " + previewDebugCounter + " preview completed" + "\n" + totalResultDebugTool(request, result);
             activity.runOnUiThread(new Runnable() {
@@ -804,11 +804,13 @@ public class MainActivity extends AppCompatActivity {
                     debugMessage0TextView.setText(previewDebugMessage);
                 }
             });
+            // endregion: debug in captureCallback
             super.onCaptureCompleted(session, request, result);
         }
 
         @Override
         public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+            // region: debug in captureCallback
             previewDebugCounter++;
             previewDebugMessage = "# " + previewDebugCounter + " preview failed" + "\n";
             activity.runOnUiThread(new Runnable() {
@@ -817,6 +819,7 @@ public class MainActivity extends AppCompatActivity {
                     debugMessage0TextView.setText(previewDebugMessage);
                 }
             });
+            // endregion: debug in captureCallback
             super.onCaptureFailed(session, request, failure);
         }
     };
@@ -962,7 +965,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    // the purpose of captureCallback is to show capture progress indicator
     private static CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
