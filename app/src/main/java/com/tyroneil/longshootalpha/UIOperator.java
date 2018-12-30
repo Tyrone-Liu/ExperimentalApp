@@ -500,7 +500,6 @@ class UIOperator {
             titleTextView_range_control.setText(R.string.textView_range_control_title);
             // clear information TextView
             informationTextView_range_control.setText("");
-            informationTextView_range_control.setTextSize(0);
             // clear information TextView
             valueMinimumTextView_range_control.setText(R.string.textView_range_control_valueMinimum);
             valueMaximumTextView_range_control.setText(R.string.textView_range_control_valueMaximum);
@@ -538,7 +537,6 @@ class UIOperator {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
                     // setup information TextView
                     rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
-                    informationTextView_range_control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                     // TODO: improve reuseability of this part
@@ -714,7 +712,6 @@ class UIOperator {
                 titleTextView_range_control.setText(R.string.textView_range_control_title_focusDistance);
                 // setup information TextView
                 rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
-                informationTextView_range_control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
                 valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 if (MainActivity.focusDistance == 0.0f) {

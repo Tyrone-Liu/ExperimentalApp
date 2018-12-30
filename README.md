@@ -70,7 +70,6 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 + [ ] More miscellaneous settings in setting interface
 + [ ] Better handle of auto capture mode capture parameters
 + [x] Handle Android permission request
-+ [ ] change informationTextView_range_control hiding method to `setVisibility(View.GONE)`
 
 
 ## Known Bugs (from oldest to newest)
