@@ -332,17 +332,17 @@ class UIOperator {
                             MainActivity.sensitivity
                     )
             );
+            setApertureButton_parameters_indicator.setText(
+                    MainActivity.activity.getString(
+                            R.string.button_parameters_indicator_setAperture,
+                            MainActivity.aperture
+                    )
+            );
         } else {
             setExposureTimeButton_parameters_indicator.setText("S.S.\nAUTO");
             setSensitivityButton_parameters_indicator.setText("ISO\nAUTO");
+            setApertureButton_parameters_indicator.setText("APE\nAUTO");
         }
-
-        setApertureButton_parameters_indicator.setText(
-                MainActivity.activity.getString(
-                        R.string.button_parameters_indicator_setAperture,
-                        MainActivity.aperture
-                )
-        );
         setTorchButton_parameters_indicator.setText(
                 MainActivity.activity.getString(
                         R.string.button_parameters_indicator_setTorch,
@@ -402,8 +402,8 @@ class UIOperator {
                 MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
             }
             MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, MainActivity.sensitivity);
+            MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, MainActivity.aperture);
         }
-        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, MainActivity.aperture);
         MainActivity.previewRequestBuilder.set(CaptureRequest.FLASH_MODE, MainActivity.flashMode);
 
         MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, MainActivity.awbMode);
@@ -1386,6 +1386,7 @@ class UIOperator {
             MaterialRadioButton radioButton;
             final int[] radioButtonIdArray;
 
+            // region: parameters controlled by aeMode
             if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAperture) {
                 titleTextView_list_control.setText(R.string.textView_list_control_title_aperture);
 
@@ -1395,16 +1396,25 @@ class UIOperator {
                     // TODO: find a way to apply style
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                    radioButton.setButtonTintList(new ColorStateList(
-                            new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
-                            new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}
-                    ));
                     radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
                     radioButton.setText(String.format(Locale.getDefault(), "f/%f", MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]));
+                    if (! (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
+                        radioButton.setEnabled(false);
+                        radioButton.setButtonTintList(new ColorStateList(
+                                new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
+                                new int[] {MainActivity.activity.getColor(R.color.colorSecondaryDown), MainActivity.activity.getColor(R.color.colorSecondaryDown)}
+                        ));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondaryDown));
+                    } else {
+                        radioButton.setButtonTintList(new ColorStateList(
+                                new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
+                                new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}
+                        ));
+                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+                    }
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
@@ -1421,6 +1431,7 @@ class UIOperator {
                     }
                 });
             }
+            // endregion: parameters controlled by aeMode
 
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAutoWhiteBalance) {
                 titleTextView_list_control.setText(R.string.textView_list_control_title_autoWhiteBalance);

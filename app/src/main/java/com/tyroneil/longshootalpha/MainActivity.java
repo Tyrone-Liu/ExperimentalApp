@@ -503,8 +503,8 @@ public class MainActivity extends AppCompatActivity {
                         previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                     }
                     previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
+                    previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
                 }
-                previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
                 previewRequestBuilder.set(CaptureRequest.FLASH_MODE, flashMode);
 
                 previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
@@ -854,11 +854,10 @@ public class MainActivity extends AppCompatActivity {
             if (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                 captureRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
                 captureRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
+                captureRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
             } else {
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, true);
             }
-
-            captureRequestBuilder.set(CaptureRequest.LENS_APERTURE, aperture);
             captureRequestBuilder.set(CaptureRequest.FLASH_MODE, flashMode);
 
             captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, awbMode);
