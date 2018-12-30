@@ -18,7 +18,6 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.Manifest;
 import android.media.Image;
 import android.media.ImageReader;
@@ -38,6 +37,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.exifinterface.media.ExifInterface;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.io.File;
