@@ -1400,7 +1400,7 @@ class UIOperator {
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText(String.format(Locale.getDefault(), "f/%f", MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]));
+                    radioButton.setText(String.format(Locale.getDefault(), "f/%s", MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]));
                     if (! (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
                         radioButton.setEnabled(false);
                         radioButton.setButtonTintList(new ColorStateList(
