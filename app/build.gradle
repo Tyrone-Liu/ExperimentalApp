@@ -7,8 +7,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 7
-        versionName "alpha_0.5.1"
+        versionCode 8
+        versionName "alpha_0.5.2"
     }
     buildTypes {
         release {
