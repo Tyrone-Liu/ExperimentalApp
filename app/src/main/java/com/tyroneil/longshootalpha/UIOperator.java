@@ -35,6 +35,8 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 class UIOperator {
     // region: content camera control
     static Animation focusAssistantIndicatorFadeOut;
@@ -483,6 +485,9 @@ class UIOperator {
 
                 if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
+                    // setup information TextView
+                    rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
+                    informationTextView_range_control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                     if (MainActivity.exposureTime < 1E3) {
@@ -648,9 +653,8 @@ class UIOperator {
 
                 titleTextView_range_control.setText(R.string.textView_range_control_title_focusDistance);
                 // setup information TextView
-                rangeControlBottomSheet_setInformationTextViewText();
+                rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
                 informationTextView_range_control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                // setup information TextView
 
                 valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 if (MainActivity.focusDistance == 0.0f) {
@@ -823,6 +827,7 @@ class UIOperator {
                         } else {
                             valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + " s");
                         }
+                        rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
                         updateCaptureParametersIndicator();
                     }
                 }
@@ -939,7 +944,7 @@ class UIOperator {
                         } else {
                             valueEditText_range_control.setHint(String.format("%.4f", 1f / MainActivity.focusDistance) + " m");
                         }
-                        rangeControlBottomSheet_setInformationTextViewText();
+                        rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
                         updateCaptureParametersIndicator();
                         updatePreviewParameters();
                     }
@@ -1201,54 +1206,71 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setInformationTextViewText() {
-        // # demand information:
-        // Circle of Confusion (mm)
-        // Hyperfocal Distance (m)
-        // Near Point Distance (m)
-        // Far Point Distance (m)
-        // Depth of Field (m)
+    static void rangeControlBottomSheet_setInformationTextViewText(int informationTextViewType) {
+        String informationText = "";
 
-        float hyperfocalDistance = (  // unit: mm
-                (
-                        (MainActivity.focalLength * MainActivity.focalLength)
-                        / (MainActivity.aperture * MainActivity.CIRCLE_OF_CONFUSION)
-                ) + MainActivity.focalLength
-        );
+        if (informationTextViewType == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+            // # demand information:
+            // Exposure Value
 
-        String nearPointDistanceText;
-        String farPointDistanceText;
-        String depthOfFieldText;
-        if (MainActivity.focusDistance != 0f) {
-            float nearPointDistance = (  // unit: mm
-                    ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
-                    / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
+            double exposureValue = (
+                    Math.log(Math.pow(MainActivity.aperture, 2) / ((double) MainActivity.exposureTime / 1E9))
+                    / Math.log(2)
             );
-            nearPointDistanceText = String.format("%.4f", nearPointDistance / 1000f) + "m";
-            if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
-                float farPointDistance = (  // unit: mm
+
+            informationText = String.format(Locale.getDefault(), "EV: %.1f", exposureValue);
+        }
+
+        else if (informationTextViewType == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+            // # demand information:
+            // Circle of Confusion (mm)
+            // Hyperfocal Distance (m)
+            // Near Point Distance (m)
+            // Far Point Distance (m)
+            // Depth of Field (m)
+
+            float hyperfocalDistance = (  // unit: mm
+                    (
+                            (MainActivity.focalLength * MainActivity.focalLength)
+                            / (MainActivity.aperture * MainActivity.CIRCLE_OF_CONFUSION)
+                    ) + MainActivity.focalLength
+            );
+
+            String nearPointDistanceText;
+            String farPointDistanceText;
+            String depthOfFieldText;
+            if (MainActivity.focusDistance != 0f) {
+                float nearPointDistance = (  // unit: mm
                         ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
-                        / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
+                        / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
                 );
-                farPointDistanceText = String.format("%.4f", farPointDistance / 1000f) + "m";
-                depthOfFieldText = String.format("%.4f", (farPointDistance - nearPointDistance) / 1000f) + "m";
+                nearPointDistanceText = String.format("%.4f", nearPointDistance / 1000f) + "m";
+                if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
+                    float farPointDistance = (  // unit: mm
+                            ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
+                            / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
+                    );
+                    farPointDistanceText = String.format("%.4f", farPointDistance / 1000f) + "m";
+                    depthOfFieldText = String.format("%.4f", (farPointDistance - nearPointDistance) / 1000f) + "m";
+                } else {
+                    farPointDistanceText = "Infinity";
+                    depthOfFieldText = "Infinity";
+                }
             } else {
+                nearPointDistanceText = "Infinity";
                 farPointDistanceText = "Infinity";
                 depthOfFieldText = "Infinity";
             }
-        } else {
-            nearPointDistanceText = "Infinity";
-            farPointDistanceText = "Infinity";
-            depthOfFieldText = "Infinity";
+
+            informationText = (
+                    "CoC: " + String.format("%.6f", MainActivity.CIRCLE_OF_CONFUSION) + "mm, "
+                    + "H: " + String.format("%.6f", hyperfocalDistance / 1000f) + "m\n"
+                    + "D_N: " + nearPointDistanceText + ", "
+                    + "D_F: " + farPointDistanceText + "\n"
+                    + "DoF: " + depthOfFieldText
+            );
         }
 
-        String informationText = (
-                "CoC: " + String.format("%.6f", MainActivity.CIRCLE_OF_CONFUSION) + "mm, "
-                + "H: " + String.format("%.6f", hyperfocalDistance / 1000f) + "m\n"
-                + "D_N: " + nearPointDistanceText + ", "
-                + "D_F: " + farPointDistanceText + "\n"
-                + "DoF: " + depthOfFieldText
-        );
         informationTextView_range_control.setText(informationText);
     }
     // endregion: onClickListener, type range_control
