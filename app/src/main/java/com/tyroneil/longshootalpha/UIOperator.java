@@ -301,31 +301,83 @@ class UIOperator {
     static void updateCaptureParametersIndicator() {
         if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             if (MainActivity.exposureTime < 1E3) {
-                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + MainActivity.exposureTime + "ns");
+                setExposureTimeButton_parameters_indicator.setText(
+                        String.format(Locale.getDefault(), "S.S.\n%dns", MainActivity.exposureTime)
+                );
             } else if (MainActivity.exposureTime < 1E6) {
-                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 1E1) / 1E2) + "µs");
+                setExposureTimeButton_parameters_indicator.setText(
+                        MainActivity.activity.getString(
+                                R.string.button_parameters_indicator_setExposureTime,
+                                (double) (MainActivity.exposureTime / 1E1) / 1E2, "µs"
+                        )
+                );
             } else if (MainActivity.exposureTime < 1E9) {
-                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 1E4) / 1E2) + "ms");
+                setExposureTimeButton_parameters_indicator.setText(
+                        MainActivity.activity.getString(
+                                R.string.button_parameters_indicator_setExposureTime,
+                                (double) (MainActivity.exposureTime / 1E4) / 1E2, "ms"
+                        )
+                );
             } else {
-                setExposureTimeButton_parameters_indicator.setText("S.S.\n" + String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + "s");
+                setExposureTimeButton_parameters_indicator.setText(
+                        MainActivity.activity.getString(
+                                R.string.button_parameters_indicator_setExposureTime,
+                                (double) (MainActivity.exposureTime / 1E7) / 1E2, "s"
+                        )
+                );
             }
-            setSensitivityButton_parameters_indicator.setText("ISO\n" + MainActivity.sensitivity);
+            setSensitivityButton_parameters_indicator.setText(
+                    MainActivity.activity.getString(
+                            R.string.button_parameters_indicator_setSensitivity,
+                            MainActivity.sensitivity
+                    )
+            );
         } else {
             setExposureTimeButton_parameters_indicator.setText("S.S.\nAUTO");
             setSensitivityButton_parameters_indicator.setText("ISO\nAUTO");
         }
 
-        setApertureButton_parameters_indicator.setText("APE\nf/" + String.format("%.1f", MainActivity.aperture));
-        setTorchButton_parameters_indicator.setText("Tor.\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH, MainActivity.flashMode, true));
-        setAutoWhiteBalance_parameters_indicator.setText("AWB\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.awbMode, true));
-        setOpticalStabilization_parameters_indicator.setText("OIS\n" + listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true));
-        setFocalLengthButton_parameters_indicator.setText("F.L.\n" + String.format("%.2f", MainActivity.focalLength) + "mm");
+        setApertureButton_parameters_indicator.setText(
+                MainActivity.activity.getString(
+                        R.string.button_parameters_indicator_setAperture,
+                        MainActivity.aperture
+                )
+        );
+        setTorchButton_parameters_indicator.setText(
+                MainActivity.activity.getString(
+                        R.string.button_parameters_indicator_setTorch,
+                        listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH, MainActivity.flashMode, true)
+                )
+        );
+        setAutoWhiteBalance_parameters_indicator.setText(
+                MainActivity.activity.getString(
+                        R.string.button_parameters_indicator_setAutoWhiteBalance,
+                        listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.awbMode, true)
+                )
+        );
+        setOpticalStabilization_parameters_indicator.setText(
+                MainActivity.activity.getString(
+                        R.string.button_parameters_indicator_setOpticalStabilization,
+                        listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true)
+                )
+        );
+        setFocalLengthButton_parameters_indicator.setText(
+                MainActivity.activity.getString(
+                        R.string.button_parameters_indicator_setFocalLength,
+                        MainActivity.focalLength
+                )
+        );
 
         if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             if (MainActivity.focusDistance == 0.0f) {
-                setFocusDistanceButton_parameters_indicator.setText("F.D.\n" + "Infi");
+                setFocusDistanceButton_parameters_indicator.setText("F.D.\nInf.");
             } else {
-                setFocusDistanceButton_parameters_indicator.setText("F.D.\n" + String.format("%.2f", 1f / MainActivity.focusDistance) + "m");
+                setFocusDistanceButton_parameters_indicator.setText(
+                        MainActivity.activity.getString(
+                                R.string.button_parameters_indicator_setFocusDistance,
+                                1f / MainActivity.focusDistance
+                        )
+                );
             }
         } else {
             setFocusDistanceButton_parameters_indicator.setText("F.D.\nAUTO");
@@ -489,14 +541,23 @@ class UIOperator {
                     informationTextView_range_control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    // TODO: improve reuseability of this part
                     if (MainActivity.exposureTime < 1E3) {
-                        valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1E9) + " s");
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
+                        );
                     } else if (MainActivity.exposureTime < 1E6) {
-                        valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 1E1) / 1E8) + " s");
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
+                        );
                     } else if (MainActivity.exposureTime < 1E9) {
-                        valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 1E4) / 1E5) + " s");
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
+                        );
                     } else {
-                        valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + " s");
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
+                        );
                     }
                     valueEditText_range_control.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
@@ -659,7 +720,9 @@ class UIOperator {
                 if (MainActivity.focusDistance == 0.0f) {
                     valueEditText_range_control.setHint("Infinity m");
                 } else {
-                    valueEditText_range_control.setHint(String.format("%.4f", 1f / MainActivity.focusDistance) + " m");
+                    valueEditText_range_control.setHint(
+                            String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
+                    );
                 }
                 valueEditText_range_control.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
@@ -793,8 +856,18 @@ class UIOperator {
         }
 
         if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
-            valueMinimumTextView_range_control.setText("MIN\n" + rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + progressLeftOffset));
-            valueMaximumTextView_range_control.setText("MAX\n" + rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - progressRightOffset));
+            valueMinimumTextView_range_control.setText(
+                    MainActivity.activity.getString(
+                            R.string.textView_range_control_valueMinimum,
+                            rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + progressLeftOffset)
+                    )
+            );
+            valueMaximumTextView_range_control.setText(
+                    MainActivity.activity.getString(
+                            R.string.textView_range_control_valueMaximum,
+                            rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - progressRightOffset)
+                    )
+            );
 
             long progressLeftLength = progressLeftOrRightLength.getVariable();
             rangeSeekBar_range_control.setProgress((int)
@@ -818,13 +891,21 @@ class UIOperator {
                         progressLeftOrRightLength.setVariable(MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower());
 
                         if (MainActivity.exposureTime < 1E3) {
-                            valueEditText_range_control.setHint(String.format("%.9f", (double) MainActivity.exposureTime / 1E9) + " s");
+                            valueEditText_range_control.setHint(
+                                    String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
+                            );
                         } else if (MainActivity.exposureTime < 1E6) {
-                            valueEditText_range_control.setHint(String.format("%.7f", (double) (MainActivity.exposureTime / 1E1) / 1E8) + " s");
+                            valueEditText_range_control.setHint(
+                                    String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
+                            );
                         } else if (MainActivity.exposureTime < 1E9) {
-                            valueEditText_range_control.setHint(String.format("%.4f", (double) (MainActivity.exposureTime / 1E4) / 1E5) + " s");
+                            valueEditText_range_control.setHint(
+                                    String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
+                            );
                         } else {
-                            valueEditText_range_control.setHint(String.format("%.1f", (double) (MainActivity.exposureTime / 1E7) / 1E2) + " s");
+                            valueEditText_range_control.setHint(
+                                    String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
+                            );
                         }
                         rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
                         updateCaptureParametersIndicator();
@@ -856,8 +937,18 @@ class UIOperator {
         }
 
         if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
-            valueMinimumTextView_range_control.setText("MIN\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower() + progressLeftOffset));
-            valueMaximumTextView_range_control.setText("MAX\n" + String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - progressRightOffset));
+            valueMinimumTextView_range_control.setText(
+                    MainActivity.activity.getString(
+                            R.string.textView_range_control_valueMinimum,
+                            String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower() + progressLeftOffset)
+                    )
+            );
+            valueMaximumTextView_range_control.setText(
+                    MainActivity.activity.getString(
+                            R.string.textView_range_control_valueMaximum,
+                            String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - progressRightOffset)
+                    )
+            );
 
             int progressLeftLength = progressLeftOrRightLength.getVariable();
             rangeSeekBar_range_control.setProgress((int)
@@ -910,11 +1001,26 @@ class UIOperator {
         }
 
         if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
-            valueMinimumTextView_range_control.setText("MIN\n" + String.format("%.4f", 1f / (MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE - progressLeftOffset)) + " m");
+            valueMinimumTextView_range_control.setText(
+                    MainActivity.activity.getString(
+                            R.string.textView_range_control_valueMinimum,
+                            String.format(Locale.getDefault(), "%.4f m", 1f / (MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE - progressLeftOffset))
+                    )
+            );
             if (progressRightOffset == 0.0f) {
-                valueMaximumTextView_range_control.setText("MAX\n" + "Infinity");
+                valueMaximumTextView_range_control.setText(
+                        MainActivity.activity.getString(
+                                R.string.textView_range_control_valueMaximum,
+                                "Infinity"
+                        )
+                );
             } else {
-                valueMaximumTextView_range_control.setText("MAX\n" + String.format("%.4f", 1f / progressRightOffset) + " m");
+                valueMaximumTextView_range_control.setText(
+                        MainActivity.activity.getString(
+                                R.string.textView_range_control_valueMaximum,
+                                String.format(Locale.getDefault(), "%.4f m", 1f / progressRightOffset)
+                        )
+                );
             }
 
             float progressRightLength = progressLeftOrRightLength.getVariable();
@@ -941,7 +1047,7 @@ class UIOperator {
                         if (MainActivity.focusDistance == 0.0f) {
                             valueEditText_range_control.setHint("Infinity");
                         } else {
-                            valueEditText_range_control.setHint(String.format("%.4f", 1f / MainActivity.focusDistance) + " m");
+                            valueEditText_range_control.setHint(String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance));
                         }
                         rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
                         updateCaptureParametersIndicator();
@@ -1197,11 +1303,11 @@ class UIOperator {
         if (time < 1E3) {
             return time + " ns";
         } else if (time < 1E6) {
-            return String.format("%.2f", (double) (time / 1E0) / 1E3) + " µs";
+            return String.format(Locale.getDefault(), "%.2f µs", (double) (time / 1E0) / 1E3);
         } else if (time < 1E9) {
-            return String.format("%.2f", (double) (time / 1E3) / 1E3) + " ms";
+            return String.format(Locale.getDefault(), "%.2f ms", (double) (time / 1E3) / 1E3);
         } else {
-            return String.format("%.2f", (double) (time / 1E6) / 1E3) + " s";
+            return String.format(Locale.getDefault(), "%.2f s", (double) (time / 1E6) / 1E3);
         }
     }
 
@@ -1243,14 +1349,14 @@ class UIOperator {
                         ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
                         / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
                 );
-                nearPointDistanceText = String.format("%.4f", nearPointDistance / 1000f) + "m";
+                nearPointDistanceText = String.format(Locale.getDefault(), "%.4fm", nearPointDistance / 1000f);
                 if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
                     float farPointDistance = (  // unit: mm
                             ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
                             / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
                     );
-                    farPointDistanceText = String.format("%.4f", farPointDistance / 1000f) + "m";
-                    depthOfFieldText = String.format("%.4f", (farPointDistance - nearPointDistance) / 1000f) + "m";
+                    farPointDistanceText = String.format(Locale.getDefault(), "%.4fm", farPointDistance / 1000f);
+                    depthOfFieldText = String.format(Locale.getDefault(), "%.4fm", (farPointDistance - nearPointDistance) / 1000f);
                 } else {
                     farPointDistanceText = "Infinity";
                     depthOfFieldText = "Infinity";
@@ -1262,11 +1368,9 @@ class UIOperator {
             }
 
             informationText = (
-                    "CoC: " + String.format("%.6f", MainActivity.CIRCLE_OF_CONFUSION) + "mm, "
-                    + "H: " + String.format("%.6f", hyperfocalDistance / 1000f) + "m\n"
-                    + "D_N: " + nearPointDistanceText + ", "
-                    + "D_F: " + farPointDistanceText + "\n"
-                    + "DoF: " + depthOfFieldText
+                    String.format(Locale.getDefault(), "CoC: %.6fmm, H: %.6fm\n", MainActivity.CIRCLE_OF_CONFUSION, hyperfocalDistance / 1000f)
+                    + String.format(Locale.getDefault(), "D_N: %s, D_F: %s\n", nearPointDistanceText, farPointDistanceText)
+                    + String.format(Locale.getDefault(), "DoF: %s", depthOfFieldText)
             );
         }
 
@@ -1304,7 +1408,7 @@ class UIOperator {
                     radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText("f/" + MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]);
+                    radioButton.setText(String.format(Locale.getDefault(), "f/%f", MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]));
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }

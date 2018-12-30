@@ -10,22 +10,22 @@
     <string name="button_camera_control_settings">Settings</string>
 
     <!-- content capture parameters indicator -->
-    <string name="button_parameters_indicator_setExposureTime">S.S.\n--s</string>
-    <string name="button_parameters_indicator_setSensitivity">ISO\n--</string>
-    <string name="button_parameters_indicator_setAperture">APE\nf/--</string>
-    <string name="button_parameters_indicator_setTorch">Tor.\n--</string>
-    <string name="button_parameters_indicator_setAutoWhiteBalance">AWB\n--</string>
-    <string name="button_parameters_indicator_setOpticalStabilization">OIS\n--</string>
-    <string name="button_parameters_indicator_setFocalLength">F.L.\n--mm</string>
-    <string name="button_parameters_indicator_setFocusDistance">F.D.\n--m</string>
+    <string name="button_parameters_indicator_setExposureTime">S.S.\n%.1f%s</string>
+    <string name="button_parameters_indicator_setSensitivity">ISO\n%d</string>
+    <string name="button_parameters_indicator_setAperture">APE\nf/%.1f</string>
+    <string name="button_parameters_indicator_setTorch">Tor.\n%s</string>
+    <string name="button_parameters_indicator_setAutoWhiteBalance">AWB\n%s</string>
+    <string name="button_parameters_indicator_setOpticalStabilization">OIS\n%s</string>
+    <string name="button_parameters_indicator_setFocalLength">F.L.\n%.2fmm</string>
+    <string name="button_parameters_indicator_setFocusDistance">F.D.\n%.2fm</string>
 
     <!-- content capture parameter range control -->
     <string name="textView_range_control_title">Range Control Title</string>
     <string name="textView_range_control_title_exposureTime">Shutter Speed</string>
     <string name="textView_range_control_title_sensitivity">ISO</string>
     <string name="textView_range_control_title_focusDistance">Focus Distance</string>
-    <string name="textView_range_control_valueMinimum">MIN\n--</string>
-    <string name="textView_range_control_valueMaximum">MAX\n--</string>
+    <string name="textView_range_control_valueMinimum">MIN\n%s</string>
+    <string name="textView_range_control_valueMaximum">MAX\n%s</string>
     <string name="textView_range_control_zoomOut">-</string>
     <string name="textView_range_control_zoomIn">+</string>
     <string name="button_range_control_apply">OK</string>
