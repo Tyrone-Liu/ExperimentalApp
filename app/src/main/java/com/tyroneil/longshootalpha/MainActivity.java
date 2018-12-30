@@ -1,6 +1,5 @@
 package com.tyroneil.longshootalpha;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
@@ -20,6 +19,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.Manifest;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
@@ -29,15 +29,16 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Range;
 import android.util.Size;
 import android.util.SizeF;
 import android.view.Surface;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -176,18 +177,18 @@ public class MainActivity extends AppCompatActivity {
     private static String totalResultDebugTool(CaptureRequest request, TotalCaptureResult result) {
         String message = (
                 "ET:" + String.format("%.4f", (double) (result.get(CaptureResult.SENSOR_EXPOSURE_TIME) / 1E4) / 1E5) + ", "
-                        + "SE:" + result.get(CaptureResult.SENSOR_SENSITIVITY) + ", "
-                        + "AP:" + result.get(CaptureResult.LENS_APERTURE) + ", "
-                        + "OS:" + result.get(CaptureResult.LENS_OPTICAL_STABILIZATION_MODE) + ", "
-                        + "FL:" + result.get(CaptureResult.LENS_FOCAL_LENGTH) + ", "
-                        + "\n"
-                        + "Request FD:" + String.format("%.5f", request.get(CaptureRequest.LENS_FOCUS_DISTANCE)) + ", "
-                        + "Result FD:" + String.format("%.5f", result.get(CaptureResult.LENS_FOCUS_DISTANCE))
-                        + "\n"
-                        + "CONTROL_MODE: " + result.get(CaptureResult.CONTROL_MODE) + "\n"
-                        + "AE_MODE: " + result.get(CaptureResult.CONTROL_AE_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AE_STATE", result.get(CaptureResult.CONTROL_AE_STATE)) + "\n"
-                        + "AWB_MODE: " + result.get(CaptureResult.CONTROL_AWB_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AWB_STATE", result.get(CaptureResult.CONTROL_AWB_STATE)) + "\n"
-                        + "AF_MODE: " + result.get(CaptureResult.CONTROL_AF_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AF_STATE", result.get(CaptureResult.CONTROL_AF_STATE)) + ", Trigger: " + stateToStringDebugTool("CONTROL_AF_TRIGGER", result.get(CaptureResult.CONTROL_AF_TRIGGER)) + "\n"
+                + "SE:" + result.get(CaptureResult.SENSOR_SENSITIVITY) + ", "
+                + "AP:" + result.get(CaptureResult.LENS_APERTURE) + ", "
+                + "OS:" + result.get(CaptureResult.LENS_OPTICAL_STABILIZATION_MODE) + ", "
+                + "FL:" + result.get(CaptureResult.LENS_FOCAL_LENGTH) + ", "
+                + "\n"
+                + "Request FD:" + String.format("%.5f", request.get(CaptureRequest.LENS_FOCUS_DISTANCE)) + ", "
+                + "Result FD:" + String.format("%.5f", result.get(CaptureResult.LENS_FOCUS_DISTANCE))
+                + "\n"
+                + "CONTROL_MODE: " + result.get(CaptureResult.CONTROL_MODE) + "\n"
+                + "AE_MODE: " + result.get(CaptureResult.CONTROL_AE_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AE_STATE", result.get(CaptureResult.CONTROL_AE_STATE)) + "\n"
+                + "AWB_MODE: " + result.get(CaptureResult.CONTROL_AWB_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AWB_STATE", result.get(CaptureResult.CONTROL_AWB_STATE)) + "\n"
+                + "AF_MODE: " + result.get(CaptureResult.CONTROL_AF_MODE) + ", State: " + stateToStringDebugTool("CONTROL_AF_STATE", result.get(CaptureResult.CONTROL_AF_STATE)) + ", Trigger: " + stateToStringDebugTool("CONTROL_AF_TRIGGER", result.get(CaptureResult.CONTROL_AF_TRIGGER)) + "\n"
         );
         return message;
     }
@@ -591,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Produce a 'CameraCaptureSession', then call 'createPreview(2)'
-      */
+     */
     private static CameraCaptureSession.StateCallback captureSessionStateCallback = new CameraCaptureSession.StateCallback() {
         @Override
         public void onConfigured(CameraCaptureSession session) {
@@ -898,7 +899,7 @@ public class MainActivity extends AppCompatActivity {
             if (reader.getImageFormat() == ImageFormat.JPEG) {
                 // TODO: make save file path changeable, and auto create folder if not exist
                 imageFile = new File(
-                          Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
                         + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".JPG"
                 );
                 ByteBuffer imageBuffer = image.getPlanes()[0].getBuffer();
@@ -922,7 +923,7 @@ public class MainActivity extends AppCompatActivity {
             else if (reader.getImageFormat() == ImageFormat.RAW_SENSOR) {
                 imageFile = new File(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                                + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".DNG"
+                        + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".DNG"
                 );
 
                 if (image.getTimestamp() != totalCaptureResult.get(CaptureResult.SENSOR_TIMESTAMP)) {
