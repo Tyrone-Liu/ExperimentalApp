@@ -66,9 +66,6 @@ class UIOperator {
     static MaterialCheckBox autoCheckBox_range_control;
     static TextInputEditText valueEditText_range_control;
     static MaterialButton zoomOutButton_range_control, zoomInButton_range_control, applyButton_range_control;
-    static final int RANGE_CONTROL_TYPE_EXPOSURE_TIME = 0;
-    static final int RANGE_CONTROL_TYPE_SENSITIVITY = 1;
-    static final int RANGE_CONTROL_TYPE_FOCUS_DISTANCE = 2;
     // endregion: content capture parameter range control
 
     // region: content capture parameter list control
@@ -76,10 +73,18 @@ class UIOperator {
     static TextView titleTextView_list_control;
     static RadioGroup listRadioGroup_list_control;
     static MaterialButton dismissButton_list_control;
-    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH = 0;
-    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES = 1;
-    static final int LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES = 2;
     // endregion: content capture parameter list control
+
+    // region: CONTROL_BOTTOM_SHEET_TYPE variables
+    static final int CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME = 1;
+    static final int CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY = 2;
+    static final int CONTROL_BOTTOM_SHEET_TYPE_APERTURE = 3;
+    static final int CONTROL_BOTTOM_SHEET_TYPE_TORCH = 4;
+    static final int CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES = 5;
+    static final int CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES = 6;
+    static final int CONTROL_BOTTOM_SHEET_TYPE_FOCAL_LENGTH = 7;
+    static final int CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE = 8;
+    // endregion: control bottom sheet type constant
 
     // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
@@ -346,19 +351,19 @@ class UIOperator {
         setTorchButton_parameters_indicator.setText(
                 MainActivity.activity.getString(
                         R.string.button_parameters_indicator_setTorch,
-                        listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH, MainActivity.flashMode, true)
+                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_TORCH, MainActivity.flashMode, true)
                 )
         );
         setAutoWhiteBalance_parameters_indicator.setText(
                 MainActivity.activity.getString(
                         R.string.button_parameters_indicator_setAutoWhiteBalance,
-                        listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.awbMode, true)
+                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, MainActivity.awbMode, true)
                 )
         );
         setOpticalStabilization_parameters_indicator.setText(
                 MainActivity.activity.getString(
                         R.string.button_parameters_indicator_setOpticalStabilization,
-                        listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true)
+                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true)
                 )
         );
         setFocalLengthButton_parameters_indicator.setText(
@@ -533,10 +538,9 @@ class UIOperator {
                 });
 
                 if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
-                    titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
-                    // setup information TextView
-                    rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
 
+                    titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
+                    rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                     // TODO: improve reuseability of this part
                     if (MainActivity.exposureTime < 1E3) {
@@ -561,7 +565,7 @@ class UIOperator {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
                                 if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
+                                    rangeControlBottomSheet_applyValueEditTextValue(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -576,7 +580,7 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
+                                rangeControlBottomSheet_applyValueEditTextValue(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                             }
@@ -590,7 +594,7 @@ class UIOperator {
                             MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
                     );
                     rangeControlBottomSheet_setupRangeSeekBar(
-                            RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
+                            CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
                             progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
                             progressLeftLength
                     );
@@ -599,7 +603,7 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             rangeControlBottomSheet_zoomOutRangeSeekBar(
-                                    RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
+                                    CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
                                     progressLeftOffset, progressRightOffset,
                                     progressLeftLength
                             );
@@ -609,7 +613,7 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             rangeControlBottomSheet_zoomInRangeSeekBar(
-                                    RANGE_CONTROL_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
+                                    CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
                                     progressLeftOffset, progressRightOffset,
                                     progressLeftLength
                             );
@@ -627,7 +631,7 @@ class UIOperator {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
                                 if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                    rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_SENSITIVITY);
+                                    rangeControlBottomSheet_applyValueEditTextValue(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
                                     return true;
                                 } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                     rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -642,7 +646,7 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_SENSITIVITY);
+                                rangeControlBottomSheet_applyValueEditTextValue(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                             }
@@ -656,7 +660,7 @@ class UIOperator {
                             MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
                     );
                     rangeControlBottomSheet_setupRangeSeekBar(
-                            RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength,
+                            CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY, seekBarLength, progressLength,
                             progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
                             progressLeftLength
                     );
@@ -665,7 +669,7 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             rangeControlBottomSheet_zoomOutRangeSeekBar(
-                                    RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength,
+                                    CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY, seekBarLength, progressLength,
                                     progressLeftOffset, progressRightOffset,
                                     progressLeftLength
                             );
@@ -675,7 +679,7 @@ class UIOperator {
                         @Override
                         public void onClick(View v) {
                             rangeControlBottomSheet_zoomInRangeSeekBar(
-                                    RANGE_CONTROL_TYPE_SENSITIVITY, seekBarLength, progressLength,
+                                    CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY, seekBarLength, progressLength,
                                     progressLeftOffset, progressRightOffset,
                                     progressLeftLength
                             );
@@ -709,9 +713,7 @@ class UIOperator {
                 });
 
                 titleTextView_range_control.setText(R.string.textView_range_control_title_focusDistance);
-                // setup information TextView
-                rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
-
+                rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                 valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 if (MainActivity.focusDistance == 0.0f) {
                     valueEditText_range_control.setHint("Infinity m");
@@ -725,7 +727,7 @@ class UIOperator {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                                rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
+                                rangeControlBottomSheet_applyValueEditTextValue(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                                 return true;
                             } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                                 rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -740,7 +742,7 @@ class UIOperator {
                     @Override
                     public void onClick(View v) {
                         if (! ((valueEditText_range_control.getText()).toString()).equals("")) {
-                            rangeControlBottomSheet_applyValueEditTextValue(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
+                            rangeControlBottomSheet_applyValueEditTextValue(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                         } else if (((valueEditText_range_control.getText()).toString()).equals("")) {
                             rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
                         }
@@ -752,7 +754,7 @@ class UIOperator {
                 final VariableContainer<Float> progressRightOffset = new VariableContainer<Float>(0.0f);
                 final VariableContainer<Float> progressRightLength = new VariableContainer<Float>(MainActivity.focusDistance);
                 rangeControlBottomSheet_setupRangeSeekBar(
-                        RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
+                        CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
                         progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
                         progressRightLength
                 );
@@ -761,7 +763,7 @@ class UIOperator {
                     @Override
                     public void onClick(View v) {
                         rangeControlBottomSheet_zoomOutRangeSeekBar(
-                                RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
+                                CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
                                 progressLeftOffset, progressRightOffset,
                                 progressRightLength
                         );
@@ -771,7 +773,7 @@ class UIOperator {
                     @Override
                     public void onClick(View v) {
                         rangeControlBottomSheet_zoomInRangeSeekBar(
-                                RANGE_CONTROL_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
+                                CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
                                 progressLeftOffset, progressRightOffset,
                                 progressRightLength
                         );
@@ -805,7 +807,7 @@ class UIOperator {
     }
 
     static void rangeControlBottomSheet_applyValueEditTextValue(int valueEditTextType) {
-        if (valueEditTextType == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+        if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             double rawValue = Double.valueOf((valueEditText_range_control.getText()).toString());
             MainActivity.exposureTime = (long) (rawValue * 1E9);
             if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
@@ -814,7 +816,7 @@ class UIOperator {
                 MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
             }
 
-        } else if (valueEditTextType == RANGE_CONTROL_TYPE_SENSITIVITY) {
+        } else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
             MainActivity.sensitivity = Integer.valueOf((valueEditText_range_control.getText()).toString());
             if (MainActivity.sensitivity < MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
                 MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
@@ -822,7 +824,7 @@ class UIOperator {
                 MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
             }
 
-        } else if (valueEditTextType == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+        } else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             float rawValue = Float.valueOf((valueEditText_range_control.getText()).toString());
             MainActivity.focusDistance = 1f / rawValue;
             if (MainActivity.focusDistance < 0.0f) {
@@ -851,7 +853,7 @@ class UIOperator {
             valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
         }
 
-        if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             valueMinimumTextView_range_control.setText(
                     MainActivity.activity.getString(
                             R.string.textView_range_control_valueMinimum,
@@ -932,7 +934,7 @@ class UIOperator {
             valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
         }
 
-        if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
             valueMinimumTextView_range_control.setText(
                     MainActivity.activity.getString(
                             R.string.textView_range_control_valueMinimum,
@@ -996,7 +998,7 @@ class UIOperator {
             valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
         }
 
-        if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             valueMinimumTextView_range_control.setText(
                     MainActivity.activity.getString(
                             R.string.textView_range_control_valueMinimum,
@@ -1085,7 +1087,7 @@ class UIOperator {
             VariableContainer<Long> progressLeftOffset, VariableContainer<Long> progressRightOffset,
             VariableContainer<Long> progressLeftOrRightLength
     ) {
-        if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             long progressLeftLength = progressLeftOrRightLength.getVariable();
 
             long newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) * 2;
@@ -1124,7 +1126,7 @@ class UIOperator {
             VariableContainer<Integer> progressLeftOffset, VariableContainer<Integer> progressRightOffset,
             VariableContainer<Integer> progressLeftOrRightLength
     ) {
-        if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
             int progressLeftLength = progressLeftOrRightLength.getVariable();
 
             int newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) * 2;
@@ -1163,7 +1165,7 @@ class UIOperator {
             VariableContainer<Float> progressLeftOffset, VariableContainer<Float> progressRightOffset,
             VariableContainer<Float> progressLeftOrRightLength
     ) {
-        if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             float progressRightLength = progressLeftOrRightLength.getVariable();
 
             float newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) * 2;
@@ -1203,7 +1205,7 @@ class UIOperator {
             VariableContainer<Long> progressLeftOffset, VariableContainer<Long> progressRightOffset,
             VariableContainer<Long> progressLeftOrRightLength
     ) {
-        if (type == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             long progressLeftLength = progressLeftOrRightLength.getVariable();
 
             long newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) / 2;
@@ -1235,7 +1237,7 @@ class UIOperator {
             VariableContainer<Integer> progressLeftOffset, VariableContainer<Integer> progressRightOffset,
             VariableContainer<Integer> progressLeftOrRightLength
     ) {
-        if (type == RANGE_CONTROL_TYPE_SENSITIVITY) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
             int progressLeftLength = progressLeftOrRightLength.getVariable();
 
             int newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) / 2;
@@ -1267,7 +1269,7 @@ class UIOperator {
             VariableContainer<Float> progressLeftOffset, VariableContainer<Float> progressRightOffset,
             VariableContainer<Float> progressLeftOrRightLength
     ) {
-        if (type == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+        if (type == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             float progressRightLength = progressLeftOrRightLength.getVariable();
 
             float newProgressLength = (progressLength - progressLeftOffset.getVariable() - progressRightOffset.getVariable()) / 2;
@@ -1307,10 +1309,10 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setInformationTextViewText(int informationTextViewType) {
+    static void rangeControlBottomSheet_setupInformationTextView(int informationTextViewType) {
         String informationText = "";
 
-        if (informationTextViewType == RANGE_CONTROL_TYPE_EXPOSURE_TIME) {
+        if (informationTextViewType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             // # demand information:
             // Exposure Value
 
@@ -1322,7 +1324,7 @@ class UIOperator {
             informationText = String.format(Locale.getDefault(), "EV: %.1f", exposureValue);
         }
 
-        else if (informationTextViewType == RANGE_CONTROL_TYPE_FOCUS_DISTANCE) {
+        else if (informationTextViewType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             // # demand information:
             // Circle of Confusion (mm)
             // Hyperfocal Distance (m)
@@ -1450,7 +1452,7 @@ class UIOperator {
                     radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES, MainActivity.CONTROL_AWB_AVAILABLE_MODES[i], false));
+                    radioButton.setText(listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, MainActivity.CONTROL_AWB_AVAILABLE_MODES[i], false));
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
@@ -1485,7 +1487,7 @@ class UIOperator {
                     radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText(listControlBottomSheet_intValueToString(LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES, MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[i], false));
+                    radioButton.setText(listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[i], false));
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
@@ -1543,12 +1545,12 @@ class UIOperator {
     static String listControlBottomSheet_intValueToString(int intValueType, int intValue, boolean shortString) {
         String string = "";
 
-        if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_TORCH) {
+        if (intValueType == CONTROL_BOTTOM_SHEET_TYPE_TORCH) {
             switch (intValue) {
                 case 0: string = "OFF"; break;
                 case 2: string = "ON"; break;
             }
-        } else if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_AWB_MODES) {
+        } else if (intValueType == CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES) {
             switch (intValue) {
                 case 0: string = (shortString? "OFF" : "OFF"); break;
                 case 1: string = (shortString? "AUTO" : "AUTO"); break;
@@ -1560,7 +1562,7 @@ class UIOperator {
                 case 7: string = (shortString? "TWI." : "Twilight"); break;
                 case 8: string = (shortString? "SHA." : "Shade"); break;
             }
-        } else if (intValueType == LIST_CONTROL_INT_VALUE_TO_STRING_TYPE_OIS_MODES) {
+        } else if (intValueType == CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES) {
             switch (intValue) {
                 case 0: string = "OFF"; break;
                 case 1: string = "ON"; break;
