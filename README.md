@@ -25,7 +25,9 @@ Make sure to check out 'Known Bugs' section on the end of this file.
         - [ ] Touch to focus
     * [x] Exposure time (Shutter speed)
     * [x] ISO
-    * [x] White balance (When you have RAW output, white balance is not that demanded)
+    * White balance
+        - [x] Auto White Balance
+        - [ ] Manual White Balance
     * [x] Flash control (Flash lights on phones may not be a good choice for great lighting)
 + Photo output
     * [x] Choice between RAW (DNG) / JPEG output
@@ -43,6 +45,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 + Additional Tools for Capture
     * [ ] On Screen Display (OSD) of **Elevation Angle** and **Azimuth**
     * [ ] OSD of GPS information (Longtitude, Latitude, Altitude)
+    * [ ] Reflected Light Meter information
     * [ ] Bluetooth or Network remote control (reduce vibration)
     * [ ] Alternative seekbar mode, improve accuracy within small range
 
