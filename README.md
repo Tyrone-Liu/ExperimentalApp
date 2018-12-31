@@ -65,6 +65,7 @@ Make sure to check out 'Known Bugs' section on the end of this file.
     * [x] Open torch
     * [ ] Gallery
 + [x] Zoom in SeekBar for preciser adjust
++ [x] Change text in adjust panel according to parameters
 + [ ] Another thread for storing image file
 + [ ] Different capture sequences for stacking or time-lapse
 + [ ] More miscellaneous settings in setting interface
@@ -82,5 +83,6 @@ Make sure to check out 'Known Bugs' section on the end of this file.
 + [ ] On `OnePlus 6 (enchilada)`, after captured single image several times, the `imageReader` will suddenly not recceive the capture result.  This will not happen in `repeatingRequest` or after stopped the repeatingRequest of preview.
 + [x] ~Settings will not be initialized the first time opening the APP, needs to set at least once.~
 + [ ] When the Focus Assistant center was set to some point, the magnification will be smaller, even if the `CaptureResult.SCALER_CROP_REGION` is exactly what we want.
++ [ ] When switching between bottom sheets too fast, the `viewingControlBottomSheet` will be set to `0`.  Because when close the bottom sheet, there is a `STATE_SETTLING` before `STATE_HIDDEN`, if user open a new bottom sheet before `STATE_HIDDEN` callback (this is quite easy), the `viewingControlBottomSheet` will be set to `0` and date in adjust pannel will not be synchronized with 3A results.
 
 

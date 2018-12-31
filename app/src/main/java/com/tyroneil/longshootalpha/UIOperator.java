@@ -10,7 +10,6 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CaptureRequest;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -35,8 +34,6 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.Locale;
 
 class UIOperator {
@@ -288,13 +285,6 @@ class UIOperator {
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_NULL;
-                    Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                            Locale.getDefault(),
-                            "  #%s  #controlBottomSheet: %d, bRange,  radioButtonIdArray: %s",
-                            MainActivity.debugDateFormat.format(new Date()),
-                            viewingControlBottomSheet,
-                            Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                    ));
                     InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(bottomSheet.getWindowToken(), 0);
                 }
@@ -327,13 +317,6 @@ class UIOperator {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_NULL;
                     viewingControlBottomSheet_radioButtonIdArray = new int[0];
-                    Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                            Locale.getDefault(),
-                            "  #%s  #controlBottomSheet: %d, bList,  #radioButtonIdArray: %s",
-                            MainActivity.debugDateFormat.format(new Date()),
-                            viewingControlBottomSheet,
-                            Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                    ));
                 }
             }
 
@@ -617,13 +600,6 @@ class UIOperator {
 
                 if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
                     viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME;
-                    Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                            Locale.getDefault(),
-                            "  #%s  #controlBottomSheet: %d,          radioButtonIdArray: %s",
-                            MainActivity.debugDateFormat.format(new Date()),
-                            viewingControlBottomSheet,
-                            Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                    ));
 
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
                     rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
@@ -692,13 +668,6 @@ class UIOperator {
 
                 else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
                     viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY;
-                    Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                            Locale.getDefault(),
-                            "  #%s  #controlBottomSheet: %d,          radioButtonIdArray: %s",
-                            MainActivity.debugDateFormat.format(new Date()),
-                            viewingControlBottomSheet,
-                            Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                    ));
 
                     titleTextView_range_control.setText(R.string.textView_range_control_title_sensitivity);
 
@@ -770,13 +739,6 @@ class UIOperator {
             // region: parameters controlled by afMode
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s  #controlBottomSheet: %d,          radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
 
                 if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
@@ -1525,13 +1487,6 @@ class UIOperator {
             // region: parameters controlled by aeMode
             if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAperture) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_APERTURE;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s  #controlBottomSheet: %d,          radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_aperture);
 
@@ -1564,13 +1519,6 @@ class UIOperator {
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s   controlBottomSheet: %d,         #radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1588,13 +1536,6 @@ class UIOperator {
 
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAutoWhiteBalance) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s  #controlBottomSheet: %d,          radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_autoWhiteBalance);
 
@@ -1617,13 +1558,6 @@ class UIOperator {
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s   controlBottomSheet: %d,         #radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.CONTROL_AWB_AVAILABLE_MODES, MainActivity.awbMode)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1640,13 +1574,6 @@ class UIOperator {
 
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setOpticalStabilization) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s  #controlBottomSheet: %d,          radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_opticalStabilization);
 
@@ -1669,13 +1596,6 @@ class UIOperator {
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s   controlBottomSheet: %d,         #radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION, MainActivity.opticalStabilizationMode)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1692,13 +1612,6 @@ class UIOperator {
 
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setFocalLength) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_FOCAL_LENGTH;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s  #controlBottomSheet: %d,          radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_focalLength);
 
@@ -1721,13 +1634,6 @@ class UIOperator {
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                Log.d(MainActivity.LOG_TAG_LSA_BS_ID_OVERWRITE, String.format(
-                        Locale.getDefault(),
-                        "  #%s   controlBottomSheet: %d,         #radioButtonIdArray: %s",
-                        MainActivity.debugDateFormat.format(new Date()),
-                        viewingControlBottomSheet,
-                        Arrays.toString(viewingControlBottomSheet_radioButtonIdArray)
-                ));
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS, MainActivity.focalLength)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
