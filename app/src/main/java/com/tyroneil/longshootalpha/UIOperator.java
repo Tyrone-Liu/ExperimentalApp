@@ -66,6 +66,7 @@ class UIOperator {
     static MaterialCheckBox autoCheckBox_range_control;
     static TextInputEditText valueEditText_range_control;
     static MaterialButton zoomOutButton_range_control, zoomInButton_range_control, applyButton_range_control;
+    static int seekBarLength;
     // endregion: content capture parameter range control
 
     // region: content capture parameter list control
@@ -268,6 +269,8 @@ class UIOperator {
                 return true;  // QUESTION: why this needs to be true to prevent weird problems?
             }
         });
+
+        seekBarLength = rangeSeekBar_range_control.getMax() - rangeSeekBar_range_control.getMin();
 
         rangeControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
         rangeControlBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -509,8 +512,6 @@ class UIOperator {
             valueMaximumTextView_range_control.setText(R.string.textView_range_control_valueMaximum);
             valueEditText_range_control.setText("");
 
-            final int seekBarLength = rangeSeekBar_range_control.getMax() - rangeSeekBar_range_control.getMin();
-
             // region: parameters controlled by aeMode
             if (
                        (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime)
@@ -541,25 +542,8 @@ class UIOperator {
 
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
                     rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
+                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                    // TODO: improve reuseability of this part
-                    if (MainActivity.exposureTime < 1E3) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
-                        );
-                    } else if (MainActivity.exposureTime < 1E6) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
-                        );
-                    } else if (MainActivity.exposureTime < 1E9) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
-                        );
-                    } else {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
-                        );
-                    }
                     valueEditText_range_control.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -624,8 +608,8 @@ class UIOperator {
                 else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
                     titleTextView_range_control.setText(R.string.textView_range_control_title_sensitivity);
 
+                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
                     valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-                    valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
                     valueEditText_range_control.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -714,14 +698,8 @@ class UIOperator {
 
                 titleTextView_range_control.setText(R.string.textView_range_control_title_focusDistance);
                 rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
+                rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                 valueEditText_range_control.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                if (MainActivity.focusDistance == 0.0f) {
-                    valueEditText_range_control.setHint("Infinity m");
-                } else {
-                    valueEditText_range_control.setHint(
-                            String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
-                    );
-                }
                 valueEditText_range_control.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -887,27 +865,11 @@ class UIOperator {
                             MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
                         }
                         progressLeftOrRightLength.setVariable(MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower());
-
-                        if (MainActivity.exposureTime < 1E3) {
-                            valueEditText_range_control.setHint(
-                                    String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
-                            );
-                        } else if (MainActivity.exposureTime < 1E6) {
-                            valueEditText_range_control.setHint(
-                                    String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
-                            );
-                        } else if (MainActivity.exposureTime < 1E9) {
-                            valueEditText_range_control.setHint(
-                                    String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
-                            );
-                        } else {
-                            valueEditText_range_control.setHint(
-                                    String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
-                            );
-                        }
-                        rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_EXPOSURE_TIME);
                         updateCaptureParametersIndicator();
                     }
+
+                    rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
+                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                 }
 
                 @Override
@@ -968,11 +930,11 @@ class UIOperator {
                             MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
                         }
                         progressLeftOrRightLength.setVariable(MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower());
-
-                        valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
                         updateCaptureParametersIndicator();
                         updatePreviewParameters();
                     }
+
+                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
                 }
 
                 @Override
@@ -1041,16 +1003,12 @@ class UIOperator {
                             MainActivity.focusDistance = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
                         }
                         progressLeftOrRightLength.setVariable(MainActivity.focusDistance);
-
-                        if (MainActivity.focusDistance == 0.0f) {
-                            valueEditText_range_control.setHint("Infinity");
-                        } else {
-                            valueEditText_range_control.setHint(String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance));
-                        }
-                        rangeControlBottomSheet_setInformationTextViewText(RANGE_CONTROL_TYPE_FOCUS_DISTANCE);
                         updateCaptureParametersIndicator();
                         updatePreviewParameters();
                     }
+
+                    rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
+                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                 }
 
                 @Override
@@ -1373,6 +1331,57 @@ class UIOperator {
         }
 
         informationTextView_range_control.setText(informationText);
+    }
+
+    static void rangeControlBottomSheet_setupValueEditTextHint(int valueEditTextType) {
+        if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (MainActivity.exposureTime < 1E3) {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
+                        );
+                    } else if (MainActivity.exposureTime < 1E6) {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
+                        );
+                    } else if (MainActivity.exposureTime < 1E9) {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
+                        );
+                    } else {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
+                        );
+                    }
+                }
+            });
+        }
+
+        else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
+                }
+            });
+        }
+
+        else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (MainActivity.focusDistance == 0.0f) {
+                        valueEditText_range_control.setHint("Infinity m");
+                    } else {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
+                        );
+                    }
+                }
+            });
+        }
     }
     // endregion: onClickListener, type range_control
 
