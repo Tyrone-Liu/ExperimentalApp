@@ -236,9 +236,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static SimpleDateFormat debugDateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
-    static final String LOG_TAG_LSA_CAPTURE_LAG = "LSA_CAPTURE_LAG";
-    static final String LOG_TAG_LSA_DEBUG = "LSA_DEBUG";
     static final String LOG_TAG_LSA_WARN = "LSA_WARN";
+
+    static final String LOG_TAG_LSA_DEBUG = "LSA_DEBUG";
+    static final String LOG_TAG_LSA_CAPTURE_LAG = "LSA_CAPTURE_LAG";
+    static final String LOG_TAG_LSA_BS_ID_OVERWRITE = "LSA_BS_ID_OVERWRITE";
     // endregion: debug Tool
 
     // region: handle activity lifecycle
