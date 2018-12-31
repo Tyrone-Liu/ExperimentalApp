@@ -85,7 +85,7 @@ class UIOperator {
     static final int CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES = 6;
     static final int CONTROL_BOTTOM_SHEET_TYPE_FOCAL_LENGTH = 7;
     static final int CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE = 8;
-    // endregion: control bottom sheet type constant
+    // endregion: CONTROL_BOTTOM_SHEET_TYPE variables
 
     // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
@@ -845,10 +845,9 @@ class UIOperator {
                     )
             );
 
-            long progressLeftLength = progressLeftOrRightLength.getVariable();
-            rangeSeekBar_range_control.setProgress((int)
-                    (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
-                    + rangeSeekBar_range_control.getMin()
+            rangeControlBottomSheet_setupRangeSeekBarProgress(
+                    type, progressLength,
+                    progressLeftOffset, progressRightOffset, progressLeftOrRightLength.getVariable()
             );
             rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -910,10 +909,9 @@ class UIOperator {
                     )
             );
 
-            int progressLeftLength = progressLeftOrRightLength.getVariable();
-            rangeSeekBar_range_control.setProgress((int)
-                    (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
-                    + rangeSeekBar_range_control.getMin()
+            rangeControlBottomSheet_setupRangeSeekBarProgress(
+                    type, progressLength,
+                    progressLeftOffset, progressRightOffset, progressLeftOrRightLength.getVariable()
             );
             rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -983,10 +981,9 @@ class UIOperator {
                 );
             }
 
-            float progressRightLength = progressLeftOrRightLength.getVariable();
-            rangeSeekBar_range_control.setProgress(
-                    rangeSeekBar_range_control.getMax() - (int)
-                    (seekBarLength * (progressRightLength - progressRightOffset) / (progressLength - progressLeftOffset - progressRightOffset))
+            rangeControlBottomSheet_setupRangeSeekBarProgress(
+                    type, progressLength,
+                    progressLeftOffset, progressRightOffset, progressLeftOrRightLength.getVariable()
             );
             rangeSeekBar_range_control.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -1253,7 +1250,7 @@ class UIOperator {
             );
         }
     }
-    // endregion: rangeControlBottomSheet_zoomOutRangeSeekBar
+    // endregion: rangeControlBottomSheet_zoomRangeSeekBar
 
     static String rangeControlBottomSheet_formatTimeString(long time) {
         if (time < 1E3) {
@@ -1332,6 +1329,48 @@ class UIOperator {
 
         informationTextView_range_control.setText(informationText);
     }
+
+    // region: rangeControlBottomSheet_setupRangeSeekBarProgress
+    static void rangeControlBottomSheet_setupRangeSeekBarProgress(
+            int rangeSeekBarType, long progressLength,
+            long progressLeftOffset, long progressRightOffset, long progressLeftOrRightLength
+    ) {
+        if (rangeSeekBarType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
+            long progressLeftLength = progressLeftOrRightLength;
+            rangeSeekBar_range_control.setProgress((int)
+                    (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
+                    + rangeSeekBar_range_control.getMin()
+            );
+        }
+    }
+
+    static void rangeControlBottomSheet_setupRangeSeekBarProgress(
+            int rangeSeekBarType, int progressLength,
+            int progressLeftOffset, int progressRightOffset, int progressLeftOrRightLength
+    ) {
+        if (rangeSeekBarType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
+            int progressLeftLength = progressLeftOrRightLength;
+            rangeSeekBar_range_control.setProgress((int)
+                    (seekBarLength * ((double) (progressLeftLength - progressLeftOffset) / (progressLength - progressLeftOffset - progressRightOffset)))
+                    + rangeSeekBar_range_control.getMin()
+            );
+        }
+    }
+
+    static void rangeControlBottomSheet_setupRangeSeekBarProgress(
+            int rangeSeekBarType, float progressLength,
+            float progressLeftOffset, float progressRightOffset, float progressLeftOrRightLength
+    ) {
+        if (rangeSeekBarType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+            float progressRightLength = progressLeftOrRightLength;
+            rangeSeekBar_range_control.setProgress(
+                    rangeSeekBar_range_control.getMax() - (int) (
+                            seekBarLength * (progressRightLength - progressRightOffset) / (progressLength - progressLeftOffset - progressRightOffset)
+                    )
+            );
+        }
+    }
+    // endregion: rangeControlBottomSheet_setupRangeSeekBarProgress
 
     static void rangeControlBottomSheet_setupValueEditTextHint(int valueEditTextType) {
         if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
