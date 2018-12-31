@@ -77,6 +77,10 @@ class UIOperator {
     // endregion: content capture parameter list control
 
     // region: CONTROL_BOTTOM_SHEET_TYPE variables
+    static final int CONTROL_BOTTOM_SHEET_TYPE_NULL = 0;
+    static int viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_NULL;
+    static int[] viewingControlBottomSheet_radioButtonIdArray = new int[0];
+
     static final int CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME = 1;
     static final int CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY = 2;
     static final int CONTROL_BOTTOM_SHEET_TYPE_APERTURE = 3;
@@ -277,6 +281,7 @@ class UIOperator {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_NULL;
                     InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(bottomSheet.getWindowToken(), 0);
                 }
@@ -303,6 +308,19 @@ class UIOperator {
         });
 
         listControlBottomSheet.setState(BottomSheetBehavior.STATE_HIDDEN);
+        listControlBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_NULL;
+                    viewingControlBottomSheet_radioButtonIdArray = new int[0];
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
     }
     // endregion: initiate layouts (camera_control, range_control, list_control)
 
@@ -432,6 +450,38 @@ class UIOperator {
         }
     }
 
+    static void updateControlBottomSheet() {
+        if (viewingControlBottomSheet != CONTROL_BOTTOM_SHEET_TYPE_NULL) {
+            if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
+                rangeControlBottomSheet_setupRangeSeekBarProgress(
+                        viewingControlBottomSheet,
+                        MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower(),
+                        0L, 0L, MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                );
+            } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
+                rangeControlBottomSheet_setupRangeSeekBarProgress(
+                        viewingControlBottomSheet,
+                        MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower(),
+                        0, 0, MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                );
+            } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+                rangeControlBottomSheet_setupRangeSeekBarProgress(
+                        viewingControlBottomSheet,
+                        MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE,
+                        0.0f, 0.0f, MainActivity.focusDistance
+                );
+            }
+
+            if (viewingControlBottomSheet_radioButtonIdArray.length != 0) {
+                if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_APERTURE) {
+                    listRadioGroup_list_control.check(viewingControlBottomSheet_radioButtonIdArray[
+                            Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)
+                    ]);
+                }
+            }
+        }
+    }
+
     // region: onClickListener, content_camera_control
     static View.OnClickListener onClickListener_camera_control = new View.OnClickListener() {
         @Override
@@ -539,6 +589,7 @@ class UIOperator {
                 });
 
                 if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime) {
+                    viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME;
 
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
                     rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
@@ -606,6 +657,8 @@ class UIOperator {
                 }
 
                 else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity) {
+                    viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY;
+
                     titleTextView_range_control.setText(R.string.textView_range_control_title_sensitivity);
 
                     rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
@@ -675,6 +728,8 @@ class UIOperator {
 
             // region: parameters controlled by afMode
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
+                viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE;
+
                 if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
@@ -1438,6 +1493,8 @@ class UIOperator {
 
             // region: parameters controlled by aeMode
             if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAperture) {
+                viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_APERTURE;
+
                 titleTextView_list_control.setText(R.string.textView_list_control_title_aperture);
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_APERTURES).length];
@@ -1468,6 +1525,7 @@ class UIOperator {
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
+                viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1484,6 +1542,8 @@ class UIOperator {
             // endregion: parameters controlled by aeMode
 
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setAutoWhiteBalance) {
+                viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES;
+
                 titleTextView_list_control.setText(R.string.textView_list_control_title_autoWhiteBalance);
 
                 radioButtonIdArray = new int[(MainActivity.CONTROL_AWB_AVAILABLE_MODES).length];
@@ -1504,6 +1564,7 @@ class UIOperator {
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
+                viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.CONTROL_AWB_AVAILABLE_MODES, MainActivity.awbMode)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1519,6 +1580,8 @@ class UIOperator {
             }
 
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setOpticalStabilization) {
+                viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES;
+
                 titleTextView_list_control.setText(R.string.textView_list_control_title_opticalStabilization);
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length];
@@ -1539,6 +1602,7 @@ class UIOperator {
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
+                viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION, MainActivity.opticalStabilizationMode)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -1554,6 +1618,8 @@ class UIOperator {
             }
 
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setFocalLength) {
+                viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_FOCAL_LENGTH;
+
                 titleTextView_list_control.setText(R.string.textView_list_control_title_focalLength);
 
                 radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length];
@@ -1574,6 +1640,7 @@ class UIOperator {
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
+                viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
                 listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS, MainActivity.focalLength)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

@@ -791,7 +791,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // previewCaptureCallback is for debug purpose
     static CameraCaptureSession.CaptureCallback previewCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
@@ -805,6 +804,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             // endregion: debug in captureCallback
+            if (! (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
+                exposureTime = result.get(CaptureResult.SENSOR_EXPOSURE_TIME);
+                sensitivity = result.get(CaptureResult.SENSOR_SENSITIVITY);
+                aperture = result.get(CaptureResult.LENS_APERTURE);
+                UIOperator.updateControlBottomSheet();
+            }
+            if (! (afMode == CaptureRequest.CONTROL_AF_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
+                focusDistance = result.get(CaptureResult.LENS_FOCUS_DISTANCE);
+                UIOperator.updateControlBottomSheet();
+            }
             super.onCaptureCompleted(session, request, result);
         }
 
