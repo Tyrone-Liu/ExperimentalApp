@@ -872,6 +872,123 @@ class UIOperator {
         updatePreviewParameters();
     }
 
+    static void rangeControlBottomSheet_setupInformationTextView(int informationTextViewType) {
+        String informationText = "";
+
+        if (informationTextViewType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
+            // # demand information:
+            // Exposure Value
+
+            double exposureValue = (
+                    Math.log(Math.pow(MainActivity.aperture, 2) / ((double) MainActivity.exposureTime / 1E9))
+                    / Math.log(2)
+            );
+
+            informationText = String.format(Locale.getDefault(), "EV: %.1f", exposureValue);
+        }
+
+        else if (informationTextViewType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+            // # demand information:
+            // Circle of Confusion (mm)
+            // Hyperfocal Distance (m)
+            // Near Point Distance (m)
+            // Far Point Distance (m)
+            // Depth of Field (m)
+
+            float hyperfocalDistance = (  // unit: mm
+                    (
+                            (MainActivity.focalLength * MainActivity.focalLength)
+                            / (MainActivity.aperture * MainActivity.CIRCLE_OF_CONFUSION)
+                    ) + MainActivity.focalLength
+            );
+
+            String nearPointDistanceText;
+            String farPointDistanceText;
+            String depthOfFieldText;
+            if (MainActivity.focusDistance != 0f) {
+                float nearPointDistance = (  // unit: mm
+                        ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
+                        / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
+                );
+                nearPointDistanceText = String.format(Locale.getDefault(), "%.4fm", nearPointDistance / 1000f);
+                if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
+                    float farPointDistance = (  // unit: mm
+                            ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
+                            / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
+                    );
+                    farPointDistanceText = String.format(Locale.getDefault(), "%.4fm", farPointDistance / 1000f);
+                    depthOfFieldText = String.format(Locale.getDefault(), "%.4fm", (farPointDistance - nearPointDistance) / 1000f);
+                } else {
+                    farPointDistanceText = "Infinity";
+                    depthOfFieldText = "Infinity";
+                }
+            } else {
+                nearPointDistanceText = "Infinity";
+                farPointDistanceText = "Infinity";
+                depthOfFieldText = "Infinity";
+            }
+
+            informationText = (
+                    String.format(Locale.getDefault(), "CoC: %.6fmm, H: %.6fm\n", MainActivity.CIRCLE_OF_CONFUSION, hyperfocalDistance / 1000f)
+                    + String.format(Locale.getDefault(), "D_N: %s, D_F: %s\n", nearPointDistanceText, farPointDistanceText)
+                    + String.format(Locale.getDefault(), "DoF: %s", depthOfFieldText)
+            );
+        }
+
+        informationTextView_range_control.setText(informationText);
+    }
+
+    static void rangeControlBottomSheet_setupValueEditTextHint(int valueEditTextType) {
+        if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (MainActivity.exposureTime < 1E3) {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
+                        );
+                    } else if (MainActivity.exposureTime < 1E6) {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
+                        );
+                    } else if (MainActivity.exposureTime < 1E9) {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
+                        );
+                    } else {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
+                        );
+                    }
+                }
+            });
+        }
+
+        else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
+                }
+            });
+        }
+
+        else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+            MainActivity.activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (MainActivity.focusDistance == 0.0f) {
+                        valueEditText_range_control.setHint("Infinity m");
+                    } else {
+                        valueEditText_range_control.setHint(
+                                String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
+                        );
+                    }
+                }
+            });
+        }
+    }
+
     // region: rangeControlBottomSheet_setupRangeSeekBar
     static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, final VariableContainer<Long> progressLeftOrRightLength) {
         if (progressLeftOffset != 0L || progressRightOffset != 0L) {
@@ -1307,84 +1424,6 @@ class UIOperator {
     }
     // endregion: rangeControlBottomSheet_zoomRangeSeekBar
 
-    static String rangeControlBottomSheet_formatTimeString(long time) {
-        if (time < 1E3) {
-            return time + " ns";
-        } else if (time < 1E6) {
-            return String.format(Locale.getDefault(), "%.2f µs", (double) (time / 1E0) / 1E3);
-        } else if (time < 1E9) {
-            return String.format(Locale.getDefault(), "%.2f ms", (double) (time / 1E3) / 1E3);
-        } else {
-            return String.format(Locale.getDefault(), "%.2f s", (double) (time / 1E6) / 1E3);
-        }
-    }
-
-    static void rangeControlBottomSheet_setupInformationTextView(int informationTextViewType) {
-        String informationText = "";
-
-        if (informationTextViewType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
-            // # demand information:
-            // Exposure Value
-
-            double exposureValue = (
-                    Math.log(Math.pow(MainActivity.aperture, 2) / ((double) MainActivity.exposureTime / 1E9))
-                    / Math.log(2)
-            );
-
-            informationText = String.format(Locale.getDefault(), "EV: %.1f", exposureValue);
-        }
-
-        else if (informationTextViewType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
-            // # demand information:
-            // Circle of Confusion (mm)
-            // Hyperfocal Distance (m)
-            // Near Point Distance (m)
-            // Far Point Distance (m)
-            // Depth of Field (m)
-
-            float hyperfocalDistance = (  // unit: mm
-                    (
-                            (MainActivity.focalLength * MainActivity.focalLength)
-                            / (MainActivity.aperture * MainActivity.CIRCLE_OF_CONFUSION)
-                    ) + MainActivity.focalLength
-            );
-
-            String nearPointDistanceText;
-            String farPointDistanceText;
-            String depthOfFieldText;
-            if (MainActivity.focusDistance != 0f) {
-                float nearPointDistance = (  // unit: mm
-                        ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
-                        / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
-                );
-                nearPointDistanceText = String.format(Locale.getDefault(), "%.4fm", nearPointDistance / 1000f);
-                if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
-                    float farPointDistance = (  // unit: mm
-                            ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
-                            / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
-                    );
-                    farPointDistanceText = String.format(Locale.getDefault(), "%.4fm", farPointDistance / 1000f);
-                    depthOfFieldText = String.format(Locale.getDefault(), "%.4fm", (farPointDistance - nearPointDistance) / 1000f);
-                } else {
-                    farPointDistanceText = "Infinity";
-                    depthOfFieldText = "Infinity";
-                }
-            } else {
-                nearPointDistanceText = "Infinity";
-                farPointDistanceText = "Infinity";
-                depthOfFieldText = "Infinity";
-            }
-
-            informationText = (
-                    String.format(Locale.getDefault(), "CoC: %.6fmm, H: %.6fm\n", MainActivity.CIRCLE_OF_CONFUSION, hyperfocalDistance / 1000f)
-                    + String.format(Locale.getDefault(), "D_N: %s, D_F: %s\n", nearPointDistanceText, farPointDistanceText)
-                    + String.format(Locale.getDefault(), "DoF: %s", depthOfFieldText)
-            );
-        }
-
-        informationTextView_range_control.setText(informationText);
-    }
-
     // region: rangeControlBottomSheet_setupRangeSeekBarProgress
     static void rangeControlBottomSheet_setupRangeSeekBarProgress(
             int rangeSeekBarType, long progressLength,
@@ -1427,54 +1466,15 @@ class UIOperator {
     }
     // endregion: rangeControlBottomSheet_setupRangeSeekBarProgress
 
-    static void rangeControlBottomSheet_setupValueEditTextHint(int valueEditTextType) {
-        if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (MainActivity.exposureTime < 1E3) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
-                        );
-                    } else if (MainActivity.exposureTime < 1E6) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
-                        );
-                    } else if (MainActivity.exposureTime < 1E9) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
-                        );
-                    } else {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
-                        );
-                    }
-                }
-            });
-        }
-
-        else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
-                }
-            });
-        }
-
-        else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (MainActivity.focusDistance == 0.0f) {
-                        valueEditText_range_control.setHint("Infinity m");
-                    } else {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
-                        );
-                    }
-                }
-            });
+    static String rangeControlBottomSheet_formatTimeString(long time) {
+        if (time < 1E3) {
+            return time + " ns";
+        } else if (time < 1E6) {
+            return String.format(Locale.getDefault(), "%.2f µs", (double) (time / 1E0) / 1E3);
+        } else if (time < 1E9) {
+            return String.format(Locale.getDefault(), "%.2f ms", (double) (time / 1E3) / 1E3);
+        } else {
+            return String.format(Locale.getDefault(), "%.2f s", (double) (time / 1E6) / 1E3);
         }
     }
     // endregion: onClickListener, type range_control
