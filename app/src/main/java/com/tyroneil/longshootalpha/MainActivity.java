@@ -304,7 +304,12 @@ public class MainActivity extends AppCompatActivity {
                         if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
                             // TODO: warn user they can not save the capture image
                             if (UIOperator.captureButton_camera_control != null) {
-                                UIOperator.cameraControl_setCaptureButtonEnabled(false);
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        UIOperator.cameraControl_setCaptureButtonEnabled(false);
+                                    }
+                                });
                             }
                         }
                         break;
@@ -808,12 +813,26 @@ public class MainActivity extends AppCompatActivity {
                 exposureTime = result.get(CaptureResult.SENSOR_EXPOSURE_TIME);
                 sensitivity = result.get(CaptureResult.SENSOR_SENSITIVITY);
                 aperture = result.get(CaptureResult.LENS_APERTURE);
-                UIOperator.updateControlBottomSheet();
+
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UIOperator.updateControlBottomSheet();
+                    }
+                });
             }
+
             if (! (afMode == CaptureRequest.CONTROL_AF_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
                 focusDistance = result.get(CaptureResult.LENS_FOCUS_DISTANCE);
-                UIOperator.updateControlBottomSheet();
+
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UIOperator.updateControlBottomSheet();
+                    }
+                });
             }
+
             super.onCaptureCompleted(session, request, result);
         }
 
@@ -926,7 +945,13 @@ public class MainActivity extends AppCompatActivity {
                     if (imageOutputStream != null) {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
-                        UIOperator.cameraControl_setCaptureButtonEnabled(true);
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                UIOperator.cameraControl_setCaptureButtonEnabled(true);
+                            }
+                        });
                     }
                 }
             }
@@ -964,7 +989,13 @@ public class MainActivity extends AppCompatActivity {
                     if (imageOutputStream != null) {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
-                        UIOperator.cameraControl_setCaptureButtonEnabled(true);
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                UIOperator.cameraControl_setCaptureButtonEnabled(true);
+                            }
+                        });
                     }
                 }
             }

@@ -452,24 +452,33 @@ class UIOperator {
 
     static void updateControlBottomSheet() {
         if (viewingControlBottomSheet != CONTROL_BOTTOM_SHEET_TYPE_NULL) {
-            if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
-                rangeControlBottomSheet_setupRangeSeekBarProgress(
-                        viewingControlBottomSheet,
-                        MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower(),
-                        0L, 0L, MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
-                );
-            } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
-                rangeControlBottomSheet_setupRangeSeekBarProgress(
-                        viewingControlBottomSheet,
-                        MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower(),
-                        0, 0, MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
-                );
-            } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
-                rangeControlBottomSheet_setupRangeSeekBarProgress(
-                        viewingControlBottomSheet,
-                        MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE,
-                        0.0f, 0.0f, MainActivity.focusDistance
-                );
+            if (
+                    viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME
+                    || viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY
+                    || viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE
+            ) {
+                rangeControlBottomSheet_setupInformationTextView(viewingControlBottomSheet);
+                rangeControlBottomSheet_setupValueEditTextHint(viewingControlBottomSheet);
+
+                if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
+                    rangeControlBottomSheet_setupRangeSeekBarProgress(
+                            viewingControlBottomSheet,
+                            MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower(),
+                            0L, 0L, MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                    );
+                } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
+                    rangeControlBottomSheet_setupRangeSeekBarProgress(
+                            viewingControlBottomSheet,
+                            MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower(),
+                            0, 0, MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                    );
+                } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+                    rangeControlBottomSheet_setupRangeSeekBarProgress(
+                            viewingControlBottomSheet,
+                            MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE,
+                            0.0f, 0.0f, MainActivity.focusDistance
+                    );
+                }
             }
 
             if (viewingControlBottomSheet_radioButtonIdArray.length != 0) {
@@ -504,27 +513,17 @@ class UIOperator {
 
     static void cameraControl_setCaptureButtonEnabled(boolean enabled) {
         if (enabled) {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    capturingProgressBar_camera_control.setElevation(0f);
-                    captureButton_camera_control.setEnabled(true);
-                    captureButton_camera_control.setText(R.string.button_camera_control_capture);
-                }
-            });
+            capturingProgressBar_camera_control.setElevation(0f);
+            captureButton_camera_control.setEnabled(true);
+            captureButton_camera_control.setText(R.string.button_camera_control_capture);
         } else {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    // from the material design documents, the elevation of a button is within [2dp, 8dp]
-                    // therefore, set the elevation of a progressBar to 8dp will bring it to front
-                    captureButton_camera_control.setWidth((UIOperator.captureButton_camera_control).getWidth());
-                    captureButton_camera_control.setHeight((UIOperator.captureButton_camera_control).getHeight());
-                    captureButton_camera_control.setText("");
-                    captureButton_camera_control.setEnabled(false);
-                    capturingProgressBar_camera_control.setElevation(8f * MainActivity.scale);
-                }
-            });
+            // from the material design documents, the elevation of a button is within [2dp, 8dp]
+            // therefore, set the elevation of a progressBar to 8dp will bring it to front
+            captureButton_camera_control.setWidth((UIOperator.captureButton_camera_control).getWidth());
+            captureButton_camera_control.setHeight((UIOperator.captureButton_camera_control).getHeight());
+            captureButton_camera_control.setText("");
+            captureButton_camera_control.setEnabled(false);
+            capturingProgressBar_camera_control.setElevation(8f * MainActivity.scale);
         }
     }
     // endregion: onClickListener, content_camera_control
@@ -878,12 +877,10 @@ class UIOperator {
         if (informationTextViewType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             // # demand information:
             // Exposure Value
-
             double exposureValue = (
                     Math.log(Math.pow(MainActivity.aperture, 2) / ((double) MainActivity.exposureTime / 1E9))
                     / Math.log(2)
             );
-
             informationText = String.format(Locale.getDefault(), "EV: %.1f", exposureValue);
         }
 
@@ -940,52 +937,37 @@ class UIOperator {
 
     static void rangeControlBottomSheet_setupValueEditTextHint(int valueEditTextType) {
         if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (MainActivity.exposureTime < 1E3) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
-                        );
-                    } else if (MainActivity.exposureTime < 1E6) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
-                        );
-                    } else if (MainActivity.exposureTime < 1E9) {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
-                        );
-                    } else {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
-                        );
-                    }
-                }
-            });
+            if (MainActivity.exposureTime < 1E3) {
+                valueEditText_range_control.setHint(
+                        String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
+                );
+            } else if (MainActivity.exposureTime < 1E6) {
+                valueEditText_range_control.setHint(
+                        String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
+                );
+            } else if (MainActivity.exposureTime < 1E9) {
+                valueEditText_range_control.setHint(
+                        String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
+                );
+            } else {
+                valueEditText_range_control.setHint(
+                        String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
+                );
+            }
         }
 
         else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
-                }
-            });
+            valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
         }
 
         else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
-            MainActivity.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (MainActivity.focusDistance == 0.0f) {
-                        valueEditText_range_control.setHint("Infinity m");
-                    } else {
-                        valueEditText_range_control.setHint(
-                                String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
-                        );
-                    }
-                }
-            });
+            if (MainActivity.focusDistance == 0.0f) {
+                valueEditText_range_control.setHint("Infinity m");
+            } else {
+                valueEditText_range_control.setHint(
+                        String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
+                );
+            }
         }
     }
 
@@ -1036,11 +1018,11 @@ class UIOperator {
                             MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
                         }
                         progressLeftOrRightLength.setVariable(MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower());
+
+                        rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
+                        rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                         updateCaptureParametersIndicator();
                     }
-
-                    rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
-                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                 }
 
                 @Override
@@ -1100,11 +1082,11 @@ class UIOperator {
                             MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
                         }
                         progressLeftOrRightLength.setVariable(MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower());
+
+                        rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
                         updateCaptureParametersIndicator();
                         updatePreviewParameters();
                     }
-
-                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
                 }
 
                 @Override
@@ -1172,12 +1154,12 @@ class UIOperator {
                             MainActivity.focusDistance = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
                         }
                         progressLeftOrRightLength.setVariable(MainActivity.focusDistance);
+
+                        rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
+                        rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                         updateCaptureParametersIndicator();
                         updatePreviewParameters();
                     }
-
-                    rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
-                    rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                 }
 
                 @Override
