@@ -819,7 +819,7 @@ public class MainActivity extends AppCompatActivity {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        UIOperator.updateControlBottomSheet();
+                        UIOperator.updateControlBottomSheet(UIOperator.CONTROL_BOTTOM_SHEET_CATEGORY_AE_MODE);
                     }
                 });
             }
@@ -830,7 +830,7 @@ public class MainActivity extends AppCompatActivity {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        UIOperator.updateControlBottomSheet();
+                        UIOperator.updateControlBottomSheet(UIOperator.CONTROL_BOTTOM_SHEET_CATEGORY_AF_MODE);
                     }
                 });
             }

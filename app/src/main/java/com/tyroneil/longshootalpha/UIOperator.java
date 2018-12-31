@@ -92,6 +92,9 @@ class UIOperator {
     static final int CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES = 6;
     static final int CONTROL_BOTTOM_SHEET_TYPE_FOCAL_LENGTH = 7;
     static final int CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE = 8;
+
+    static final int CONTROL_BOTTOM_SHEET_CATEGORY_AE_MODE = 1;
+    static final int CONTROL_BOTTOM_SHEET_CATEGORY_AF_MODE = 2;
     // endregion: CONTROL_BOTTOM_SHEET_TYPE variables
 
     // region: initiate layouts (camera_control, range_control, list_control)
@@ -467,42 +470,50 @@ class UIOperator {
         }
     }
 
-    static void updateControlBottomSheet() {
+    static void updateControlBottomSheet(int controlBottomSheetCategory) {
         if (viewingControlBottomSheet != CONTROL_BOTTOM_SHEET_TYPE_NULL) {
-            if (
-                    viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME
-                    || viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY
-                    || viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE
-            ) {
-                rangeControlBottomSheet_setupInformationTextView(viewingControlBottomSheet);
-                rangeControlBottomSheet_setupValueEditTextHint(viewingControlBottomSheet);
+            if (controlBottomSheetCategory == CONTROL_BOTTOM_SHEET_CATEGORY_AE_MODE) {
+                if (
+                        viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME
+                        || viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY
+                ) {
+                    rangeControlBottomSheet_setupInformationTextView(viewingControlBottomSheet);
+                    rangeControlBottomSheet_setupValueEditTextHint(viewingControlBottomSheet);
 
-                if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
-                    rangeControlBottomSheet_setupRangeSeekBarProgress(
-                            viewingControlBottomSheet,
-                            MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower(),
-                            0L, 0L, MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
-                    );
-                } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
-                    rangeControlBottomSheet_setupRangeSeekBarProgress(
-                            viewingControlBottomSheet,
-                            MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower(),
-                            0, 0, MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
-                    );
-                } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+                    if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
+                        rangeControlBottomSheet_setupRangeSeekBarProgress(
+                                viewingControlBottomSheet,
+                                MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower(),
+                                0L, 0L, MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                        );
+                    } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
+                        rangeControlBottomSheet_setupRangeSeekBarProgress(
+                                viewingControlBottomSheet,
+                                MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower(),
+                                0, 0, MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                        );
+                    }
+                }
+
+                else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_APERTURE) {
+                    if (viewingControlBottomSheet_radioButtonIdArray.length != 0) {
+                        listRadioGroup_list_control.check(viewingControlBottomSheet_radioButtonIdArray[
+                                Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)
+                        ]);
+                    }
+                }
+            }
+
+            else if (controlBottomSheetCategory == CONTROL_BOTTOM_SHEET_CATEGORY_AF_MODE) {
+                if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
+                    rangeControlBottomSheet_setupInformationTextView(viewingControlBottomSheet);
+                    rangeControlBottomSheet_setupValueEditTextHint(viewingControlBottomSheet);
+
                     rangeControlBottomSheet_setupRangeSeekBarProgress(
                             viewingControlBottomSheet,
                             MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE,
                             0.0f, 0.0f, MainActivity.focusDistance
                     );
-                }
-            }
-
-            if (viewingControlBottomSheet_radioButtonIdArray.length != 0) {
-                if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_APERTURE) {
-                    listRadioGroup_list_control.check(viewingControlBottomSheet_radioButtonIdArray[
-                            Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)
-                    ]);
                 }
             }
         }
