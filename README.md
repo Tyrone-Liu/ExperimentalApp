@@ -131,16 +131,20 @@ These bugs been documented here because I do not know what caused them or how to
     - If the application can be launched (not crash right after you launch it)
         1. Launche the application
         2. Run the following command in your computer's terminal *(Be sure to change the file path)*:
+
         ```
         adb shell 'logcat --pid=$(pidof -s com.tyroneil.longshootalpha)' >  'path_format_depending_on_system/LSA_LOGCAT.TXT'
         ```
+
         3. Reproduce the bug.
 
     - If the application can not launch
         1. Run the following command in your computer's terminal *(Be sure to change the file path)*:
+
         ```
         adb logcat *:E > 'path_format_depending_on_system/LSA_LOGCAT.TXT'
         ```
+
         2. Launch the application (let it crash).
 
 5. **Stop getting the logcat**
@@ -158,18 +162,22 @@ These bugs been documented here because I do not know what caused them or how to
     - If the application can be launched (not crash right after you launch it)
         1. Launche the application
         2. Run the following command line by line in the terminal *(Be sure to change the file path, usually you can use `/storage/emulated/0/LSA_LOGCAT.TXT`)*:
+
         ```
         su
         logcat -f 'path_format_depending_on_system/LSA_LOGCAT.TXT' --pid=$(pidof -s com.tyroneil.longshootalpha)
         ```
+
         3. Reproduce the bug.
 
     - If the application can not launch
         1. Run the following command line by line in the terminal *(Be sure to change the file path, usually you can use `/storage/emulated/0/LSA_LOGCAT.TXT`)*:
+
         ```
         su
         logcat -f 'path_format_depending_on_system/LSA_LOGCAT.TXT' *:E
         ```
+
         2. Launch the application (let it crash).
 
 3. **Stop getting the logcat**
