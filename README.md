@@ -93,6 +93,23 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 
 
 ## Frequently Asked Questions
+#### **Q:** Why the app crashes?
+**A:** Um, this can be complicated, you can [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose) and provide more information there.  The problem can be a bug I didn't discover or just compatibility.
+
+#### **Q:** The app can't store photos, with some text on the top of screen.
+**A:** For now, you need to manually create a folder `LongShoot` under the `DCIM` directory.  Surely I will change this in the future.
+
+#### **Q:** Why there is big block of text in the viewfinder?
+**A:** That is information about every frame been captured, for some debug purpose.  I will add an option in settings to let user disable it.
+
+#### **Q:** Why the `Sequence` button in the main screen leads to an empty interface?
+**A:** `Capture Sequence` function is still under construction.  I'm afraid it will take some time to arrive.
+
+#### **Q:** After enabled `Consecutive Capture` in settings, the preview freezes after press the `CAPTURE` button.
+**A:** This is expected, that's why the option is under `Experimental & Temporary` section.  This is a temporary replacement of `Capture Sequence`.
+
+#### **Q:** Why the `About` button in the menu of settings does nothing?
+**A:** Expected, I didn't write the about interface yet.
 
 
 ## Known Bugs
@@ -133,7 +150,7 @@ These bugs been documented here because I do not know what caused them or how to
         2. Run the following command in your computer's terminal *(Be sure to change the file path)*:
 
         ```
-        adb shell 'logcat --pid=$(pidof -s com.tyroneil.longshootalpha)' >  'path_format_depending_on_system/LSA_LOGCAT.TXT'
+        adb shell 'logcat --pid=$(pidof -s com.tyroneil.longshootalpha)' > 'path_format_depending_on_system/LSA_LOGCAT.TXT'
         ```
 
         3. Reproduce the bug.
