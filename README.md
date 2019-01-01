@@ -90,7 +90,8 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 
 
 ## Known Bugs
-From oldest to newest
+From oldest to newest.  
+These bugs been documented here because I do not know what caused them or how to solve them.
 - [ ] The focus distance used for capture can not match the one used for request.  Seems to have hyper focal distance be the furthest focus distance.
 - [ ] The first capture in every capture request (both repeating and capture) will take more time than the exposure time.  The extended time depends on the previous capture's exposure time, usually triple of it.
 - [ ] If the capture format is JPEG, image can not be saved after called `captureSession.abortCapture()`.
