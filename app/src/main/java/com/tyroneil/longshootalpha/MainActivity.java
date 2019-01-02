@@ -88,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * It seems that we only need {@param sensorOrientation} when we save the photo.
      *
-     * For preview orientation, when we use {@link TextView} as the output target, the default
-     * output will always already been rotated by {@param sensorOrientation} to be upright on the
-     * device screen in its native orientation.  This means if we want to rotate the preview (when
-     * the device screen is not in its native orientation), we just need to set the {@link TextView}
-     * transform matrix based on screen orientation, do not bother to use {@param sensorOrientation}
-     * in this case.
+     * For preview orientation, when we use {@link android.view.TextureView} as the output target,
+     * the default output will always already been rotated by {@param sensorOrientation} to be
+     * upright on the device screen in its native orientation.  This means if we want to rotate the
+     * preview (when the device screen is not in its native orientation), we just need to set the
+     * {@link android.view.TextureView} transform matrix based on screen orientation, do not bother
+     * to use {@param sensorOrientation} in this case.
      */
     static int sensorOrientation;
     // endregion: current cameraDevice variable
