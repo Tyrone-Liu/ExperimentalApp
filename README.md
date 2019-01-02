@@ -3,7 +3,7 @@
 
 **Before you try to install, please check the [Requirements](#requirements) section.**
 - **Latest signed APK file(s): [GitHub Release Page](https://github.com/Tyrone-Liu/LongShootAlpha/releases/latest) (do not try any `pre-release` build if you do not know what it is)**
-- **Telegram group for technical support and advice: [Long Shoot - Development](https://t.me/LongShootDev)**
+- **Telegram group for discussion and technical support: [Long Shoot - Development](https://t.me/LongShootDev)**
 - **Telegram channel for release news: [Long Shoot - Distribution](https://t.me/LongShootDist)**
 
 If you want to report a bug, you can [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose), then please follow the corresponding issue template to provide information.  Also check the [Frequently Asked Questions](#frequently-asked-questions) and [Known Bugs](#known-bugs) section first.
