@@ -96,9 +96,6 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 #### **Q:** Why the app crashes?
 **A:** Um, this can be complicated, you can [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose) and provide more information there.  The problem can be a bug I didn't discover or just compatibility.
 
-#### **Q:** The app can't store photos, with some text on the top of screen.
-**A:** For now, you need to manually create a folder `LongShoot` under the `DCIM` directory.  Surely I will change this in the future.
-
 #### **Q:** Why there is big block of text in the viewfinder?
 **A:** That is information about every frame been captured, for some debug purpose.  I will add an option in settings to let user disable it.
 

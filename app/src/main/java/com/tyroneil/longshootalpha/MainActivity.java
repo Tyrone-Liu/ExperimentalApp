@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     static Context context;
@@ -110,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
     private static TotalCaptureResult totalCaptureResult;
     private static ImageReader imageReader;
     private static Date imageTimeStamp;
-    private static String imageFileTimeStampName;
+    private static String imageFileDirectoryName = "/LongShoot";
+    private static String imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
     // endregion: variable for capture
 
     // region: capture parameters
@@ -923,8 +925,7 @@ public class MainActivity extends AppCompatActivity {
         public void onImageAvailable(ImageReader reader) {
 //            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image available");  // debug
             // TODO: make file name changeable in settings
-            imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(imageFileTimeStampName);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(imageFileTimeStampName, Locale.ENGLISH);
             Image image = reader.acquireNextImage();
             File imageFile;
             FileOutputStream imageOutputStream = null;
@@ -932,7 +933,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: make save file path changeable, and auto create folder if not exist
                 imageFile = new File(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                        + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".JPG"
+                        + imageFileDirectoryName + String.format("/IMG_%s.JPG", simpleDateFormat.format(imageTimeStamp))
                 );
                 ByteBuffer imageBuffer = image.getPlanes()[0].getBuffer();
                 byte[] imageBytes = new byte[imageBuffer.remaining()];
@@ -940,8 +941,20 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     imageOutputStream = new FileOutputStream(imageFile);
                     imageOutputStream.write(imageBytes);
-                } catch (IOException e) {
-                    displayErrorMessage(e);
+                } catch (IOException e_0) {
+                    if (! imageFile.exists()) {
+                        File imageFileDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + imageFileDirectoryName);
+                        if (! imageFileDirectory.exists()) {
+                            imageFileDirectory.mkdirs();
+                        }
+                        try {
+                            imageOutputStream = new FileOutputStream(imageFile);
+                            imageOutputStream.write(imageBytes);
+                        } catch (IOException e_1) {
+                            displayErrorMessage(e_0);
+                            displayErrorMessage(e_1);
+                        }
+                    }
                 } finally {
                     image.close();
                     if (imageOutputStream != null) {
@@ -961,11 +974,11 @@ public class MainActivity extends AppCompatActivity {
             else if (reader.getImageFormat() == ImageFormat.RAW_SENSOR) {
                 imageFile = new File(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                        + "/LongShoot/IMG_" + simpleDateFormat.format(imageTimeStamp) + ".DNG"
+                        + imageFileDirectoryName + String.format("/IMG_%s.DNG", simpleDateFormat.format(imageTimeStamp))
                 );
 
                 if (image.getTimestamp() != totalCaptureResult.get(CaptureResult.SENSOR_TIMESTAMP)) {
-                    Log.d(LOG_TAG_LSA_WARN, "image and totalCaptureResult timestamp mismatch");
+                    Log.w(LOG_TAG_LSA_WARN, "image and totalCaptureResult timestamp mismatch");
                 }
                 DngCreator dngCreator = new DngCreator(cameraCharacteristics, totalCaptureResult);
 
@@ -983,8 +996,20 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     imageOutputStream = new FileOutputStream(imageFile);
                     dngCreator.writeImage(imageOutputStream, image);
-                } catch (IOException e) {
-                    displayErrorMessage(e);
+                } catch (IOException e_0) {
+                    if (! imageFile.exists()) {
+                        File imageFileDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + imageFileDirectoryName);
+                        if (! imageFileDirectory.exists()) {
+                            imageFileDirectory.mkdirs();
+                        }
+                        try {
+                            imageOutputStream = new FileOutputStream(imageFile);
+                            dngCreator.writeImage(imageOutputStream, image);
+                        } catch (IOException e_1) {
+                            displayErrorMessage(e_0);
+                            displayErrorMessage(e_1);
+                        }
+                    }
                 } finally {
                     image.close();
                     dngCreator.close();
@@ -1066,6 +1091,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     static void displayErrorMessage(final Exception error) {
+        error.printStackTrace();
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
