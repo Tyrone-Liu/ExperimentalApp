@@ -1,13 +1,14 @@
 ---
 name: bug_report_other
 about: Something is not working or behave abnormally [Template]
-title: "'Brief description here' [BUG]"
+title: "Brief description here [BUG]"
 labels: bug
 assignees: ''
 
 ---
 
 *The following content is a template, modify it as you want*
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 

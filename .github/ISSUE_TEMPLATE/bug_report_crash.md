@@ -1,13 +1,14 @@
 ---
 name: bug_report_crash
 about: The application crashes [Template]
-title: "'Brief description here' [BUG_CRASH]"
-labels: bug_crash
+title: "Brief description here [CRASH]"
+labels: crash
 assignees: ''
 
 ---
 
 *The following content is a template, modify it as you want*
+
 **Describe the bug**
 A clear and concise description of how the application crashes.
 
