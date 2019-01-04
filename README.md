@@ -1,12 +1,14 @@
 # Long Shoot (alpha) - Camera for Stacking Photography, Time Lapse and Long Exposure
 [**Long Shoot**](https://github.com/Tyrone-Liu/LongShoot) is an Android camera application using the [`camera2`](https://developer.android.com/reference/android/hardware/camera2/package-summary) API.  It will give you the ability to manually control every parameters of the camera on your phone.  With the *Capture Sequence* function and RAW support, it can produce photos for advanced *stacking photography* and *time lapse*.
 
-**Before you try to install, please check the [Requirements](#requirements) section.**
+If you want to complain about how plane the photo taken by this application is, or wonder what is the point of this application when you have Google Camera or any other fancy camera that can provide you a good-looking photo straight out, please check out [this part](#q-what-is-the-point-of-this-application-compare-to-something-like-google-camera) of the FAQ section.
+
+**Before you try to install, please check the [Requirements](#requirements) section.  Be aware that this is still alpha stage software.**
 - **Latest signed APK file(s): [GitHub Release Page](https://github.com/Tyrone-Liu/LongShootAlpha/releases/latest) (do not try any `pre-release` build if you do not know what it is)**
 - **Telegram group for discussion and technical support: [Long Shoot - Development](https://t.me/LongShootDev)**
 - **Telegram channel for release news: [Long Shoot - Distribution](https://t.me/LongShootDist)**
 
-If you want to report a bug, you can [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose), then please follow the corresponding issue template to provide information.  Also check the [Frequently Asked Questions](#frequently-asked-questions) and [Known Bugs](#known-bugs) section first.
+If you want to request a feature or report a bug, you can [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose), then please follow the corresponding issue template to provide information.  Also check the [Frequently Asked Questions](#frequently-asked-questions) and [Known Bugs](#known-bugs) section first.
 
 ## Content
 - [Requirements](#requirements)
@@ -38,7 +40,9 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
         - [x] Manual Focus Assistant (zoom in when adjust the SeekBar)
         - [x] Touch to set Focus Assistant center
         - [ ] Touch to focus
-    - [x] Exposure time (Shutter speed)
+    - Exposure time (Shutter speed)
+        - [x] Numeric
+        - [ ] "1 over ..."
     - [x] ISO
     - White balance
         - [x] Auto White Balance
@@ -94,10 +98,16 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 
 ## Frequently Asked Questions
 #### **Q:** Why the app crashes?
-**A:** Um, this can be complicated, you can [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose) and provide more information there.  The problem can be a bug I didn't discover or just compatibility.
+**A:** Um, this can be complicated, you should [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose) and provide more information there.  The problem can be a bug I didn't discover or compatibility issue.
+
+#### **Q:** Why the camera won't focus after I touch on the screen? What is the crosshair for?
+**A:** Touch to focus is not implanted yet.  The crosshair is to indicate `Focus Assistant` center, it will work for auto focus in the future.
 
 #### **Q:** Why there is big block of text in the viewfinder?
 **A:** That is information about every frame been captured, for some debug purpose.  I will add an option in settings to let user disable it.
+
+#### **Q:** Who will ever want to turn off Optical Image Stabilization (OIS)?
+**A:** When you are shooting handheld, OIS is greate to cancel some shake; but when you have mounted your device to a tripod, OIS is a source of shake.
 
 #### **Q:** Why the `Sequence` button in the main screen leads to an empty interface?
 **A:** `Capture Sequence` function is still under construction.  I'm afraid it will take some time to arrive.
