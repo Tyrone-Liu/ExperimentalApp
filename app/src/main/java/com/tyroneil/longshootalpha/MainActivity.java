@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private static Size captureSize;
     private static TotalCaptureResult totalCaptureResult;
     private static ImageReader imageReader;
-    private static Date imageTimeStamp;
+    private static Date imageRealtimeStamp;
     private static String imageFileDirectoryName = "/LongShoot";
     private static String imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
     // endregion: variable for capture
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static SimpleDateFormat debugDateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
-    static final String LOG_TAG_LSA_WARN = "LSA_WARN";
+    static final String LOG_TAG_LSA_WARNING = "LSA_WARNING";
 
     static final String LOG_TAG_LSA_DEBUG = "LSA_DEBUG";
     static final String LOG_TAG_LSA_CAPTURE_LAG = "LSA_CAPTURE_LAG";
@@ -933,7 +933,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: make save file path changeable, and auto create folder if not exist
                 imageFile = new File(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                        + imageFileDirectoryName + String.format("/IMG_%s.JPG", simpleDateFormat.format(imageTimeStamp))
+                        + imageFileDirectoryName + String.format("/IMG_%s.JPG", simpleDateFormat.format(imageRealtimeStamp))
                 );
                 ByteBuffer imageBuffer = image.getPlanes()[0].getBuffer();
                 byte[] imageBytes = new byte[imageBuffer.remaining()];
@@ -974,11 +974,11 @@ public class MainActivity extends AppCompatActivity {
             else if (reader.getImageFormat() == ImageFormat.RAW_SENSOR) {
                 imageFile = new File(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                        + imageFileDirectoryName + String.format("/IMG_%s.DNG", simpleDateFormat.format(imageTimeStamp))
+                        + imageFileDirectoryName + String.format("/IMG_%s.DNG", simpleDateFormat.format(imageRealtimeStamp))
                 );
 
                 if (image.getTimestamp() != totalCaptureResult.get(CaptureResult.SENSOR_TIMESTAMP)) {
-                    Log.w(LOG_TAG_LSA_WARN, "image and totalCaptureResult timestamp mismatch");
+                    Log.w(LOG_TAG_LSA_WARNING, "image and totalCaptureResult timestamp mismatch");
                 }
                 DngCreator dngCreator = new DngCreator(cameraCharacteristics, totalCaptureResult);
 
@@ -1046,9 +1046,9 @@ public class MainActivity extends AppCompatActivity {
             });
             // endregion: debug in captureCallback
             if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE) == CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN) {
-                imageTimeStamp = new Date();
+                imageRealtimeStamp = new Date();
             } else {
-                imageTimeStamp = new Date(System.currentTimeMillis() - ((long) ((double) (result.get(CaptureResult.SENSOR_TIMESTAMP) - SystemClock.elapsedRealtimeNanos()) / 1E6)));
+                imageRealtimeStamp = new Date(System.currentTimeMillis() - ((long) ((double) (result.get(CaptureResult.SENSOR_TIMESTAMP) - SystemClock.elapsedRealtimeNanos()) / 1E6)));
             }
             totalCaptureResult = result;
             super.onCaptureCompleted(session, request, result);
