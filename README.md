@@ -1,7 +1,7 @@
 # Long Shoot (alpha) - Camera for Stacking Photography, Time Lapse and Long Exposure
-[**Long Shoot**](https://github.com/Tyrone-Liu/LongShoot) is an Android camera application using the [`camera2`](https://developer.android.com/reference/android/hardware/camera2/package-summary) API.  It will give you the ability to manually control every parameters of the camera on your phone.  With the *Capture Sequence* function and RAW support, it can produce photos for advanced *stacking photography* and *time lapse*.
+[**Long Shoot**](https://github.com/Tyrone-Liu/LongShoot) is an Android camera application (app) using the [`camera2`](https://developer.android.com/reference/android/hardware/camera2/package-summary) API.  It will give you the ability to manually control every parameters of the camera on your phone.  With the *Capture Sequence* function and RAW support, it can produce photos for advanced *stacking photography* and *time lapse*.
 
-If you want to complain about how plane the photo taken by this application is, or wonder what is the point of this application when you have Google Camera or any other fancy camera that can provide you a good-looking photo straight out, please check out [this part](#q-what-is-the-point-of-this-application-compare-to-something-like-google-camera) of the FAQ section.
+If you want to complain about how plane the photo taken by this app is, or wonder what is the point of this app when you have Google Camera or any other fancy camera that can provide you a good-looking photo straight out, please check out [this part](#q-what-is-the-point-of-this-app-compare-to-something-like-google-camera) of the FAQ section.
 
 **Before you try to install, please check the [Requirements](#requirements) section.  Be aware that this is still alpha stage software.**
 - **Latest signed APK file(s): [GitHub Release Page](https://github.com/Tyrone-Liu/LongShootAlpha/releases/latest) (do not try any `pre-release` build if you do not know what it is)**
@@ -20,7 +20,7 @@ If you want to request a feature or report a bug, you can [create an issue](http
 
 
 ## Requirements
-These requirements can be checked using another application [Camera Characteristics](https://github.com/Tyrone-Liu/CameraCharacteristics).
+These requirements can be checked using another app [Camera Characteristics](https://github.com/Tyrone-Liu/CameraCharacteristics).
 - Mandatory
     - Android API Level `>=` `26` (`>=` `28` will enable more feature)
     - Device has `android.hardware.camera2` support
@@ -136,7 +136,7 @@ These bugs been documented here because I do not know what caused them or how to
 ## How to Get the Logcat
 - What device you want to use
     - [Computer](#computer)
-    - [Just the device used to run the application](#just-the-device-used-to-run-the-application)
+    - [Just the device used to run the app](#just-the-device-used-to-run-the-app)
 
 ### Computer
 1. Get access to `Android Debug Bridge (adb)`.  (If you already have, you can skip this part)
@@ -152,8 +152,8 @@ These bugs been documented here because I do not know what caused them or how to
     - Via `adb over network`: this is the wireless way if you prefer, please follow [this part](https://developer.android.com/studio/command-line/adb#wireless) of the official guide.
 
 4. **Start getting the logcat**
-    - If the application can be launched (not crash right after you launch it)
-        1. Launche the application
+    - If the app can be launched (not crash right after you launch it)
+        1. Launche the app
         2. Run the following command in your computer's terminal *(Be sure to change the file path)*:
 
         ```
@@ -162,14 +162,14 @@ These bugs been documented here because I do not know what caused them or how to
 
         3. Reproduce the bug.
 
-    - If the application can not launch
+    - If the app can not launch
         1. Run the following command in your computer's terminal *(Be sure to change the file path)*:
 
         ```
         adb logcat *:E > 'path_format_depending_on_system/LSA_LOGCAT.TXT'
         ```
 
-        2. Launch the application (let it crash).
+        2. Launch the app (let it crash).
 
 5. **Stop getting the logcat**
     - After collected the logcat, you need to manually stop it.  You can:
@@ -177,14 +177,14 @@ These bugs been documented here because I do not know what caused them or how to
         - Or you can just close the terminal window.
     - The logcat will be stored in the path you used above.
 
-### Just the device used to run the application
+### Just the device used to run the app
 - **It seems like you need root access to perform this method**, or you can not store the logcat to a file.
 
-1. Get access to a terminal (using a terminal application)
+1. Get access to a terminal (using a terminal app)
 
 2. **Start getting the logcat**
-    - If the application can be launched (not crash right after you launch it)
-        1. Launche the application
+    - If the app can be launched (not crash right after you launch it)
+        1. Launche the app
         2. Run the following command line by line in the terminal *(Be sure to change the file path, usually you can use `/storage/emulated/0/LSA_LOGCAT.TXT`)*:
 
         ```
@@ -194,7 +194,7 @@ These bugs been documented here because I do not know what caused them or how to
 
         3. Reproduce the bug.
 
-    - If the application can not launch
+    - If the app can not launch
         1. Run the following command line by line in the terminal *(Be sure to change the file path, usually you can use `/storage/emulated/0/LSA_LOGCAT.TXT`)*:
 
         ```
@@ -202,7 +202,7 @@ These bugs been documented here because I do not know what caused them or how to
         logcat -f 'path_format_depending_on_system/LSA_LOGCAT.TXT' *:E
         ```
 
-        2. Launch the application (let it crash).
+        2. Launch the app (let it crash).
 
 3. **Stop getting the logcat**
     - After collected the logcat, you need to manually stop it.  You can:
