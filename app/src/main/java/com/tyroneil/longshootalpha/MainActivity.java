@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                                 activity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        UIOperator.cameraControl_setCaptureButtonEnabled(false);
+                                        UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_PROCESSING);
                                     }
                                 });
                             }
@@ -908,7 +908,7 @@ public class MainActivity extends AppCompatActivity {
             captureRequestBuilder.addTarget(imageReader.getSurface());
             // endregion: setup capture request builder
 
-            UIOperator.cameraControl_setCaptureButtonEnabled(false);
+            UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_PROCESSING);
             if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_consecutive_capture", false)) {
                 captureSession.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
             } else {
@@ -964,7 +964,7 @@ public class MainActivity extends AppCompatActivity {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIOperator.cameraControl_setCaptureButtonEnabled(true);
+                                UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
                             }
                         });
                     }
@@ -1020,7 +1020,7 @@ public class MainActivity extends AppCompatActivity {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                UIOperator.cameraControl_setCaptureButtonEnabled(true);
+                                UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
                             }
                         });
                     }

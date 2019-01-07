@@ -44,6 +44,10 @@ class UIOperator {
     static ChangeableRatioTextureView previewCRTV_camera_control;
     static MaterialButton sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
     static ProgressBar capturingProgressBar_camera_control;
+
+    static final int CAPTURE_BUTTON_STATE_NORMAL = 1;
+    static final int CAPTURE_BUTTON_STATE_PROCESSING = 2;
+    static final int CAPTURE_BUTTON_STATE_SEQUENCE = 3;
     // endregion: content camera control
 
     // region: content capture parameters indicator
@@ -237,6 +241,9 @@ class UIOperator {
                 return true;  // QUESTION: why this needs to be true to prevent weird problems?
             }
         });
+
+        captureButton_camera_control.setWidth((UIOperator.captureButton_camera_control).getWidth());
+        captureButton_camera_control.setHeight((UIOperator.captureButton_camera_control).getHeight());
 
         sequenceButton_camera_control.setOnClickListener(onClickListener_camera_control);
         captureButton_camera_control.setOnClickListener(onClickListener_camera_control);
@@ -522,19 +529,26 @@ class UIOperator {
         }
     };
 
-    static void cameraControl_setCaptureButtonEnabled(boolean enabled) {
-        if (enabled) {
-            capturingProgressBar_camera_control.setElevation(0f);
-            captureButton_camera_control.setEnabled(true);
-            captureButton_camera_control.setText(R.string.button_camera_control_capture);
-        } else {
-            // from the material design documents, the elevation of a button is within [2dp, 8dp]
-            // therefore, set the elevation of a progressBar to 8dp will bring it to front
-            captureButton_camera_control.setWidth((UIOperator.captureButton_camera_control).getWidth());
-            captureButton_camera_control.setHeight((UIOperator.captureButton_camera_control).getHeight());
-            captureButton_camera_control.setText("");
-            captureButton_camera_control.setEnabled(false);
-            capturingProgressBar_camera_control.setElevation(8f * MainActivity.scale);
+    static void cameraControl_setCaptureButtonState(int captureButtonState) {
+        switch (captureButtonState) {
+            case CAPTURE_BUTTON_STATE_NORMAL:
+                captureButton_camera_control.setText(R.string.button_camera_control_capture);
+                captureButton_camera_control.setEnabled(true);
+                capturingProgressBar_camera_control.setElevation(0f);
+                break;
+
+            case CAPTURE_BUTTON_STATE_PROCESSING:
+                // from the material design documents, the elevation of a button is within [2dp, 8dp]
+                // therefore, set the elevation of a progressBar to 8dp will bring it to front
+                captureButton_camera_control.setText("");
+                captureButton_camera_control.setEnabled(false);
+                capturingProgressBar_camera_control.setElevation(8f * MainActivity.scale);
+                break;
+
+            case CAPTURE_BUTTON_STATE_SEQUENCE:
+                captureButton_camera_control.setText(R.string.button_camera_control_capture_sequence);
+                // TODO: replace the parameter control area
+                break;
         }
     }
     // endregion: onClickListener, content_camera_control
