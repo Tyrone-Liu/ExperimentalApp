@@ -163,7 +163,7 @@ class UIOperator {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (
-                        PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)
+                        MainActivity.sharedPreferences.getBoolean("preference_focus_assistant", true)
                         && event.getActionMasked() == MotionEvent.ACTION_UP
                 ) {
                     float displayX = event.getX();
@@ -424,12 +424,12 @@ class UIOperator {
 
         if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             if (
-                    PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_preview_exposure_time_limit", true)
-                    && MainActivity.exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_preview_exposure_time_limit_value", "0.5"))
+                    MainActivity.sharedPreferences.getBoolean("preference_preview_exposure_time_limit", true)
+                    && MainActivity.exposureTime > 1E9 * Double.valueOf(MainActivity.sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5"))
             ) {
                 MainActivity.previewRequestBuilder.set(
                         CaptureRequest.SENSOR_EXPOSURE_TIME,
-                        (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getString("preference_preview_exposure_time_limit_value", "0.5")))
+                        (long) (1E9 * Double.valueOf(MainActivity.sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5")))
                 );
             } else {
                 MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
@@ -1189,7 +1189,7 @@ class UIOperator {
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
+                    if (MainActivity.sharedPreferences.getBoolean("preference_focus_assistant", true)) {
                         focusAssistantIndicatorImageView_camera_control.clearAnimation();
                         MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
                                 (int) (MainActivity.focusAssistantX - (MainActivity.focusAssistantWidth / 2.0f)),
@@ -1202,7 +1202,7 @@ class UIOperator {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
+                    if (MainActivity.sharedPreferences.getBoolean("preference_focus_assistant", true)) {
                         MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
                                 0, 0, MainActivity.previewViewWidth, MainActivity.previewViewHeight
                         ));

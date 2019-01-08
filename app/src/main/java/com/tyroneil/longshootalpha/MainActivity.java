@@ -1,6 +1,7 @@
 package com.tyroneil.longshootalpha;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     // endregion: android runtime permission request constant
 
     // region: shared variable
+    static SharedPreferences sharedPreferences;
     private static LocationManager locationManager;
 
     private static CameraManager cameraManager;
@@ -253,7 +255,9 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         activity = this;
         scale = getResources().getDisplayMetrics().density;
+
         PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
@@ -428,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
             aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
             afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
 
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_raw_capture", true)) {
+            if (sharedPreferences.getBoolean("preference_raw_capture", true)) {
                 captureFormat = ImageFormat.RAW_SENSOR;
             } else {
                 captureFormat = ImageFormat.JPEG;
@@ -501,12 +505,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     if (
-                            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_preview_exposure_time_limit", true)
-                            && exposureTime > 1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_preview_exposure_time_limit_value", "0.5"))
+                            sharedPreferences.getBoolean("preference_preview_exposure_time_limit", true)
+                            && exposureTime > 1E9 * Double.valueOf(sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5"))
                     ) {
                         previewRequestBuilder.set(
                                 CaptureRequest.SENSOR_EXPOSURE_TIME,
-                                (long) (1E9 * Double.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_preview_exposure_time_limit_value", "0.5")))
+                                (long) (1E9 * Double.valueOf(sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5")))
                         );
                     } else {
                         previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
@@ -787,7 +791,7 @@ public class MainActivity extends AppCompatActivity {
         focusAssistantX = previewViewWidth / 2.0f;
         focusAssistantY = previewViewHeight / 2.0f;
 
-        if (PreferenceManager.getDefaultSharedPreferences(MainActivity.context).getBoolean("preference_focus_assistant", true)) {
+        if (sharedPreferences.getBoolean("preference_focus_assistant", true)) {
             UIOperator.focusAssistantIndicatorImageView_camera_control.setTranslationX(
                     ((float) UIOperator.previewCRTV_camera_control.getWidth() / 2.0f)
                     - ((float) UIOperator.focusAssistantIndicatorImageView_camera_control.getWidth() / 2.0f)
@@ -909,7 +913,7 @@ public class MainActivity extends AppCompatActivity {
             // endregion: setup capture request builder
 
             UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_PROCESSING);
-            if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("preference_consecutive_capture", false)) {
+            if (sharedPreferences.getBoolean("preference_consecutive_capture", false)) {
                 captureSession.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
             } else {
                 captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
