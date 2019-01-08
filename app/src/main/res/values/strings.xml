@@ -49,7 +49,7 @@
     <string name="action_sequence_clear">Clear All</string>
 
 
-    <!-- preferences -->
+    <!-- preferences category: capture & storage -->
     <string name="preference_category_title_capture_and_storage">Capture &amp; Storage</string>
 
     <string name="preference_title_raw_capture">RAW Capture</string>
@@ -62,8 +62,11 @@
     <string name="preference_summary_preview_exposure_time_limit">Using long exposure time in preview will cause high latency between captureRequest been submitted and performed.</string>
     <string name="preference_title_preview_exposure_time_limit_value">Preview exposure time limit (s)</string>
 
-
+    <!-- preferences category: experimental & temporary -->
     <string name="preference_category_title_experimental_and_temporary">Experimental &amp; Temporary</string>
+
+    <string name="preference_title_capture_exposure_time_limit">Limit Capture Exposure Time</string>
+    <string name="preference_summary_capture_exposure_time_limit">If this option is enabled, you can set a greater exposure value through the input box.  Theoretically, any value greater than the maximum will be cut down.  However, not like what is in the documentation, it just become more unstable as the value exceeding the maximum.</string>
 
     <string name="preference_title_consecutive_capture">Consecutive Capture</string>
     <string name="preference_summary_consecutive_capture">Capture consecutively.  (This option stays before Capture Sequence function is finished.)</string>

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory android:title="@string/preference_category_title_capture_and_storage">
+
         <SwitchPreference
             android:defaultValue="true"
             android:key="preference_raw_capture"
@@ -27,9 +28,17 @@
             android:key="preference_preview_exposure_time_limit_value"
             android:title="@string/preference_title_preview_exposure_time_limit_value"
             app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/preference_category_title_experimental_and_temporary">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="preference_capture_exposure_time_limit"
+            android:summary="@string/preference_summary_capture_exposure_time_limit"
+            android:title="@string/preference_title_capture_exposure_time_limit" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="preference_consecutive_capture"
