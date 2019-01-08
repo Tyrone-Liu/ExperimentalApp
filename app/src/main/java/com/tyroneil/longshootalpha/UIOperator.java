@@ -242,9 +242,6 @@ class UIOperator {
             }
         });
 
-        captureButton_camera_control.setWidth((UIOperator.captureButton_camera_control).getWidth());
-        captureButton_camera_control.setHeight((UIOperator.captureButton_camera_control).getHeight());
-
         sequenceButton_camera_control.setOnClickListener(onClickListener_camera_control);
         captureButton_camera_control.setOnClickListener(onClickListener_camera_control);
         settingsButton_camera_control.setOnClickListener(onClickListener_camera_control);
@@ -530,6 +527,9 @@ class UIOperator {
     };
 
     static void cameraControl_setCaptureButtonState(int captureButtonState) {
+        captureButton_camera_control.setWidth(captureButton_camera_control.getWidth());
+        captureButton_camera_control.setHeight(captureButton_camera_control.getHeight());
+
         switch (captureButtonState) {
             case CAPTURE_BUTTON_STATE_NORMAL:
                 captureButton_camera_control.setText(R.string.button_camera_control_capture);
