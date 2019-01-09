@@ -71,11 +71,12 @@ public class MainActivity extends AppCompatActivity {
     private static CameraManager cameraManager;
     private static String[] cameraIdList;
 
-    private static HandlerThread cameraBackgroundThread;
-    static Handler cameraBackgroundHandler;
-
     private static HandlerThread ioBackgroundThread;
     private static Handler ioBackgroundHandler;
+
+    private static HandlerThread cameraBackgroundThread;
+    static Handler cameraBackgroundHandler;
+    static Runnable repeatCaptureRunnable;
 
     static final int CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE = 0;
     static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
@@ -928,16 +929,64 @@ public class MainActivity extends AppCompatActivity {
             captureRequestBuilder.addTarget(imageReader.getSurface());
             // endregion: setup capture request builder
 
-            UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_PROCESSING);
             if (sharedPreferences.getBoolean("preference_consecutive_capture", false)) {
-                captureSession.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+                startRepeatCapture();
             } else {
                 captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+                UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_PROCESSING);
             }
 //            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
         } catch (CameraAccessException e) {
             displayErrorMessage(e);
         }
+    }
+
+    private static void startRepeatCapture() {
+        if (sharedPreferences.getBoolean("preference_consecutive_capture_interval", false)) {
+            repeatCaptureRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+                    } catch (CameraAccessException e) {
+                        displayErrorMessage(e);
+                    } finally {
+                        cameraBackgroundHandler.postDelayed(
+                                repeatCaptureRunnable,
+                                (long) (1E3 * Double.valueOf(sharedPreferences.getString("preference_consecutive_capture_interval_value", "10")))
+                        );
+                    }
+                }
+            };
+            repeatCaptureRunnable.run();
+        } else {
+            try {
+                captureSession.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
+            } catch (CameraAccessException e) {
+                displayErrorMessage(e);
+            }
+        }
+        for (int i = 0; i < UIOperator.indicatorConstraintLayout.getChildCount(); i ++) {
+            (UIOperator.indicatorConstraintLayout.getChildAt(i)).setEnabled(false);
+        }
+        UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_SEQUENCING);
+    }
+
+    static void stopRepeatCapture() {
+        if (sharedPreferences.getBoolean("preference_consecutive_capture_interval", false)) {
+            cameraBackgroundHandler.removeCallbacks(repeatCaptureRunnable);
+        } else {
+            try {
+                captureSession.stopRepeating();
+                captureSession.setRepeatingRequest(previewRequestBuilder.build(), previewCaptureCallback, cameraBackgroundHandler);
+            } catch (CameraAccessException e) {
+                displayErrorMessage(e);
+            }
+        }
+        for (int i = 0; i < UIOperator.indicatorConstraintLayout.getChildCount(); i ++) {
+            (UIOperator.indicatorConstraintLayout.getChildAt(i)).setEnabled(true);
+        }
+        UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
     }
 
     private static ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
@@ -981,12 +1030,14 @@ public class MainActivity extends AppCompatActivity {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
 
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
-                            }
-                        });
+                        if (! sharedPreferences.getBoolean("preference_consecutive_capture", false)) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -1037,12 +1088,14 @@ public class MainActivity extends AppCompatActivity {
                         try {imageOutputStream.close();}
                         catch (IOException e) {displayErrorMessage(e);}
 
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
-                            }
-                        });
+                        if (! sharedPreferences.getBoolean("preference_consecutive_capture", false)) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
+                                }
+                            });
+                        }
                     }
                 }
             }

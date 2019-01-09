@@ -47,10 +47,12 @@ class UIOperator {
 
     static final int CAPTURE_BUTTON_STATE_NORMAL = 1;
     static final int CAPTURE_BUTTON_STATE_PROCESSING = 2;
-    static final int CAPTURE_BUTTON_STATE_SEQUENCE = 3;
+    static final int CAPTURE_BUTTON_STATE_SEQUENCING = 3;
+    static int captureButtonState = CAPTURE_BUTTON_STATE_NORMAL;
     // endregion: content camera control
 
     // region: content capture parameters indicator
+    static ConstraintLayout indicatorConstraintLayout;
     static MaterialButton
             setExposureTimeButton_parameters_indicator,
             setSensitivityButton_parameters_indicator,
@@ -108,6 +110,7 @@ class UIOperator {
         capturingProgressBar_camera_control = (ProgressBar) MainActivity.activity.findViewById(R.id.progressBar_camera_control_capturing);
 
         // content parameters indicator
+        indicatorConstraintLayout = (ConstraintLayout) MainActivity.activity.findViewById(R.id.constrainLayout_capture_parameters_indicator);
         setExposureTimeButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
         setSensitivityButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
         setApertureButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAperture);
@@ -516,7 +519,11 @@ class UIOperator {
             }
 
             else if (((MaterialButton) view).getId() == R.id.button_camera_control_capture) {
-                MainActivity.takePhoto();
+                if (captureButtonState == CAPTURE_BUTTON_STATE_NORMAL) {
+                    MainActivity.takePhoto();
+                } else if (captureButtonState == CAPTURE_BUTTON_STATE_SEQUENCING) {
+                    MainActivity.stopRepeatCapture();
+                }
             }
 
             else if (((MaterialButton) view).getId() == R.id.button_camera_control_settings) {
@@ -526,11 +533,13 @@ class UIOperator {
         }
     };
 
-    static void cameraControl_setCaptureButtonState(int captureButtonState) {
+    static void cameraControl_setCaptureButtonState(int state) {
+        captureButtonState = state;
+
         captureButton_camera_control.setWidth(captureButton_camera_control.getWidth());
         captureButton_camera_control.setHeight(captureButton_camera_control.getHeight());
 
-        switch (captureButtonState) {
+        switch (state) {
             case CAPTURE_BUTTON_STATE_NORMAL:
                 captureButton_camera_control.setText(R.string.button_camera_control_capture);
                 captureButton_camera_control.setEnabled(true);
@@ -545,8 +554,8 @@ class UIOperator {
                 capturingProgressBar_camera_control.setElevation(8f * MainActivity.scale);
                 break;
 
-            case CAPTURE_BUTTON_STATE_SEQUENCE:
-                captureButton_camera_control.setText(R.string.button_camera_control_capture_sequence);
+            case CAPTURE_BUTTON_STATE_SEQUENCING:
+                captureButton_camera_control.setText(R.string.button_camera_control_capture_sequencing);
                 // TODO: replace the parameter control area
                 break;
         }

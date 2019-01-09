@@ -44,6 +44,21 @@
             android:key="preference_consecutive_capture"
             android:summary="@string/preference_summary_consecutive_capture"
             android:title="@string/preference_title_consecutive_capture" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="preference_consecutive_capture"
+            android:key="preference_consecutive_capture_interval"
+            android:summary="@string/preference_summary_consecutive_capture_interval"
+            android:title="@string/preference_title_consecutive_capture_interval" />
+
+        <EditTextPreference
+            android:defaultValue="10"
+            android:dependency="preference_consecutive_capture_interval"
+            android:key="preference_consecutive_capture_interval_value"
+            android:title="@string/preference_title_consecutive_capture_interval_value"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <!--
