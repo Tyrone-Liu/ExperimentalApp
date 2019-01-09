@@ -74,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
     private static HandlerThread cameraBackgroundThread;
     static Handler cameraBackgroundHandler;
 
+    private static HandlerThread ioBackgroundThread;
+    private static Handler ioBackgroundHandler;
+
     static final int CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE = 0;
     static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
     private static final int CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION = 2;
@@ -341,6 +344,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        ioBackgroundThread = new HandlerThread("IOBackground");
+        ioBackgroundThread.start();
+        ioBackgroundHandler = new Handler(ioBackgroundThread.getLooper());
+
         cameraBackgroundThread = new HandlerThread("CameraBackground");
         cameraBackgroundThread.start();
         cameraBackgroundHandler = new Handler(cameraBackgroundThread.getLooper());
@@ -377,6 +384,15 @@ public class MainActivity extends AppCompatActivity {
             cameraBackgroundThread.join();
             cameraBackgroundThread = null;
             cameraBackgroundHandler = null;
+        } catch (InterruptedException e) {
+            displayErrorMessage(e);
+        }
+
+        ioBackgroundThread.quitSafely();
+        try {
+            ioBackgroundThread.join();
+            ioBackgroundThread = null;
+            ioBackgroundHandler = null;
         } catch (InterruptedException e) {
             displayErrorMessage(e);
         }
@@ -534,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // prepare output surface for capture
                 imageReader = ImageReader.newInstance(captureSize.getWidth(), captureSize.getHeight(), captureFormat, 1);
-                imageReader.setOnImageAvailableListener(onImageAvailableListener, cameraBackgroundHandler);
+                imageReader.setOnImageAvailableListener(onImageAvailableListener, ioBackgroundHandler);
 
                 // The second item in outputs list is for capture
                 // In this case, both the 'repeating request' used by preview and 'capture request'
