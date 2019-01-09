@@ -1,7 +1,7 @@
-# Long Shoot (alpha) - Camera for Stacking Photography, Time Lapse and Long Exposure
-[**Long Shoot**](https://github.com/Tyrone-Liu/LongShoot) is an Android camera application (app) using the [`camera2`](https://developer.android.com/reference/android/hardware/camera2/package-summary) API.  It will give you the ability to manually control every parameters of the camera on your phone.  With the *Capture Sequence* function and RAW support, it can produce photos for advanced *stacking photography* and *time lapse*.
+# Long Shoot (alpha) - Camera for Stack Photography, Time Lapse and Long Exposure
+[**Long Shoot**](https://github.com/Tyrone-Liu/LongShoot) is an Android camera application (app) using the [`camera2`](https://developer.android.com/reference/android/hardware/camera2/package-summary) API.  It will give you the ability to manually control every parameters of the camera on your phone.  With the *Capture Sequence* function and RAW support, it can produce photos for advanced *stack photography* and *time lapse*.
 
-If you want to complain about how plane the photo taken by this app is, or wonder what is the point of this app when you have Google Camera or any other fancy camera that can provide you a good-looking photo straight out, please check out [this part](#q-what-is-the-point-of-this-app-compare-to-something-like-google-camera) of the FAQ section.
+If you think the photo taken by this app is too flat, or wonder what is the point of this app when you have Google Camera or any other fancy camera that can provide you a good-looking photo straight out, please check out [this part](#q-what-is-the-point-of-this-app-compare-to-something-like-google-camera) of the FAQ section.
 
 **Before you try to install, please check the [Requirements](#requirements) section.  Be aware that this is still alpha stage software.**
 - **Latest signed APK file(s): [GitHub Release Page](https://github.com/Tyrone-Liu/LongShootAlpha/releases/latest) (do not try any `pre-release` build if you do not know what it is)**
@@ -41,8 +41,13 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
         - [x] Touch to set Focus Assistant center
         - [ ] Touch to focus
     - Exposure time (Shutter speed)
-        - [x] Numeric
-        - [ ] "1 over ..."
+        - Format
+            - [x] Numeric
+            - [ ] "1/..." for exposure time less than 1s
+        - Range
+            - [x] Within device limit
+            - [x] Bypass device limit
+            - [ ] Simulate long exposure (much longer then device upper limit)
     - [x] ISO
     - White balance
         - [x] Auto White Balance
@@ -88,7 +93,7 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
     - [ ] Gallery
 - [x] Zoom in SeekBar for preciser adjust
 - [x] Change text in adjust panel according to parameters
-- [ ] Another thread for storing image file
+- [x] Another thread for storing image file
 - [ ] Different capture sequences for stacking or time-lapse
 - [ ] More miscellaneous settings in setting interface
 - [ ] Better handle of auto capture mode capture parameters
@@ -117,6 +122,9 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 
 #### **Q:** Why the `About` button in the menu of settings does nothing?
 **A:** Expected, I didn't write the about interface yet.
+
+#### **Q:** In china, the GPS location information is not correct.
+**A:** The GPS coordinate gets from a standard Android system should be in `WGS84` format, and this app will only store it as the way it is.  However, every map provider in China use the `GCJ02` format, try to directly overlay `WGS84` cooridinate onto `GCJ02` map will result incorrectly.
 
 
 ## Known Bugs
