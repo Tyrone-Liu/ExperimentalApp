@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class Fragment_Settings extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

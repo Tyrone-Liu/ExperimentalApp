@@ -8,7 +8,6 @@ import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CaptureRequest;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.animation.AlphaAnimation;
@@ -41,7 +40,7 @@ class UIOperator {
     static Animation focusAssistantIndicatorFadeOut;
     static Animation focusAssistantIndicatorFadeIn;
     static AppCompatImageView focusAssistantIndicatorImageView_camera_control;
-    static ChangeableRatioTextureView previewCRTV_camera_control;
+    static Support_FlexibleRatioTextureView previewFRTV_camera_control;
     static MaterialButton sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
     static ProgressBar capturingProgressBar_camera_control;
 
@@ -102,23 +101,23 @@ class UIOperator {
 
     // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
-        focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) MainActivity.activity.findViewById(R.id.imageView_camera_control_focusAssistantIndicator);
-        previewCRTV_camera_control = (ChangeableRatioTextureView) MainActivity.activity.findViewById(R.id.cRTV_camera_control_preview);
-        sequenceButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_sequence);
-        captureButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_capture);
-        settingsButton_camera_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_camera_control_settings);
-        capturingProgressBar_camera_control = (ProgressBar) MainActivity.activity.findViewById(R.id.progressBar_camera_control_capturing);
+        focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) Activity_Camera.activity.findViewById(R.id.imageView_camera_control_focusAssistantIndicator);
+        previewFRTV_camera_control = (Support_FlexibleRatioTextureView) Activity_Camera.activity.findViewById(R.id.cRTV_camera_control_preview);
+        sequenceButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_sequence);
+        captureButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_capture);
+        settingsButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_settings);
+        capturingProgressBar_camera_control = (ProgressBar) Activity_Camera.activity.findViewById(R.id.progressBar_camera_control_capturing);
 
         // content parameters indicator
-        indicatorConstraintLayout = (ConstraintLayout) MainActivity.activity.findViewById(R.id.constrainLayout_capture_parameters_indicator);
-        setExposureTimeButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
-        setSensitivityButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
-        setApertureButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAperture);
-        setTorchButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setTorch);
-        setAutoWhiteBalance_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
-        setOpticalStabilization_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
-        setFocalLengthButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
-        setFocusDistanceButton_parameters_indicator = (MaterialButton) MainActivity.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
+        indicatorConstraintLayout = (ConstraintLayout) Activity_Camera.activity.findViewById(R.id.constrainLayout_capture_parameters_indicator);
+        setExposureTimeButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
+        setSensitivityButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
+        setApertureButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setAperture);
+        setTorchButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setTorch);
+        setAutoWhiteBalance_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
+        setOpticalStabilization_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
+        setFocalLengthButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
+        setFocusDistanceButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
 
         /**
          * The {@link AlphaAnimation} starts form {@value 15.00f} will make the view fully visible
@@ -144,11 +143,11 @@ class UIOperator {
 
         focusAssistantIndicatorImageView_camera_control.setVisibility(View.INVISIBLE);
 
-        MainActivity.createPreview(MainActivity.CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE);
-        previewCRTV_camera_control.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+        Activity_Camera.createPreview(Activity_Camera.CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE);
+        previewFRTV_camera_control.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                MainActivity.createPreview(MainActivity.CREATE_PREVIEW_STAGE_OPEN_CAMERA);
+                Activity_Camera.createPreview(Activity_Camera.CREATE_PREVIEW_STAGE_OPEN_CAMERA);
             }
 
             @Override
@@ -162,11 +161,11 @@ class UIOperator {
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             }
         });
-        previewCRTV_camera_control.setOnTouchListener(new View.OnTouchListener() {
+        previewFRTV_camera_control.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (
-                        MainActivity.sharedPreferences.getBoolean("preference_focus_assistant", true)
+                        Activity_Camera.sharedPreferences.getBoolean("preference_focus_assistant", true)
                         && event.getActionMasked() == MotionEvent.ACTION_UP
                 ) {
                     float displayX = event.getX();
@@ -185,58 +184,58 @@ class UIOperator {
                     float scaledX;
                     float scaledY;
 
-                    switch (MainActivity.sensorOrientation) {
+                    switch (Activity_Camera.sensorOrientation) {
                         default:
                         case 0:
                         case 180:
-                            scaledX = displayX * ((float) MainActivity.previewViewWidth / v.getWidth());
-                            scaledY = displayY * ((float) MainActivity.previewViewHeight / v.getHeight());
+                            scaledX = displayX * ((float) Activity_Camera.previewViewWidth / v.getWidth());
+                            scaledY = displayY * ((float) Activity_Camera.previewViewHeight / v.getHeight());
                             break;
 
                         case 90:
                         case 270:
-                            scaledX = displayX * ((float) MainActivity.previewViewHeight / v.getWidth());
-                            scaledY = displayY * ((float) MainActivity.previewViewWidth / v.getHeight());
+                            scaledX = displayX * ((float) Activity_Camera.previewViewHeight / v.getWidth());
+                            scaledY = displayY * ((float) Activity_Camera.previewViewWidth / v.getHeight());
                             break;
                     }
 
-                    switch (MainActivity.sensorOrientation) {
+                    switch (Activity_Camera.sensorOrientation) {
                         case 0:
-                            MainActivity.focusAssistantX = scaledX;
-                            MainActivity.focusAssistantY = scaledY;
+                            Activity_Camera.focusAssistantX = scaledX;
+                            Activity_Camera.focusAssistantY = scaledY;
                             break;
 
                         case 180:
-                            MainActivity.focusAssistantX = (float) MainActivity.previewViewWidth - scaledX;
-                            MainActivity.focusAssistantY = (float) MainActivity.previewViewHeight - scaledY;
+                            Activity_Camera.focusAssistantX = (float) Activity_Camera.previewViewWidth - scaledX;
+                            Activity_Camera.focusAssistantY = (float) Activity_Camera.previewViewHeight - scaledY;
                             break;
 
                         case 90:
-                            MainActivity.focusAssistantX = scaledY;
-                            MainActivity.focusAssistantY = (float) MainActivity.previewViewHeight - scaledX;
+                            Activity_Camera.focusAssistantX = scaledY;
+                            Activity_Camera.focusAssistantY = (float) Activity_Camera.previewViewHeight - scaledX;
                             break;
 
                         case 270:
-                            MainActivity.focusAssistantX = (float) MainActivity.previewViewWidth - scaledY;
-                            MainActivity.focusAssistantY = scaledX;
+                            Activity_Camera.focusAssistantX = (float) Activity_Camera.previewViewWidth - scaledY;
+                            Activity_Camera.focusAssistantY = scaledX;
                             break;
                     }
 
                     // left
-                    if (MainActivity.focusAssistantX - (MainActivity.focusAssistantWidth / 2.0f) < 0.0f) {
-                        MainActivity.focusAssistantX = MainActivity.focusAssistantWidth / 2.0f;
+                    if (Activity_Camera.focusAssistantX - (Activity_Camera.focusAssistantWidth / 2.0f) < 0.0f) {
+                        Activity_Camera.focusAssistantX = Activity_Camera.focusAssistantWidth / 2.0f;
                     }
                     // top
-                    if (MainActivity.focusAssistantY - (MainActivity.focusAssistantHeight / 2.0f) < 0.0f) {
-                        MainActivity.focusAssistantY = MainActivity.focusAssistantHeight / 2.0f;
+                    if (Activity_Camera.focusAssistantY - (Activity_Camera.focusAssistantHeight / 2.0f) < 0.0f) {
+                        Activity_Camera.focusAssistantY = Activity_Camera.focusAssistantHeight / 2.0f;
                     }
                     // right
-                    if (MainActivity.focusAssistantX + (MainActivity.focusAssistantWidth / 2.0f) > (float) MainActivity.previewViewWidth) {
-                        MainActivity.focusAssistantX = (float) MainActivity.previewViewWidth - (MainActivity.focusAssistantWidth / 2.0f);
+                    if (Activity_Camera.focusAssistantX + (Activity_Camera.focusAssistantWidth / 2.0f) > (float) Activity_Camera.previewViewWidth) {
+                        Activity_Camera.focusAssistantX = (float) Activity_Camera.previewViewWidth - (Activity_Camera.focusAssistantWidth / 2.0f);
                     }
                     // bottom
-                    if (MainActivity.focusAssistantY + (MainActivity.focusAssistantHeight / 2.0f) > (float) MainActivity.previewViewHeight) {
-                        MainActivity.focusAssistantY = (float) MainActivity.previewViewHeight - (MainActivity.focusAssistantHeight / 2.0f);
+                    if (Activity_Camera.focusAssistantY + (Activity_Camera.focusAssistantHeight / 2.0f) > (float) Activity_Camera.previewViewHeight) {
+                        Activity_Camera.focusAssistantY = (float) Activity_Camera.previewViewHeight - (Activity_Camera.focusAssistantHeight / 2.0f);
                     }
 
                     // QUESTION: why not return true here, and return false down there?
@@ -260,25 +259,25 @@ class UIOperator {
     }
 
     static void initiateContentRangeControl() {
-        rangeControlConstraintLayout = MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control);
-        rangeControlBottomSheet = BottomSheetBehavior.from(MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control));
+        rangeControlConstraintLayout = Activity_Camera.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control);
+        rangeControlBottomSheet = BottomSheetBehavior.from(Activity_Camera.activity.findViewById(R.id.bottomSheet_capture_parameter_range_control));
 
-        titleTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_title);
-        informationTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_information);
-        valueMinimumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMinimum);
-        valueMaximumTextView_range_control = (TextView) MainActivity.activity.findViewById(R.id.textView_range_control_valueMaximum);
-        rangeSeekBar_range_control = (SeekBar) MainActivity.activity.findViewById(R.id.seekBar_range_control_range);
-        autoCheckBox_range_control = (MaterialCheckBox) MainActivity.activity.findViewById(R.id.checkBox_range_control_auto);
-        valueEditText_range_control = (TextInputEditText) MainActivity.activity.findViewById(R.id.editText_range_control_value);
-        zoomOutButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_zoomOut);
-        zoomInButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_zoomIn);
-        applyButton_range_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_range_control_apply);
+        titleTextView_range_control = (TextView) Activity_Camera.activity.findViewById(R.id.textView_range_control_title);
+        informationTextView_range_control = (TextView) Activity_Camera.activity.findViewById(R.id.textView_range_control_information);
+        valueMinimumTextView_range_control = (TextView) Activity_Camera.activity.findViewById(R.id.textView_range_control_valueMinimum);
+        valueMaximumTextView_range_control = (TextView) Activity_Camera.activity.findViewById(R.id.textView_range_control_valueMaximum);
+        rangeSeekBar_range_control = (SeekBar) Activity_Camera.activity.findViewById(R.id.seekBar_range_control_range);
+        autoCheckBox_range_control = (MaterialCheckBox) Activity_Camera.activity.findViewById(R.id.checkBox_range_control_auto);
+        valueEditText_range_control = (TextInputEditText) Activity_Camera.activity.findViewById(R.id.editText_range_control_value);
+        zoomOutButton_range_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_range_control_zoomOut);
+        zoomInButton_range_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_range_control_zoomIn);
+        applyButton_range_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_range_control_apply);
 
         rangeControlConstraintLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-                    return previewCRTV_camera_control.dispatchTouchEvent(event);
+                    return previewFRTV_camera_control.dispatchTouchEvent(event);
                 }
                 return true;  // QUESTION: why this needs to be true to prevent weird problems?
             }
@@ -292,7 +291,7 @@ class UIOperator {
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_NULL;
-                    InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager inputMethodManager = (InputMethodManager) Activity_Camera.activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(bottomSheet.getWindowToken(), 0);
                 }
             }
@@ -304,11 +303,11 @@ class UIOperator {
     }
 
     static void initiateContentListControl() {
-        listControlBottomSheet = BottomSheetBehavior.from(MainActivity.activity.findViewById(R.id.bottomSheet_capture_parameter_list_control));
+        listControlBottomSheet = BottomSheetBehavior.from(Activity_Camera.activity.findViewById(R.id.bottomSheet_capture_parameter_list_control));
 
-        titleTextView_list_control = (TextView) MainActivity.activity.findViewById(R.id.textView_list_control_title);
-        listRadioGroup_list_control = (RadioGroup) MainActivity.activity.findViewById(R.id.radioGroup_list_control_list);
-        dismissButton_list_control = (MaterialButton) MainActivity.activity.findViewById(R.id.button_list_control_dismiss);
+        titleTextView_list_control = (TextView) Activity_Camera.activity.findViewById(R.id.textView_list_control_title);
+        listRadioGroup_list_control = (RadioGroup) Activity_Camera.activity.findViewById(R.id.radioGroup_list_control_list);
+        dismissButton_list_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_list_control_dismiss);
 
         dismissButton_list_control.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,43 +334,43 @@ class UIOperator {
     // endregion: initiate layouts (camera_control, range_control, list_control)
 
     static void updateCaptureParametersIndicator() {
-        if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-            if (MainActivity.exposureTime < 1E3) {
+        if (Activity_Camera.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
+            if (Activity_Camera.exposureTime < 1E3) {
                 setExposureTimeButton_parameters_indicator.setText(
-                        String.format(Locale.getDefault(), "S.S.\n%dns", MainActivity.exposureTime)
+                        String.format(Locale.getDefault(), "S.S.\n%dns", Activity_Camera.exposureTime)
                 );
-            } else if (MainActivity.exposureTime < 1E6) {
+            } else if (Activity_Camera.exposureTime < 1E6) {
                 setExposureTimeButton_parameters_indicator.setText(
-                        MainActivity.activity.getString(
+                        Activity_Camera.activity.getString(
                                 R.string.button_parameters_indicator_setExposureTime,
-                                (double) (MainActivity.exposureTime / 1E1) / 1E2, "µs"
+                                (double) (Activity_Camera.exposureTime / 1E1) / 1E2, "µs"
                         )
                 );
-            } else if (MainActivity.exposureTime < 1E9) {
+            } else if (Activity_Camera.exposureTime < 1E9) {
                 setExposureTimeButton_parameters_indicator.setText(
-                        MainActivity.activity.getString(
+                        Activity_Camera.activity.getString(
                                 R.string.button_parameters_indicator_setExposureTime,
-                                (double) (MainActivity.exposureTime / 1E4) / 1E2, "ms"
+                                (double) (Activity_Camera.exposureTime / 1E4) / 1E2, "ms"
                         )
                 );
             } else {
                 setExposureTimeButton_parameters_indicator.setText(
-                        MainActivity.activity.getString(
+                        Activity_Camera.activity.getString(
                                 R.string.button_parameters_indicator_setExposureTime,
-                                (double) (MainActivity.exposureTime / 1E7) / 1E2, "s"
+                                (double) (Activity_Camera.exposureTime / 1E7) / 1E2, "s"
                         )
                 );
             }
             setSensitivityButton_parameters_indicator.setText(
-                    MainActivity.activity.getString(
+                    Activity_Camera.activity.getString(
                             R.string.button_parameters_indicator_setSensitivity,
-                            MainActivity.sensitivity
+                            Activity_Camera.sensitivity
                     )
             );
             setApertureButton_parameters_indicator.setText(
-                    MainActivity.activity.getString(
+                    Activity_Camera.activity.getString(
                             R.string.button_parameters_indicator_setAperture,
-                            MainActivity.aperture
+                            Activity_Camera.aperture
                     )
             );
         } else {
@@ -380,38 +379,38 @@ class UIOperator {
             setApertureButton_parameters_indicator.setText("APE\nAUTO");
         }
         setTorchButton_parameters_indicator.setText(
-                MainActivity.activity.getString(
+                Activity_Camera.activity.getString(
                         R.string.button_parameters_indicator_setTorch,
-                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_TORCH, MainActivity.flashMode, true)
+                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_TORCH, Activity_Camera.flashMode, true)
                 )
         );
         setAutoWhiteBalance_parameters_indicator.setText(
-                MainActivity.activity.getString(
+                Activity_Camera.activity.getString(
                         R.string.button_parameters_indicator_setAutoWhiteBalance,
-                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, MainActivity.awbMode, true)
+                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, Activity_Camera.awbMode, true)
                 )
         );
         setOpticalStabilization_parameters_indicator.setText(
-                MainActivity.activity.getString(
+                Activity_Camera.activity.getString(
                         R.string.button_parameters_indicator_setOpticalStabilization,
-                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, MainActivity.opticalStabilizationMode, true)
+                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, Activity_Camera.opticalStabilizationMode, true)
                 )
         );
         setFocalLengthButton_parameters_indicator.setText(
-                MainActivity.activity.getString(
+                Activity_Camera.activity.getString(
                         R.string.button_parameters_indicator_setFocalLength,
-                        MainActivity.focalLength
+                        Activity_Camera.focalLength
                 )
         );
 
-        if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-            if (MainActivity.focusDistance == 0.0f) {
+        if (Activity_Camera.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
+            if (Activity_Camera.focusDistance == 0.0f) {
                 setFocusDistanceButton_parameters_indicator.setText("F.D.\nInf.");
             } else {
                 setFocusDistanceButton_parameters_indicator.setText(
-                        MainActivity.activity.getString(
+                        Activity_Camera.activity.getString(
                                 R.string.button_parameters_indicator_setFocusDistance,
-                                1f / MainActivity.focusDistance
+                                1f / Activity_Camera.focusDistance
                         )
                 );
             }
@@ -421,42 +420,42 @@ class UIOperator {
     }
 
     static void updatePreviewParameters() {
-        MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, MainActivity.autoMode);
-        MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, MainActivity.aeMode);
-        MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, MainActivity.afMode);
+        Activity_Camera.previewRequestBuilder.set(CaptureRequest.CONTROL_MODE, Activity_Camera.autoMode);
+        Activity_Camera.previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, Activity_Camera.aeMode);
+        Activity_Camera.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, Activity_Camera.afMode);
 
-        if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
+        if (Activity_Camera.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
             if (
-                    MainActivity.sharedPreferences.getBoolean("preference_preview_exposure_time_limit", true)
-                    && MainActivity.exposureTime > 1E9 * Double.valueOf(MainActivity.sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5"))
+                    Activity_Camera.sharedPreferences.getBoolean("preference_preview_exposure_time_limit", true)
+                    && Activity_Camera.exposureTime > 1E9 * Double.valueOf(Activity_Camera.sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5"))
             ) {
-                MainActivity.previewRequestBuilder.set(
+                Activity_Camera.previewRequestBuilder.set(
                         CaptureRequest.SENSOR_EXPOSURE_TIME,
-                        (long) (1E9 * Double.valueOf(MainActivity.sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5")))
+                        (long) (1E9 * Double.valueOf(Activity_Camera.sharedPreferences.getString("preference_preview_exposure_time_limit_value", "0.5")))
                 );
             } else {
-                MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, MainActivity.exposureTime);
+                Activity_Camera.previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, Activity_Camera.exposureTime);
             }
-            MainActivity.previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, MainActivity.sensitivity);
-            MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, MainActivity.aperture);
+            Activity_Camera.previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, Activity_Camera.sensitivity);
+            Activity_Camera.previewRequestBuilder.set(CaptureRequest.LENS_APERTURE, Activity_Camera.aperture);
         }
-        MainActivity.previewRequestBuilder.set(CaptureRequest.FLASH_MODE, MainActivity.flashMode);
+        Activity_Camera.previewRequestBuilder.set(CaptureRequest.FLASH_MODE, Activity_Camera.flashMode);
 
-        MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, MainActivity.awbMode);
+        Activity_Camera.previewRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, Activity_Camera.awbMode);
 
-        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, MainActivity.opticalStabilizationMode);
-        MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, MainActivity.focalLength);
-        if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-            MainActivity.previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, MainActivity.focusDistance);
+        Activity_Camera.previewRequestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE, Activity_Camera.opticalStabilizationMode);
+        Activity_Camera.previewRequestBuilder.set(CaptureRequest.LENS_FOCAL_LENGTH, Activity_Camera.focalLength);
+        if (Activity_Camera.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
+            Activity_Camera.previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, Activity_Camera.focusDistance);
         } else {
-            MainActivity.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
+            Activity_Camera.previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
         }
 
         try {
             // Set {@param CaptureCallback} to 'null' if preview does not need and additional process.
-            MainActivity.captureSession.setRepeatingRequest(MainActivity.previewRequestBuilder.build(), MainActivity.previewCaptureCallback, MainActivity.cameraBackgroundHandler);
+            Activity_Camera.captureSession.setRepeatingRequest(Activity_Camera.previewRequestBuilder.build(), Activity_Camera.previewCaptureCallback, Activity_Camera.cameraBackgroundHandler);
         } catch (CameraAccessException e) {
-            MainActivity.displayErrorMessage(e);
+            Activity_Camera.displayErrorMessage(e);
         }
     }
 
@@ -473,14 +472,14 @@ class UIOperator {
                     if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
                         rangeControlBottomSheet_setupRangeSeekBarProgress(
                                 viewingControlBottomSheet,
-                                MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower(),
-                                0L, 0L, MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                                Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower(),
+                                0L, 0L, Activity_Camera.exposureTime - Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
                         );
                     } else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
                         rangeControlBottomSheet_setupRangeSeekBarProgress(
                                 viewingControlBottomSheet,
-                                MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower(),
-                                0, 0, MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                                Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower(),
+                                0, 0, Activity_Camera.sensitivity - Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
                         );
                     }
                 }
@@ -488,7 +487,7 @@ class UIOperator {
                 else if (viewingControlBottomSheet == CONTROL_BOTTOM_SHEET_TYPE_APERTURE) {
                     if (viewingControlBottomSheet_radioButtonIdArray.length != 0) {
                         listRadioGroup_list_control.check(viewingControlBottomSheet_radioButtonIdArray[
-                                Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)
+                                Support_Utility.arrayIndexOf(Activity_Camera.LENS_INFO_AVAILABLE_APERTURES, Activity_Camera.aperture)
                         ]);
                     }
                 }
@@ -501,8 +500,8 @@ class UIOperator {
 
                     rangeControlBottomSheet_setupRangeSeekBarProgress(
                             viewingControlBottomSheet,
-                            MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE,
-                            0.0f, 0.0f, MainActivity.focusDistance
+                            Activity_Camera.LENS_INFO_MINIMUM_FOCUS_DISTANCE,
+                            0.0f, 0.0f, Activity_Camera.focusDistance
                     );
                 }
             }
@@ -514,21 +513,21 @@ class UIOperator {
         @Override
         public void onClick(View view) {
             if (((MaterialButton) view).getId() == R.id.button_camera_control_sequence) {
-                Intent openSequence = new Intent(MainActivity.context, SequenceActivity.class);
-                MainActivity.activity.startActivity(openSequence);
+                Intent openSequence = new Intent(Activity_Camera.context, Activity_Sequence.class);
+                Activity_Camera.activity.startActivity(openSequence);
             }
 
             else if (((MaterialButton) view).getId() == R.id.button_camera_control_capture) {
                 if (captureButtonState == CAPTURE_BUTTON_STATE_NORMAL) {
-                    MainActivity.takePhoto();
+                    Activity_Camera.takePhoto();
                 } else if (captureButtonState == CAPTURE_BUTTON_STATE_SEQUENCING) {
-                    MainActivity.stopRepeatCapture();
+                    Activity_Camera.stopRepeatCapture();
                 }
             }
 
             else if (((MaterialButton) view).getId() == R.id.button_camera_control_settings) {
-                Intent openSettings = new Intent(MainActivity.activity, SettingsActivity.class);
-                MainActivity.activity.startActivity(openSettings);
+                Intent openSettings = new Intent(Activity_Camera.activity, Activity_Settings.class);
+                Activity_Camera.activity.startActivity(openSettings);
             }
         }
     };
@@ -551,7 +550,7 @@ class UIOperator {
                 // therefore, set the elevation of a progressBar to 8dp will bring it to front
                 captureButton_camera_control.setText("");
                 captureButton_camera_control.setEnabled(false);
-                capturingProgressBar_camera_control.setElevation(8f * MainActivity.scale);
+                capturingProgressBar_camera_control.setElevation(8f * Activity_Camera.scale);
                 break;
 
             case CAPTURE_BUTTON_STATE_SEQUENCING:
@@ -567,11 +566,11 @@ class UIOperator {
         @Override
         public void onClick(View view) {
             if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setTorch) {
-                if (MainActivity.FLASH_INFO_AVAILABLE) {
-                    if (MainActivity.flashMode == CaptureRequest.FLASH_MODE_OFF) {
-                        MainActivity.flashMode = CaptureRequest.FLASH_MODE_TORCH;
+                if (Activity_Camera.FLASH_INFO_AVAILABLE) {
+                    if (Activity_Camera.flashMode == CaptureRequest.FLASH_MODE_OFF) {
+                        Activity_Camera.flashMode = CaptureRequest.FLASH_MODE_TORCH;
                     } else {
-                        MainActivity.flashMode = CaptureRequest.FLASH_MODE_OFF;
+                        Activity_Camera.flashMode = CaptureRequest.FLASH_MODE_OFF;
                     }
                     updateCaptureParametersIndicator();
                     updatePreviewParameters();
@@ -600,7 +599,7 @@ class UIOperator {
                        (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setExposureTime)
                     || (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setSensitivity)
             ) {
-                if (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
+                if (Activity_Camera.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(true);
@@ -610,9 +609,9 @@ class UIOperator {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (((MaterialCheckBox) buttonView).isPressed()) {
                             if (isChecked) {
-                                MainActivity.aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
+                                Activity_Camera.aeMode = CaptureRequest.CONTROL_AE_MODE_ON;
                             } else {
-                                MainActivity.aeMode = CaptureRequest.CONTROL_AE_MODE_OFF;
+                                Activity_Camera.aeMode = CaptureRequest.CONTROL_AE_MODE_OFF;
                             }
                             rangeControlBottomSheet_setAutoCheckBoxChecked(isChecked);
                             updateCaptureParametersIndicator();
@@ -655,11 +654,11 @@ class UIOperator {
                         }
                     });
 
-                    final long progressLength = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                    final VariableContainer<Long> progressLeftOffset = new VariableContainer<Long>(0L);
-                    final VariableContainer<Long> progressRightOffset = new VariableContainer<Long>(0L);
-                    final VariableContainer<Long> progressLeftLength = new VariableContainer<Long>(
-                            MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                    final long progressLength = Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
+                    final Support_VariableContainer<Long> progressLeftOffset = new Support_VariableContainer<Long>(0L);
+                    final Support_VariableContainer<Long> progressRightOffset = new Support_VariableContainer<Long>(0L);
+                    final Support_VariableContainer<Long> progressLeftLength = new Support_VariableContainer<Long>(
+                            Activity_Camera.exposureTime - Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
                     );
                     rangeControlBottomSheet_setupRangeSeekBar(
                             CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME, seekBarLength, progressLength,
@@ -723,11 +722,11 @@ class UIOperator {
                         }
                     });
 
-                    final int progressLength = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                    final VariableContainer<Integer> progressLeftOffset = new VariableContainer<Integer>(0);
-                    final VariableContainer<Integer> progressRightOffset = new VariableContainer<Integer>(0);
-                    final VariableContainer<Integer> progressLeftLength = new VariableContainer<Integer>(
-                            MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                    final int progressLength = Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+                    final Support_VariableContainer<Integer> progressLeftOffset = new Support_VariableContainer<Integer>(0);
+                    final Support_VariableContainer<Integer> progressRightOffset = new Support_VariableContainer<Integer>(0);
+                    final Support_VariableContainer<Integer> progressLeftLength = new Support_VariableContainer<Integer>(
+                            Activity_Camera.sensitivity - Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
                     );
                     rangeControlBottomSheet_setupRangeSeekBar(
                             CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY, seekBarLength, progressLength,
@@ -763,7 +762,7 @@ class UIOperator {
             else if (((MaterialButton) view).getId() == R.id.button_parameters_indicator_setFocusDistance) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE;
 
-                if (MainActivity.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
+                if (Activity_Camera.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
                 } else {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(true);
@@ -773,9 +772,9 @@ class UIOperator {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (((MaterialCheckBox) buttonView).isPressed()) {
                             if (isChecked) {
-                                MainActivity.afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
+                                Activity_Camera.afMode = CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE;
                             } else {
-                                MainActivity.afMode = CaptureRequest.CONTROL_AF_MODE_OFF;
+                                Activity_Camera.afMode = CaptureRequest.CONTROL_AF_MODE_OFF;
                             }
                             rangeControlBottomSheet_setAutoCheckBoxChecked(isChecked);
                             updateCaptureParametersIndicator();
@@ -815,10 +814,10 @@ class UIOperator {
                     }
                 });
 
-                final float progressLength = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
-                final VariableContainer<Float> progressLeftOffset = new VariableContainer<Float>(0.0f);
-                final VariableContainer<Float> progressRightOffset = new VariableContainer<Float>(0.0f);
-                final VariableContainer<Float> progressRightLength = new VariableContainer<Float>(MainActivity.focusDistance);
+                final float progressLength = Activity_Camera.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
+                final Support_VariableContainer<Float> progressLeftOffset = new Support_VariableContainer<Float>(0.0f);
+                final Support_VariableContainer<Float> progressRightOffset = new Support_VariableContainer<Float>(0.0f);
+                final Support_VariableContainer<Float> progressRightLength = new Support_VariableContainer<Float>(Activity_Camera.focusDistance);
                 rangeControlBottomSheet_setupRangeSeekBar(
                         CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE, seekBarLength, progressLength,
                         progressLeftOffset.getVariable(), progressRightOffset.getVariable(),
@@ -856,8 +855,8 @@ class UIOperator {
             rangeSeekBar_range_control.setEnabled(false);
             zoomOutButton_range_control.setEnabled(false);
             zoomInButton_range_control.setEnabled(false);
-            zoomOutButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
-            zoomInButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            zoomOutButton_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
+            zoomInButton_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
             applyButton_range_control.setEnabled(false);
             valueEditText_range_control.setEnabled(false);
         } else {
@@ -865,8 +864,8 @@ class UIOperator {
             rangeSeekBar_range_control.setEnabled(true);
             zoomOutButton_range_control.setEnabled(true);
             zoomInButton_range_control.setEnabled(true);
-            zoomOutButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
-            zoomInButton_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            zoomOutButton_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
+            zoomInButton_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
             applyButton_range_control.setEnabled(true);
             valueEditText_range_control.setEnabled(true);
         }
@@ -875,32 +874,32 @@ class UIOperator {
     static void rangeControlBottomSheet_applyValueEditTextValue(int valueEditTextType) {
         if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             double rawValue = Double.valueOf((valueEditText_range_control.getText()).toString());
-            MainActivity.exposureTime = (long) (rawValue * 1E9);
-            if (MainActivity.sharedPreferences.getBoolean("preference_capture_exposure_time_limit", true)) {
-                if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
-                    MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                } else if (MainActivity.exposureTime > MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
-                    MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
+            Activity_Camera.exposureTime = (long) (rawValue * 1E9);
+            if (Activity_Camera.sharedPreferences.getBoolean("preference_capture_exposure_time_limit", true)) {
+                if (Activity_Camera.exposureTime < Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
+                    Activity_Camera.exposureTime = Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
+                } else if (Activity_Camera.exposureTime > Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
+                    Activity_Camera.exposureTime = Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
                 }
             }
         }
 
         else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
-            MainActivity.sensitivity = Integer.valueOf((valueEditText_range_control.getText()).toString());
-            if (MainActivity.sensitivity < MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
-                MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-            } else if (MainActivity.sensitivity > MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) {
-                MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
+            Activity_Camera.sensitivity = Integer.valueOf((valueEditText_range_control.getText()).toString());
+            if (Activity_Camera.sensitivity < Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
+                Activity_Camera.sensitivity = Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+            } else if (Activity_Camera.sensitivity > Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) {
+                Activity_Camera.sensitivity = Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
             }
         }
 
         else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             float rawValue = Float.valueOf((valueEditText_range_control.getText()).toString());
-            MainActivity.focusDistance = 1f / rawValue;
-            if (MainActivity.focusDistance < 0.0f) {
-                MainActivity.focusDistance = 0.0f;
-            } else if (MainActivity.focusDistance > MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
-                MainActivity.focusDistance = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
+            Activity_Camera.focusDistance = 1f / rawValue;
+            if (Activity_Camera.focusDistance < 0.0f) {
+                Activity_Camera.focusDistance = 0.0f;
+            } else if (Activity_Camera.focusDistance > Activity_Camera.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
+                Activity_Camera.focusDistance = Activity_Camera.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
             }
         }
 
@@ -916,7 +915,7 @@ class UIOperator {
             // # demand information:
             // Exposure Value
             double exposureValue = (
-                    Math.log(Math.pow(MainActivity.aperture, 2) / ((double) MainActivity.exposureTime / 1E9))
+                    Math.log(Math.pow(Activity_Camera.aperture, 2) / ((double) Activity_Camera.exposureTime / 1E9))
                     / Math.log(2)
             );
             informationText = String.format(Locale.getDefault(), "EV: %.1f", exposureValue);
@@ -932,24 +931,24 @@ class UIOperator {
 
             float hyperfocalDistance = (  // unit: mm
                     (
-                            (MainActivity.focalLength * MainActivity.focalLength)
-                            / (MainActivity.aperture * MainActivity.CIRCLE_OF_CONFUSION)
-                    ) + MainActivity.focalLength
+                            (Activity_Camera.focalLength * Activity_Camera.focalLength)
+                            / (Activity_Camera.aperture * Activity_Camera.CIRCLE_OF_CONFUSION)
+                    ) + Activity_Camera.focalLength
             );
 
             String nearPointDistanceText;
             String farPointDistanceText;
             String depthOfFieldText;
-            if (MainActivity.focusDistance != 0f) {
+            if (Activity_Camera.focusDistance != 0f) {
                 float nearPointDistance = (  // unit: mm
-                        ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
-                        / (hyperfocalDistance - 2 * MainActivity.focalLength + (1000f / MainActivity.focusDistance))
+                        ((1000f / Activity_Camera.focusDistance) * (hyperfocalDistance - Activity_Camera.focalLength))
+                        / (hyperfocalDistance - 2 * Activity_Camera.focalLength + (1000f / Activity_Camera.focusDistance))
                 );
                 nearPointDistanceText = String.format(Locale.getDefault(), "%.4fm", nearPointDistance / 1000f);
-                if (hyperfocalDistance > (1000f / MainActivity.focusDistance)) {
+                if (hyperfocalDistance > (1000f / Activity_Camera.focusDistance)) {
                     float farPointDistance = (  // unit: mm
-                            ((1000f / MainActivity.focusDistance) * (hyperfocalDistance - MainActivity.focalLength))
-                            / (hyperfocalDistance - (1000f / MainActivity.focusDistance))
+                            ((1000f / Activity_Camera.focusDistance) * (hyperfocalDistance - Activity_Camera.focalLength))
+                            / (hyperfocalDistance - (1000f / Activity_Camera.focusDistance))
                     );
                     farPointDistanceText = String.format(Locale.getDefault(), "%.4fm", farPointDistance / 1000f);
                     depthOfFieldText = String.format(Locale.getDefault(), "%.4fm", (farPointDistance - nearPointDistance) / 1000f);
@@ -964,7 +963,7 @@ class UIOperator {
             }
 
             informationText = (
-                    String.format(Locale.getDefault(), "CoC: %.6fmm, H: %.6fm\n", MainActivity.CIRCLE_OF_CONFUSION, hyperfocalDistance / 1000f)
+                    String.format(Locale.getDefault(), "CoC: %.6fmm, H: %.6fm\n", Activity_Camera.CIRCLE_OF_CONFUSION, hyperfocalDistance / 1000f)
                     + String.format(Locale.getDefault(), "D_N: %s, D_F: %s\n", nearPointDistanceText, farPointDistanceText)
                     + String.format(Locale.getDefault(), "DoF: %s", depthOfFieldText)
             );
@@ -975,65 +974,65 @@ class UIOperator {
 
     static void rangeControlBottomSheet_setupValueEditTextHint(int valueEditTextType) {
         if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
-            if (MainActivity.exposureTime < 1E3) {
+            if (Activity_Camera.exposureTime < 1E3) {
                 valueEditText_range_control.setHint(
-                        String.format(Locale.getDefault(), "%.9f s", (double) MainActivity.exposureTime / 1E9)
+                        String.format(Locale.getDefault(), "%.9f s", (double) Activity_Camera.exposureTime / 1E9)
                 );
-            } else if (MainActivity.exposureTime < 1E6) {
+            } else if (Activity_Camera.exposureTime < 1E6) {
                 valueEditText_range_control.setHint(
-                        String.format(Locale.getDefault(), "%.7f s", (double) (MainActivity.exposureTime / 1E1) / 1E8)
+                        String.format(Locale.getDefault(), "%.7f s", (double) (Activity_Camera.exposureTime / 1E1) / 1E8)
                 );
-            } else if (MainActivity.exposureTime < 1E9) {
+            } else if (Activity_Camera.exposureTime < 1E9) {
                 valueEditText_range_control.setHint(
-                        String.format(Locale.getDefault(), "%.4f s", (double) (MainActivity.exposureTime / 1E4) / 1E5)
+                        String.format(Locale.getDefault(), "%.4f s", (double) (Activity_Camera.exposureTime / 1E4) / 1E5)
                 );
             } else {
                 valueEditText_range_control.setHint(
-                        String.format(Locale.getDefault(), "%.1f s", (double) (MainActivity.exposureTime / 1E7) / 1E2)
+                        String.format(Locale.getDefault(), "%.1f s", (double) (Activity_Camera.exposureTime / 1E7) / 1E2)
                 );
             }
         }
 
         else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
-            valueEditText_range_control.setHint(String.valueOf(MainActivity.sensitivity));
+            valueEditText_range_control.setHint(String.valueOf(Activity_Camera.sensitivity));
         }
 
         else if (valueEditTextType == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
-            if (MainActivity.focusDistance == 0.0f) {
+            if (Activity_Camera.focusDistance == 0.0f) {
                 valueEditText_range_control.setHint("Infinity m");
             } else {
                 valueEditText_range_control.setHint(
-                        String.format(Locale.getDefault(), "%.4f m", 1f / MainActivity.focusDistance)
+                        String.format(Locale.getDefault(), "%.4f m", 1f / Activity_Camera.focusDistance)
                 );
             }
         }
     }
 
     // region: rangeControlBottomSheet_setupRangeSeekBar
-    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, final VariableContainer<Long> progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final long progressLength, final long progressLeftOffset, final long progressRightOffset, final Support_VariableContainer<Long> progressLeftOrRightLength) {
         if (progressLeftOffset != 0L || progressRightOffset != 0L) {
             valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
             valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
-            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
-            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            valueMinimumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
+            valueMaximumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
         } else {
             valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
             valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
-            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            valueMinimumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
+            valueMaximumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
         }
 
         if (type == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             valueMinimumTextView_range_control.setText(
-                    MainActivity.activity.getString(
+                    Activity_Camera.activity.getString(
                             R.string.textView_range_control_valueMinimum,
-                            rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + progressLeftOffset)
+                            rangeControlBottomSheet_formatTimeString(Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower() + progressLeftOffset)
                     )
             );
             valueMaximumTextView_range_control.setText(
-                    MainActivity.activity.getString(
+                    Activity_Camera.activity.getString(
                             R.string.textView_range_control_valueMaximum,
-                            rangeControlBottomSheet_formatTimeString(MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - progressRightOffset)
+                            rangeControlBottomSheet_formatTimeString(Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper() - progressRightOffset)
                     )
             );
 
@@ -1045,17 +1044,17 @@ class UIOperator {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     if (fromUser) {
-                        MainActivity.exposureTime = ((long) (
+                        Activity_Camera.exposureTime = ((long) (
                                 (progressLength - progressLeftOffset - progressRightOffset)
                                 * ((double) (progress - rangeSeekBar_range_control.getMin()) / seekBarLength)
-                                ) + progressLeftOffset + MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
+                                ) + progressLeftOffset + Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()
                         );
-                        if (MainActivity.exposureTime < MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
-                            MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
-                        } else if (MainActivity.exposureTime > MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
-                            MainActivity.exposureTime = MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
+                        if (Activity_Camera.exposureTime < Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower()) {
+                            Activity_Camera.exposureTime = Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower();
+                        } else if (Activity_Camera.exposureTime > Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper()) {
+                            Activity_Camera.exposureTime = Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getUpper();
                         }
-                        progressLeftOrRightLength.setVariable(MainActivity.exposureTime - MainActivity.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower());
+                        progressLeftOrRightLength.setVariable(Activity_Camera.exposureTime - Activity_Camera.SENSOR_INFO_EXPOSURE_TIME_RANGE.getLower());
 
                         rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
                         rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME);
@@ -1074,30 +1073,30 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final int progressLength, final int progressLeftOffset, final int progressRightOffset, final VariableContainer<Integer> progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final int progressLength, final int progressLeftOffset, final int progressRightOffset, final Support_VariableContainer<Integer> progressLeftOrRightLength) {
         if (progressLeftOffset != 0 || progressRightOffset != 0) {
             valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
             valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
-            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
-            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            valueMinimumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
+            valueMaximumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
         } else {
             valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
             valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
-            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            valueMinimumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
+            valueMaximumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
         }
 
         if (type == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
             valueMinimumTextView_range_control.setText(
-                    MainActivity.activity.getString(
+                    Activity_Camera.activity.getString(
                             R.string.textView_range_control_valueMinimum,
-                            String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower() + progressLeftOffset)
+                            String.valueOf(Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower() + progressLeftOffset)
                     )
             );
             valueMaximumTextView_range_control.setText(
-                    MainActivity.activity.getString(
+                    Activity_Camera.activity.getString(
                             R.string.textView_range_control_valueMaximum,
-                            String.valueOf(MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - progressRightOffset)
+                            String.valueOf(Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getUpper() - progressRightOffset)
                     )
             );
 
@@ -1109,17 +1108,17 @@ class UIOperator {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     if (fromUser) {
-                        MainActivity.sensitivity = ((int) (
+                        Activity_Camera.sensitivity = ((int) (
                                 (progressLength - progressLeftOffset - progressRightOffset)
                                 * ((float) (progress - rangeSeekBar_range_control.getMin()) / seekBarLength)
-                                ) + progressLeftOffset + MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
+                                ) + progressLeftOffset + Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower()
                         );
-                        if (MainActivity.sensitivity < MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
-                            MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
-                        } else if (MainActivity.sensitivity > MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) {
-                            MainActivity.sensitivity = MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
+                        if (Activity_Camera.sensitivity < Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower()) {
+                            Activity_Camera.sensitivity = Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower();
+                        } else if (Activity_Camera.sensitivity > Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getUpper()) {
+                            Activity_Camera.sensitivity = Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getUpper();
                         }
-                        progressLeftOrRightLength.setVariable(MainActivity.sensitivity - MainActivity.SENSOR_INFO_SENSITIVITY_RANGE.getLower());
+                        progressLeftOrRightLength.setVariable(Activity_Camera.sensitivity - Activity_Camera.SENSOR_INFO_SENSITIVITY_RANGE.getLower());
 
                         rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY);
                         updateCaptureParametersIndicator();
@@ -1137,36 +1136,36 @@ class UIOperator {
         }
     }
 
-    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final float progressLength, final float progressLeftOffset, final float progressRightOffset, final VariableContainer<Float> progressLeftOrRightLength) {
+    static void rangeControlBottomSheet_setupRangeSeekBar(int type, final int seekBarLength, final float progressLength, final float progressLeftOffset, final float progressRightOffset, final Support_VariableContainer<Float> progressLeftOrRightLength) {
         if (progressLeftOffset != 0.0f || progressRightOffset != 0.0f) {
             valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
             valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.ITALIC));
-            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
-            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+            valueMinimumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
+            valueMaximumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
         } else {
             valueMinimumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
             valueMaximumTextView_range_control.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-            valueMinimumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
-            valueMaximumTextView_range_control.setTextColor(MainActivity.activity.getColor(R.color.colorPrimary));
+            valueMinimumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
+            valueMaximumTextView_range_control.setTextColor(Activity_Camera.activity.getColor(R.color.colorPrimary));
         }
 
         if (type == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             valueMinimumTextView_range_control.setText(
-                    MainActivity.activity.getString(
+                    Activity_Camera.activity.getString(
                             R.string.textView_range_control_valueMinimum,
-                            String.format(Locale.getDefault(), "%.4f m", 1f / (MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE - progressLeftOffset))
+                            String.format(Locale.getDefault(), "%.4f m", 1f / (Activity_Camera.LENS_INFO_MINIMUM_FOCUS_DISTANCE - progressLeftOffset))
                     )
             );
             if (progressRightOffset == 0.0f) {
                 valueMaximumTextView_range_control.setText(
-                        MainActivity.activity.getString(
+                        Activity_Camera.activity.getString(
                                 R.string.textView_range_control_valueMaximum,
                                 "Infinity"
                         )
                 );
             } else {
                 valueMaximumTextView_range_control.setText(
-                        MainActivity.activity.getString(
+                        Activity_Camera.activity.getString(
                                 R.string.textView_range_control_valueMaximum,
                                 String.format(Locale.getDefault(), "%.4f m", 1f / progressRightOffset)
                         )
@@ -1181,17 +1180,17 @@ class UIOperator {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     if (fromUser) {
-                        MainActivity.focusDistance = (
+                        Activity_Camera.focusDistance = (
                                 (progressLength - progressLeftOffset - progressRightOffset)
                                 * ((float) (rangeSeekBar_range_control.getMax() - progress) / seekBarLength)
                                 + progressRightOffset
                         );
-                        if (MainActivity.focusDistance < 0.0f) {
-                            MainActivity.focusDistance = 0.0f;
-                        } else if (MainActivity.focusDistance > MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
-                            MainActivity.focusDistance = MainActivity.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
+                        if (Activity_Camera.focusDistance < 0.0f) {
+                            Activity_Camera.focusDistance = 0.0f;
+                        } else if (Activity_Camera.focusDistance > Activity_Camera.LENS_INFO_MINIMUM_FOCUS_DISTANCE) {
+                            Activity_Camera.focusDistance = Activity_Camera.LENS_INFO_MINIMUM_FOCUS_DISTANCE;
                         }
-                        progressLeftOrRightLength.setVariable(MainActivity.focusDistance);
+                        progressLeftOrRightLength.setVariable(Activity_Camera.focusDistance);
 
                         rangeControlBottomSheet_setupInformationTextView(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
                         rangeControlBottomSheet_setupValueEditTextHint(CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE);
@@ -1202,22 +1201,22 @@ class UIOperator {
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-                    if (MainActivity.sharedPreferences.getBoolean("preference_focus_assistant", true)) {
+                    if (Activity_Camera.sharedPreferences.getBoolean("preference_focus_assistant", true)) {
                         focusAssistantIndicatorImageView_camera_control.clearAnimation();
-                        MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                (int) (MainActivity.focusAssistantX - (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) (MainActivity.focusAssistantY - (MainActivity.focusAssistantHeight / 2.0f)),
-                                (int) (MainActivity.focusAssistantX + (MainActivity.focusAssistantWidth / 2.0f)),
-                                (int) (MainActivity.focusAssistantY + (MainActivity.focusAssistantHeight / 2.0f))
+                        Activity_Camera.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                (int) (Activity_Camera.focusAssistantX - (Activity_Camera.focusAssistantWidth / 2.0f)),
+                                (int) (Activity_Camera.focusAssistantY - (Activity_Camera.focusAssistantHeight / 2.0f)),
+                                (int) (Activity_Camera.focusAssistantX + (Activity_Camera.focusAssistantWidth / 2.0f)),
+                                (int) (Activity_Camera.focusAssistantY + (Activity_Camera.focusAssistantHeight / 2.0f))
                         ));
                     }
                 }
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    if (MainActivity.sharedPreferences.getBoolean("preference_focus_assistant", true)) {
-                        MainActivity.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
-                                0, 0, MainActivity.previewViewWidth, MainActivity.previewViewHeight
+                    if (Activity_Camera.sharedPreferences.getBoolean("preference_focus_assistant", true)) {
+                        Activity_Camera.previewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, new Rect(
+                                0, 0, Activity_Camera.previewViewWidth, Activity_Camera.previewViewHeight
                         ));
                         updatePreviewParameters();
                         focusAssistantIndicatorImageView_camera_control.startAnimation(focusAssistantIndicatorFadeIn);
@@ -1231,8 +1230,8 @@ class UIOperator {
     // region: rangeControlBottomSheet_zoomRangeSeekBar
     static void rangeControlBottomSheet_zoomOutRangeSeekBar(
             int type, int seekBarLength, long progressLength,
-            VariableContainer<Long> progressLeftOffset, VariableContainer<Long> progressRightOffset,
-            VariableContainer<Long> progressLeftOrRightLength
+            Support_VariableContainer<Long> progressLeftOffset, Support_VariableContainer<Long> progressRightOffset,
+            Support_VariableContainer<Long> progressLeftOrRightLength
     ) {
         if (type == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             long progressLeftLength = progressLeftOrRightLength.getVariable();
@@ -1270,8 +1269,8 @@ class UIOperator {
 
     static void rangeControlBottomSheet_zoomOutRangeSeekBar(
             int type, int seekBarLength, int progressLength,
-            VariableContainer<Integer> progressLeftOffset, VariableContainer<Integer> progressRightOffset,
-            VariableContainer<Integer> progressLeftOrRightLength
+            Support_VariableContainer<Integer> progressLeftOffset, Support_VariableContainer<Integer> progressRightOffset,
+            Support_VariableContainer<Integer> progressLeftOrRightLength
     ) {
         if (type == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
             int progressLeftLength = progressLeftOrRightLength.getVariable();
@@ -1309,8 +1308,8 @@ class UIOperator {
 
     static void rangeControlBottomSheet_zoomOutRangeSeekBar(
             int type, int seekBarLength, float progressLength,
-            VariableContainer<Float> progressLeftOffset, VariableContainer<Float> progressRightOffset,
-            VariableContainer<Float> progressLeftOrRightLength
+            Support_VariableContainer<Float> progressLeftOffset, Support_VariableContainer<Float> progressRightOffset,
+            Support_VariableContainer<Float> progressLeftOrRightLength
     ) {
         if (type == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             float progressRightLength = progressLeftOrRightLength.getVariable();
@@ -1349,8 +1348,8 @@ class UIOperator {
 
     static void rangeControlBottomSheet_zoomInRangeSeekBar(
             int type, int seekBarLength, long progressLength,
-            VariableContainer<Long> progressLeftOffset, VariableContainer<Long> progressRightOffset,
-            VariableContainer<Long> progressLeftOrRightLength
+            Support_VariableContainer<Long> progressLeftOffset, Support_VariableContainer<Long> progressRightOffset,
+            Support_VariableContainer<Long> progressLeftOrRightLength
     ) {
         if (type == CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME) {
             long progressLeftLength = progressLeftOrRightLength.getVariable();
@@ -1381,8 +1380,8 @@ class UIOperator {
 
     static void rangeControlBottomSheet_zoomInRangeSeekBar(
             int type, int seekBarLength, int progressLength,
-            VariableContainer<Integer> progressLeftOffset, VariableContainer<Integer> progressRightOffset,
-            VariableContainer<Integer> progressLeftOrRightLength
+            Support_VariableContainer<Integer> progressLeftOffset, Support_VariableContainer<Integer> progressRightOffset,
+            Support_VariableContainer<Integer> progressLeftOrRightLength
     ) {
         if (type == CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY) {
             int progressLeftLength = progressLeftOrRightLength.getVariable();
@@ -1413,8 +1412,8 @@ class UIOperator {
 
     static void rangeControlBottomSheet_zoomInRangeSeekBar(
             int type, int seekBarLength, float progressLength,
-            VariableContainer<Float> progressLeftOffset, VariableContainer<Float> progressRightOffset,
-            VariableContainer<Float> progressLeftOrRightLength
+            Support_VariableContainer<Float> progressLeftOffset, Support_VariableContainer<Float> progressRightOffset,
+            Support_VariableContainer<Float> progressLeftOrRightLength
     ) {
         if (type == CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE) {
             float progressRightLength = progressLeftOrRightLength.getVariable();
@@ -1517,42 +1516,42 @@ class UIOperator {
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_aperture);
 
-                radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_APERTURES).length];
-                for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_APERTURES).length; i ++) {
-                    radioButton = new MaterialRadioButton(MainActivity.activity);
+                radioButtonIdArray = new int[(Activity_Camera.LENS_INFO_AVAILABLE_APERTURES).length];
+                for (int i = 0; i < (Activity_Camera.LENS_INFO_AVAILABLE_APERTURES).length; i ++) {
+                    radioButton = new MaterialRadioButton(Activity_Camera.activity);
                     // TODO: find a way to apply style
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setPadding((int) (8f * Activity_Camera.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText(String.format(Locale.getDefault(), "f/%s", MainActivity.LENS_INFO_AVAILABLE_APERTURES[i]));
-                    if (! (MainActivity.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || MainActivity.autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
+                    radioButton.setText(String.format(Locale.getDefault(), "f/%s", Activity_Camera.LENS_INFO_AVAILABLE_APERTURES[i]));
+                    if (! (Activity_Camera.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
                         radioButton.setEnabled(false);
                         radioButton.setButtonTintList(new ColorStateList(
                                 new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
-                                new int[] {MainActivity.activity.getColor(R.color.colorSecondaryDown), MainActivity.activity.getColor(R.color.colorSecondaryDown)}
+                                new int[] {Activity_Camera.activity.getColor(R.color.colorSecondaryDown), Activity_Camera.activity.getColor(R.color.colorSecondaryDown)}
                         ));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondaryDown));
+                    radioButton.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondaryDown));
                     } else {
                         radioButton.setButtonTintList(new ColorStateList(
                                 new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
-                                new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}
+                                new int[] {Activity_Camera.activity.getColor(R.color.colorSecondary), Activity_Camera.activity.getColor(R.color.colorSecondary)}
                         ));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+                    radioButton.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
                     }
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_APERTURES, MainActivity.aperture)]);
+                listRadioGroup_list_control.check(radioButtonIdArray[Support_Utility.arrayIndexOf(Activity_Camera.LENS_INFO_AVAILABLE_APERTURES, Activity_Camera.aperture)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
-                            MainActivity.aperture = MainActivity.LENS_INFO_AVAILABLE_APERTURES[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
+                            Activity_Camera.aperture = Activity_Camera.LENS_INFO_AVAILABLE_APERTURES[Support_Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
                         }
@@ -1566,32 +1565,32 @@ class UIOperator {
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_autoWhiteBalance);
 
-                radioButtonIdArray = new int[(MainActivity.CONTROL_AWB_AVAILABLE_MODES).length];
-                for (int i = 0; i < (MainActivity.CONTROL_AWB_AVAILABLE_MODES).length; i ++) {
-                    radioButton = new MaterialRadioButton(MainActivity.activity);
+                radioButtonIdArray = new int[(Activity_Camera.CONTROL_AWB_AVAILABLE_MODES).length];
+                for (int i = 0; i < (Activity_Camera.CONTROL_AWB_AVAILABLE_MODES).length; i ++) {
+                    radioButton = new MaterialRadioButton(Activity_Camera.activity);
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(
                             new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
-                            new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}
+                            new int[] {Activity_Camera.activity.getColor(R.color.colorSecondary), Activity_Camera.activity.getColor(R.color.colorSecondary)}
                     ));
-                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setPadding((int) (8f * Activity_Camera.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+                    radioButton.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText(listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, MainActivity.CONTROL_AWB_AVAILABLE_MODES[i], false));
+                    radioButton.setText(listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, Activity_Camera.CONTROL_AWB_AVAILABLE_MODES[i], false));
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.CONTROL_AWB_AVAILABLE_MODES, MainActivity.awbMode)]);
+                listRadioGroup_list_control.check(radioButtonIdArray[Support_Utility.arrayIndexOf(Activity_Camera.CONTROL_AWB_AVAILABLE_MODES, Activity_Camera.awbMode)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
-                            MainActivity.awbMode = MainActivity.CONTROL_AWB_AVAILABLE_MODES[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
+                            Activity_Camera.awbMode = Activity_Camera.CONTROL_AWB_AVAILABLE_MODES[Support_Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
                         }
@@ -1604,32 +1603,32 @@ class UIOperator {
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_opticalStabilization);
 
-                radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length];
-                for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length; i ++) {
-                    radioButton = new MaterialRadioButton(MainActivity.activity);
+                radioButtonIdArray = new int[(Activity_Camera.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length];
+                for (int i = 0; i < (Activity_Camera.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION).length; i ++) {
+                    radioButton = new MaterialRadioButton(Activity_Camera.activity);
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(
                             new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
-                            new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}
+                            new int[] {Activity_Camera.activity.getColor(R.color.colorSecondary), Activity_Camera.activity.getColor(R.color.colorSecondary)}
                     ));
-                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setPadding((int) (8f * Activity_Camera.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+                    radioButton.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText(listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[i], false));
+                    radioButton.setText(listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, Activity_Camera.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[i], false));
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION, MainActivity.opticalStabilizationMode)]);
+                listRadioGroup_list_control.check(radioButtonIdArray[Support_Utility.arrayIndexOf(Activity_Camera.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION, Activity_Camera.opticalStabilizationMode)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
-                            MainActivity.opticalStabilizationMode = MainActivity.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
+                            Activity_Camera.opticalStabilizationMode = Activity_Camera.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[Support_Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
                         }
@@ -1642,32 +1641,32 @@ class UIOperator {
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_focalLength);
 
-                radioButtonIdArray = new int[(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length];
-                for (int i = 0; i < (MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length; i ++) {
-                    radioButton = new MaterialRadioButton(MainActivity.activity);
+                radioButtonIdArray = new int[(Activity_Camera.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length];
+                for (int i = 0; i < (Activity_Camera.LENS_INFO_AVAILABLE_FOCAL_LENGTHS).length; i ++) {
+                    radioButton = new MaterialRadioButton(Activity_Camera.activity);
                     // region: basic radio button settings
                     radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                     radioButton.setButtonTintList(new ColorStateList(
                             new int[][] {new int[] {-android.R.attr.state_checked}, new int[] {android.R.attr.state_checked}},
-                            new int[] {MainActivity.activity.getColor(R.color.colorSecondary), MainActivity.activity.getColor(R.color.colorSecondary)}
+                            new int[] {Activity_Camera.activity.getColor(R.color.colorSecondary), Activity_Camera.activity.getColor(R.color.colorSecondary)}
                     ));
-                    radioButton.setPadding((int) (8f * MainActivity.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
+                    radioButton.setPadding((int) (8f * Activity_Camera.scale + 0.5f), radioButton.getPaddingTop(), radioButton.getPaddingRight(), radioButton.getPaddingBottom());
                     radioButton.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    radioButton.setTextColor(MainActivity.activity.getColor(R.color.colorSecondary));
+                    radioButton.setTextColor(Activity_Camera.activity.getColor(R.color.colorSecondary));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                     // endregion: basic radio button settings
-                    radioButton.setText(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[i] + " mm");
+                    radioButton.setText(Activity_Camera.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[i] + " mm");
                     listRadioGroup_list_control.addView(radioButton);
                     radioButtonIdArray[i] = radioButton.getId();
                 }
                 viewingControlBottomSheet_radioButtonIdArray = radioButtonIdArray;
-                listRadioGroup_list_control.check(radioButtonIdArray[Utility.arrayIndexOf(MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS, MainActivity.focalLength)]);
+                listRadioGroup_list_control.check(radioButtonIdArray[Support_Utility.arrayIndexOf(Activity_Camera.LENS_INFO_AVAILABLE_FOCAL_LENGTHS, Activity_Camera.focalLength)]);
 
                 listRadioGroup_list_control.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
-                            MainActivity.focalLength = MainActivity.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
+                            Activity_Camera.focalLength = Activity_Camera.LENS_INFO_AVAILABLE_FOCAL_LENGTHS[Support_Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
                             updateCaptureParametersIndicator();
                             updatePreviewParameters();
                         }

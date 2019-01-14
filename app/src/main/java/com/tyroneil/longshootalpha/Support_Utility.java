@@ -1,6 +1,6 @@
 package com.tyroneil.longshootalpha;
 
-class Utility {
+class Support_Utility {
     // region: {@function arrayIndexOf}
     static int arrayIndexOf(int[] array, int value) {
         for (int i = 0; i < array.length; i ++) {

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.TextureView;
 
-class ChangeableRatioTextureView extends TextureView {
+class Support_FlexibleRatioTextureView extends TextureView {
 
     private int ratioWidth = 0;
     private int ratioHeight = 0;
@@ -12,13 +12,13 @@ class ChangeableRatioTextureView extends TextureView {
     /**
      * Three default constructor
      */
-    public ChangeableRatioTextureView(Context context) {
+    public Support_FlexibleRatioTextureView(Context context) {
         super(context);
     }
-    public ChangeableRatioTextureView(Context context, AttributeSet attrs) {
+    public Support_FlexibleRatioTextureView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    public ChangeableRatioTextureView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Support_FlexibleRatioTextureView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

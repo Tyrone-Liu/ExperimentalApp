@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class SettingsActivity extends AppCompatActivity {
+public class Activity_Settings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
         // setup preference content
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.preference_content, new SettingsFragment())
+                .replace(R.id.preference_content, new Fragment_Settings())
                 .commit();
     }
 

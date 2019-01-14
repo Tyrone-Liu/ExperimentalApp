@@ -1,9 +1,9 @@
 package com.tyroneil.longshootalpha;
 
-public class VariableContainer<Type> {
+public class Support_VariableContainer<Type> {
     private Type variable;
 
-    public VariableContainer(Type variable) {
+    public Support_VariableContainer(Type variable) {
         this.variable = variable;
     }
 

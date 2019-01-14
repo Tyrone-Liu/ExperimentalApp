@@ -52,7 +52,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class Activity_Camera extends AppCompatActivity {
     static Context context;
     static AppCompatActivity activity;
     static float scale;
@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity {
 
     static float focusAssistantX;  // set by touch, or from previewViewWidth
     static float focusAssistantY;  // set by touch, or from previewViewHeight
-    static float focusAssistantWidth;  // decided by previewCRTV_DP width
-    static float focusAssistantHeight;  // decided by previewCRTV_DP height
+    static float focusAssistantWidth;  // decided by previewFRTV_DP width
+    static float focusAssistantHeight;  // decided by previewFRTV_DP height
     // endregion: focus assistant
 
     static TextView errorMessageTextView;
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_camera);
         context = getApplicationContext();
         activity = this;
         scale = getResources().getDisplayMetrics().density;
@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
             for (String permission : permissions) {
                 switch (permission) {
                     case Manifest.permission.CAMERA:
-                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] == PackageManager.PERMISSION_GRANTED) {
+                        if (grantResults[Support_Utility.arrayIndexOf(permissions, permission)] == PackageManager.PERMISSION_GRANTED) {
                             UIOperator.initiateContentCameraControl();
                             UIOperator.initiateContentRangeControl();
                             UIOperator.initiateContentListControl();
@@ -308,12 +308,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case Manifest.permission.READ_EXTERNAL_STORAGE:
-                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                        if (grantResults[Support_Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
                             // TODO: warn user this function will not work
                         }
                         break;
                     case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                        if (grantResults[Support_Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
                             // TODO: warn user they can not save the capture image
                             if (UIOperator.captureButton_camera_control != null) {
                                 activity.runOnUiThread(new Runnable() {
@@ -327,12 +327,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case Manifest.permission.ACCESS_COARSE_LOCATION:
-                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                        if (grantResults[Support_Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
                             // TODO: warn user they will not have location tag saved in the image file
                         }
                         break;
                     case Manifest.permission.ACCESS_FINE_LOCATION:
-                        if (grantResults[Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
+                        if (grantResults[Support_Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
                             // TODO: warn user they will not have location tag saved in the image file
                         }
                         break;
@@ -354,8 +354,8 @@ public class MainActivity extends AppCompatActivity {
         cameraBackgroundHandler = new Handler(cameraBackgroundThread.getLooper());
 
         if (
-                UIOperator.previewCRTV_camera_control != null
-                && (UIOperator.previewCRTV_camera_control).isAvailable()
+                UIOperator.previewFRTV_camera_control != null
+                && (UIOperator.previewFRTV_camera_control).isAvailable()
         ) {
             createPreview(CREATE_PREVIEW_STAGE_OPEN_CAMERA);
         }
@@ -482,9 +482,9 @@ public class MainActivity extends AppCompatActivity {
             captureSize = chooseOutputSize(cameraCharacteristics, captureFormat, false);  // find optimal size for capture
             sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
             if (sensorOrientation == 90 || sensorOrientation == 270) {
-                (UIOperator.previewCRTV_camera_control).setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
+                (UIOperator.previewFRTV_camera_control).setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
             } else {
-                (UIOperator.previewCRTV_camera_control).setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
+                (UIOperator.previewFRTV_camera_control).setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
             }
         }
         // endregion: CREATE_PREVIEW_STAGE_INITIATE_CAMERA_CANDIDATE
@@ -508,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
         else if (stage == CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION) {
             // got cameraDevice
             // this stage will also be used to refresh the preview parameters after changed camera device
-            SurfaceTexture previewSurfaceTexture = (UIOperator.previewCRTV_camera_control).getSurfaceTexture();
+            SurfaceTexture previewSurfaceTexture = (UIOperator.previewFRTV_camera_control).getSurfaceTexture();
             previewSurfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface previewSurface = new Surface(previewSurfaceTexture);
             try {
@@ -782,14 +782,14 @@ public class MainActivity extends AppCompatActivity {
         SENSOR_INFO_ACTIVE_ARRAY_RECT_WIDTH = SENSOR_INFO_ACTIVE_ARRAY_RECT.right - SENSOR_INFO_ACTIVE_ARRAY_RECT.left;
         SENSOR_INFO_ACTIVE_ARRAY_RECT_HEIGHT = SENSOR_INFO_ACTIVE_ARRAY_RECT.bottom - SENSOR_INFO_ACTIVE_ARRAY_RECT.top;
 
-        float previewCRTV_DP_width = (float) UIOperator.previewCRTV_camera_control.getWidth() / scale;
-        float previewCRTV_DP_height = (float) UIOperator.previewCRTV_camera_control.getHeight() / scale;
+        float previewFRTV_DP_width = (float) UIOperator.previewFRTV_camera_control.getWidth() / scale;
+        float previewFRTV_DP_height = (float) UIOperator.previewFRTV_camera_control.getHeight() / scale;
         if (sensorOrientation == 90 || sensorOrientation == 270) {
-            focusAssistantWidth = previewCRTV_DP_height;
-            focusAssistantHeight = previewCRTV_DP_width;
+            focusAssistantWidth = previewFRTV_DP_height;
+            focusAssistantHeight = previewFRTV_DP_width;
         } else {
-            focusAssistantWidth = previewCRTV_DP_width;
-            focusAssistantHeight = previewCRTV_DP_height;
+            focusAssistantWidth = previewFRTV_DP_width;
+            focusAssistantHeight = previewFRTV_DP_height;
         }
 
         if (
@@ -810,11 +810,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPreferences.getBoolean("preference_focus_assistant", true)) {
             UIOperator.focusAssistantIndicatorImageView_camera_control.setTranslationX(
-                    ((float) UIOperator.previewCRTV_camera_control.getWidth() / 2.0f)
+                    ((float) UIOperator.previewFRTV_camera_control.getWidth() / 2.0f)
                     - ((float) UIOperator.focusAssistantIndicatorImageView_camera_control.getWidth() / 2.0f)
             );
             UIOperator.focusAssistantIndicatorImageView_camera_control.setTranslationY(
-                    ((float) UIOperator.previewCRTV_camera_control.getHeight() / 2.0f)
+                    ((float) UIOperator.previewFRTV_camera_control.getHeight() / 2.0f)
                     - ((float) UIOperator.focusAssistantIndicatorImageView_camera_control.getHeight() / 2.0f)
             );
             UIOperator.focusAssistantIndicatorImageView_camera_control.startAnimation(UIOperator.focusAssistantIndicatorFadeIn);
