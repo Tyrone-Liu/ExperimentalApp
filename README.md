@@ -94,11 +94,12 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 - [x] Zoom in SeekBar for preciser adjust
 - [x] Change text in adjust panel according to parameters
 - [x] Another thread for storing image file
+- [ ] Use captureRequest with empty target to create interval between shoots, prevent trigger each capture separately, hence prevent the `capture lag` problem.
 - [ ] Different capture sequences for stacking or time-lapse
 - [ ] More miscellaneous settings in setting interface
 - [ ] Better handle of auto capture mode capture parameters
 - [x] Handle Android permission request
-- [ ] Redo the Icon (not a camera pleace, should be like a phone)
+- [ ] Redo the Icon (not a camera! should be a phone.)
 
 
 ## Frequently Asked Questions
