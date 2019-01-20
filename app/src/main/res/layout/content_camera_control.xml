@@ -83,8 +83,9 @@
             app:rippleColor="@color/colorSecondaryDown" />
 
         <!-- capture parameters indicator -->
-        <include
-            layout="@layout/reuse_content_capture_parameters_indicator"
+        <fragment
+            android:id="@+id/fragment_parameters_indicator"
+            android:name="com.tyroneil.longshootalpha.Fragment_ParametersIndicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

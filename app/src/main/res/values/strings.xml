@@ -7,18 +7,18 @@
     <!-- content camera control -->
     <string name="button_camera_control_sequence">Sequence</string>
     <string name="button_camera_control_capture">CAPTURE</string>
-    <string name="button_camera_control_capture_sequencing">STOP</string>
+    <string name="button_camera_control_capture_sequencing">&#8230;STOP</string>
     <string name="button_camera_control_settings">Settings</string>
 
     <!-- content capture parameters indicator -->
-    <string name="button_parameters_indicator_setExposureTime">S.S.\n%.1f%s</string>
-    <string name="button_parameters_indicator_setSensitivity">ISO\n%d</string>
-    <string name="button_parameters_indicator_setAperture">APE\nf/%.1f</string>
-    <string name="button_parameters_indicator_setTorch">Tor.\n%s</string>
-    <string name="button_parameters_indicator_setAutoWhiteBalance">AWB\n%s</string>
-    <string name="button_parameters_indicator_setOpticalStabilization">OIS\n%s</string>
-    <string name="button_parameters_indicator_setFocalLength">F.L.\n%.2fmm</string>
-    <string name="button_parameters_indicator_setFocusDistance">F.D.\n%.2fm</string>
+    <string name="fragment_parameters_indicator_exposureTime">S.S.\n%.1f%s</string>
+    <string name="fragment_parameters_indicator_sensitivity">ISO\n%d</string>
+    <string name="fragment_parameters_indicator_aperture">f\nf/%.1f</string>
+    <string name="fragment_parameters_indicator_flash">Fl.\n%s</string>
+    <string name="fragment_parameters_indicator_whiteBalance">W.B.\n%s</string>
+    <string name="fragment_parameters_indicator_opticalImageStabilization">OIS\n%s</string>
+    <string name="fragment_parameters_indicator_focalLength">F.L.\n%.2fmm</string>
+    <string name="fragment_parameters_indicator_focusDistance">F.D.\n%.2fm</string>
 
     <!-- content capture parameter range control -->
     <string name="textView_range_control_title">Range Control Title</string>
@@ -35,7 +35,7 @@
     <!-- content capture parameter list control -->
     <string name="textView_list_control_title">List Control Title</string>
     <string name="textView_list_control_title_aperture">Aperture</string>
-    <string name="textView_list_control_title_autoWhiteBalance">Auto White Balance</string>
+    <string name="textView_list_control_title_autoWhiteBalance">White Balance</string>
     <string name="textView_list_control_title_opticalStabilization">Optical Image Stabilization</string>
     <string name="textView_list_control_title_focalLength">Focal Length</string>
     <string name="button_list_control_dismiss">Dismiss</string>

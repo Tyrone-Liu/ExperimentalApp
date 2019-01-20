@@ -34,11 +34,15 @@ import android.util.Range;
 import android.util.Size;
 import android.util.SizeF;
 import android.view.Surface;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.exifinterface.media.ExifInterface;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.io.File;
@@ -50,9 +54,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
-public class Activity_Camera extends AppCompatActivity {
+public class Activity_Camera extends AppCompatActivity implements
+        Fragment_ParametersIndicator.OnIndicatorPressedListener,
+        Fragment_AdjustPanel.AdjustPanelCallback {
+
     static Context context;
     static AppCompatActivity activity;
     static float scale;
@@ -67,6 +75,7 @@ public class Activity_Camera extends AppCompatActivity {
     // region: shared variable
     static SharedPreferences sharedPreferences;
     private static LocationManager locationManager;
+    private static FragmentManager fragmentManager;
 
     private static CameraManager cameraManager;
     private static String[] cameraIdList;
@@ -263,6 +272,8 @@ public class Activity_Camera extends AppCompatActivity {
         PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
+        fragmentManager = getSupportFragmentManager();
+
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
         debugMessage1TextView = (TextView) findViewById(R.id.textView_debugMessage_1);  // debug
@@ -419,6 +430,27 @@ public class Activity_Camera extends AppCompatActivity {
     }
     // endregion: handle activity lifecycle
 
+    // region: override interface method
+    @Override
+    public void onIndicatorPressed(CaptureRequest.Builder requestBuilder, int typeTag) {
+        Fragment_AdjustPanel fragment_adjustPanel = new Fragment_AdjustPanel();
+        fragment_adjustPanel
+                .setRequestBuilder(requestBuilder)
+                .showNow(fragmentManager, String.valueOf(typeTag));
+        fragment_adjustPanel
+                .getDialog()
+                .getWindow()
+                .clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
+    @Override
+    public void onAdjustPanelStateChanged(int state) {
+    }
+
+    @Override
+    public void onAdjustPanelParametersChanged(CaptureRequest.Builder requestBuilder, HashMap<Integer, Support_VariableContainer> parametersMap) {
+    }
+    // endregion: override interface method
 
     // region: process of creating preview
     /**
