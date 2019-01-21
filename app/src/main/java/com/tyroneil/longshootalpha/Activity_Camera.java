@@ -59,10 +59,13 @@ import java.util.Locale;
 
 public class Activity_Camera extends AppCompatActivity implements
         Fragment_ParametersIndicator.OnIndicatorPressedListener,
-        Fragment_AdjustPanel.AdjustPanelCallback {
+        Fragment_AdjustPanel.AdjustPanelCallback
+{
 
     static Context context;
     static AppCompatActivity activity;
+
+    static SharedPreferences sharedPreferences;
     static float scale;
 
     // region: android runtime permission request constant
@@ -72,11 +75,14 @@ public class Activity_Camera extends AppCompatActivity implements
     private static final int PERMISSION_GROUP_REQUEST_CODE_LOCATION = 3;
     // endregion: android runtime permission request constant
 
-    // region: shared variable
-    static SharedPreferences sharedPreferences;
-    private static LocationManager locationManager;
+    // region: variables: shared
     private static FragmentManager fragmentManager;
 
+    private Fragment_ParametersIndicator currentParametersIndicator;
+    private Fragment_AdjustPanel currentAdjustPanel;
+    private Integer currentAdjustPanelState;
+
+    private static LocationManager locationManager;
     private static CameraManager cameraManager;
     private static String[] cameraIdList;
 
@@ -91,14 +97,12 @@ public class Activity_Camera extends AppCompatActivity implements
     static final int CREATE_PREVIEW_STAGE_OPEN_CAMERA = 1;
     private static final int CREATE_PREVIEW_STAGE_CREATE_CAPTURE_SESSION = 2;
     private static final int CREATE_PREVIEW_STAGE_SET_REPEATING_REQUEST = 3;
-    // endregion: shared variable
+    // endregion: variables: shared
 
-    // region: current cameraDevice variable
+    // region: variables: current cameraDevice
     private static String cameraId;
     private static CameraDevice cameraDevice;
     private static CameraCharacteristics cameraCharacteristics;
-
-    static CameraCaptureSession captureSession;
 
     /**
      * It seems that we only need {@param sensorOrientation} when we save the photo.
@@ -111,35 +115,38 @@ public class Activity_Camera extends AppCompatActivity implements
      * to use {@param sensorOrientation} in this case.
      */
     static int sensorOrientation;
-    // endregion: current cameraDevice variable
 
-    // region: variable for preview
+    static CameraCaptureSession captureSession;
+    // endregion: variables: current cameraDevice
+
+    // region: variables: preview
     static CaptureRequest.Builder previewRequestBuilder;
     private static Size previewSize;
     // endregion: variable for preview
 
-    // region: variable for capture
+    // region: variables: capture
     private static Location captureLocation;
-    private static CaptureRequest.Builder captureRequestBuilder;
+
     private static int captureFormat;
+    private static CaptureRequest.Builder captureRequestBuilder;
     private static Size captureSize;
-    private static TotalCaptureResult totalCaptureResult;
+
     private static ImageReader imageReader;
+    private static TotalCaptureResult totalCaptureResult;
+
     private static Date imageRealtimeStamp;
     private static String imageFileDirectoryName = "/LongShoot";
     private static String imageFileTimeStampName = "yyyy.MM.dd_HH.mm.ss.SSS_Z";
-    // endregion: variable for capture
+    // endregion: variables: capture
 
-    // region: capture parameters
+    // region: variables: capture parameters
     static int autoMode;  // CONTROL_MODE (0/1 OFF/AUTO)
-    static int aeMode;  // CONTROL_AE_MODE (0/1 OFF/ON)
 
+    static int aeMode;  // CONTROL_AE_MODE (0/1 OFF/ON)
     static long exposureTime;  // SENSOR_EXPOSURE_TIME
     static Range<Long> SENSOR_INFO_EXPOSURE_TIME_RANGE;  // constant for each camera device
-
     static int sensitivity;  // SENSOR_SENSITIVITY
     static Range<Integer> SENSOR_INFO_SENSITIVITY_RANGE;  // constant for each camera device
-
     static float aperture;  // LENS_APERTURE
     static float[] LENS_INFO_AVAILABLE_APERTURES;  // constant for each camera device
 
@@ -159,9 +166,9 @@ public class Activity_Camera extends AppCompatActivity implements
     static float focusDistance;  // LENS_FOCUS_DISTANCE
     static float LENS_INFO_MINIMUM_FOCUS_DISTANCE;  // constant for each camera device
     static float CIRCLE_OF_CONFUSION;  // unit: mm, constant for each camera device
-    // endregion: capture parameters
+    // endregion: variables: capture parameters
 
-    // region: focus assistant
+    // region: variables: focus assistant
     // EVERYTHING here is in sensor pixel coordinate, not screen pixel
     static Rect SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT;  // coordinate range for zoom and focus assistant
     static int SENSOR_INFO_PRE_CORRECTION_ACTIVE_ARRAY_RECT_WIDTH;  // get from Rect, more convenient to use
@@ -178,7 +185,7 @@ public class Activity_Camera extends AppCompatActivity implements
     static float focusAssistantY;  // set by touch, or from previewViewHeight
     static float focusAssistantWidth;  // decided by previewFRTV_DP width
     static float focusAssistantHeight;  // decided by previewFRTV_DP height
-    // endregion: focus assistant
+    // endregion: variables: focus assistant
 
     static TextView errorMessageTextView;
 
@@ -260,19 +267,21 @@ public class Activity_Camera extends AppCompatActivity implements
     static final String LOG_TAG_LSA_BS_ID_OVERWRITE = "LSA_BS_ID_OVERWRITE";
     // endregion: debug Tool
 
-    // region: handle activity lifecycle
+    // region: activity lifecycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
         context = getApplicationContext();
         activity = this;
-        scale = getResources().getDisplayMetrics().density;
 
         PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        scale = getResources().getDisplayMetrics().density;
 
         fragmentManager = getSupportFragmentManager();
+        currentParametersIndicator = (Fragment_ParametersIndicator) fragmentManager.findFragmentById(R.id.fragment_parameters_indicator);
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
@@ -428,11 +437,15 @@ public class Activity_Camera extends AppCompatActivity implements
             super.onBackPressed();
         }
     }
-    // endregion: handle activity lifecycle
+    // endregion: activity lifecycle
 
-    // region: override interface method
+    // region: override interface methods
     @Override
-    public void onIndicatorPressed(CaptureRequest.Builder requestBuilder, int typeTag) {
+    public void onIndicatorPressed(
+            Fragment_ParametersIndicator parametersIndicator,
+            CaptureRequest.Builder requestBuilder,
+            int typeTag
+    ) {
         Fragment_AdjustPanel fragment_adjustPanel = new Fragment_AdjustPanel();
         fragment_adjustPanel
                 .setRequestBuilder(requestBuilder)
@@ -444,13 +457,15 @@ public class Activity_Camera extends AppCompatActivity implements
     }
 
     @Override
-    public void onAdjustPanelStateChanged(int state) {
+    public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag) {
+        currentAdjustPanel = adjustPanel;
+        currentAdjustPanelState = typeTag;
     }
 
     @Override
-    public void onAdjustPanelParametersChanged(CaptureRequest.Builder requestBuilder, HashMap<Integer, Support_VariableContainer> parametersMap) {
+    public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap) {
     }
-    // endregion: override interface method
+    // endregion: override interface methods
 
     // region: process of creating preview
     /**
@@ -1205,4 +1220,9 @@ public class Activity_Camera extends AppCompatActivity implements
             }
         });
     }
+
+    static void logd(String message) {
+        Log.d(LOG_TAG_LSA_DEBUG, "  #" + debugDateFormat.format(new Date()) + " " + message);
+    }
+
 }

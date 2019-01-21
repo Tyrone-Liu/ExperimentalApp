@@ -17,8 +17,37 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
 
     // region: interface
     public interface AdjustPanelCallback {
-        public void onAdjustPanelStateChanged(int state);
-        public void onAdjustPanelParametersChanged(CaptureRequest.Builder requestBuilder, HashMap<Integer, Support_VariableContainer> parametersMap);
+        /**
+         * {@param adjustPanel}: Fragment_AdjustPanel.this
+         * {@param typeTag}: tag of this fragment, corresponding {@link R.id} of indicator button
+         *
+         *
+         * This method will be called in {@code onCreateView()} and {@code onDestroyView()}, to
+         * inform {@link Activity_Camera} what type of adjust panel is currently opening.
+         * {@param adjustPanel} is for faster access to {@link Fragment_AdjustPanel},
+         * {@param typeTag} is for determining the type of adjust panel
+         *
+         * In {@code onCreateView()}, {@param typeTag} will be {@code Integer.valueOf(getTag())},
+         * it will register {@param adjustPanel} as {@code currentAdjustPanel}.
+         *
+         * In {@code onDestroyView()}, {@param typeTag} will be {@code null},
+         * {@code currentAdjustPanel} will be set to {@code null}.  In {@link Activity_Sequence},
+         * {@code currentParametersIndicator} will also be set to {@code null}.
+         */
+        public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag);
+
+        /**
+         * {@param parametersMap} new value of changed parameters
+         *
+         *
+         * The {@param parametersMap} will be used to update the original
+         * {@link Fragment_ParametersIndicator}.  Hopefully it will be faster then read from
+         * {@link CaptureRequest.Builder}.
+         *
+         * In {@link Activity_Camera}, the additional job is to restart the preview request and
+         * synchronize all parameters with {@code captureRequestBuilder}.
+         */
+        public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap);
     }
     AdjustPanelCallback adjustPanelCallback;
 
@@ -47,6 +76,7 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
     private View layout_adjustPanel;
     // endregion: variables
 
+    // region: fragment lifecycle
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.getDialog().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -61,15 +91,24 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
             case R.id.fragment_parameters_indicator_aperture:
             case R.id.fragment_parameters_indicator_opticalImageStabilization:
             case R.id.fragment_parameters_indicator_focalLength:
+            case R.id.fragment_parameters_indicator_whiteBalance:
                 layout_adjustPanel = inflater.inflate(R.layout.reuse_content_capture_parameter_list_control, container, false);
                 break;
 
             case R.id.fragment_parameters_indicator_flash:
-            case R.id.fragment_parameters_indicator_whiteBalance:
         }
 
+        adjustPanelCallback.onAdjustPanelStateChanged(this, Integer.valueOf(getTag()));
         return layout_adjustPanel;
     }
+
+    @Override
+    public void onDestroyView() {
+        adjustPanelCallback.onAdjustPanelStateChanged(null, null);
+
+        super.onDestroyView();
+    }
+    // endregion: fragment lifecycle
 
     public Fragment_AdjustPanel setRequestBuilder(CaptureRequest.Builder requestBuilder) {
         this.requestBuilder = requestBuilder;

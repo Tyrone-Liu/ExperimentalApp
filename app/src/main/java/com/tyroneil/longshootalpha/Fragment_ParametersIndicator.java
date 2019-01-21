@@ -19,7 +19,26 @@ public class Fragment_ParametersIndicator extends Fragment {
 
     // region: interface
     public interface OnIndicatorPressedListener {
-        public void onIndicatorPressed(CaptureRequest.Builder requestBuilder, int typeTag);
+        /**
+         * {@param parametersIndicator}: Fragment_ParametersIndicator.this
+         * {@param requestBuilder}: {@link CaptureRequest.Builder} of this fragment
+         * {@param typeTag}: {@link R.id} of the corresponding indicator button.
+         *
+         *
+         * In {@link Activity_Sequence}, after this method been called, it will register
+         * {@param parametersIndicator} as {@code currentParametersIndicator}.
+         *
+         * The {@param requestBuilder} is going to be passed to {@link Fragment_AdjustPanel}.
+         *
+         * The {@param typeTag} will be used as a fragment tag for {@link Fragment_AdjustPanel},
+         * to indicate the type of parameters adjustment it will be set to.  Then it can apply the
+         * appropriate layout.
+         */
+        public void onIndicatorPressed(
+                Fragment_ParametersIndicator parametersIndicator,
+                CaptureRequest.Builder requestBuilder,
+                int typeTag
+        );
     }
     OnIndicatorPressedListener onIndicatorPressedListener;
 
@@ -53,6 +72,7 @@ public class Fragment_ParametersIndicator extends Fragment {
             button_focusDistance;
     // endregion: variables
 
+    // region: fragment lifecycle
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout_parametersIndicator = inflater.inflate(R.layout.fragment_parameters_indicator, container, false);
@@ -75,13 +95,16 @@ public class Fragment_ParametersIndicator extends Fragment {
         button_focalLength.setOnClickListener(onClickListener);
         button_focusDistance.setOnClickListener(onClickListener);
 
+        updateParametersIndicator();
+
         return layout_parametersIndicator;
     }
+    // endregion: fragment lifecycle
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            onIndicatorPressedListener.onIndicatorPressed(requestBuilder, view.getId());
+            onIndicatorPressedListener.onIndicatorPressed(Fragment_ParametersIndicator.this, requestBuilder, view.getId());
         }
     };
 
@@ -89,8 +112,8 @@ public class Fragment_ParametersIndicator extends Fragment {
     private void updateParametersIndicator() {
     }
 
-    private void updateParametersIndicator(HashMap<Integer, Support_VariableContainer> parametersMap) {
-        for (int parameter : parametersMap.keySet()) {
+    private void updateParametersIndicator(HashMap<CaptureRequest.Key, Object> parametersMap) {
+        for (CaptureRequest.Key parameter : parametersMap.keySet()) {
         }
     }
     // endregion: updateParametersIndicator()
