@@ -102,7 +102,7 @@ class UIOperator {
     // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
         focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) Activity_Camera.activity.findViewById(R.id.imageView_camera_control_focusAssistantIndicator);
-        previewFRTV_camera_control = (Support_FlexibleRatioTextureView) Activity_Camera.activity.findViewById(R.id.cRTV_camera_control_preview);
+        previewFRTV_camera_control = (Support_FlexibleRatioTextureView) Activity_Camera.activity.findViewById(R.id.activity_camera_fRTV_cameraPreview);
         sequenceButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_sequence);
         captureButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_capture);
         settingsButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_settings);
@@ -565,7 +565,7 @@ class UIOperator {
     static View.OnClickListener onClickListener_parameters_indicator_toggle_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_flash) {
+            if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_flash) {
                 if (Activity_Camera.FLASH_INFO_AVAILABLE) {
                     if (Activity_Camera.flashMode == CaptureRequest.FLASH_MODE_OFF) {
                         Activity_Camera.flashMode = CaptureRequest.FLASH_MODE_TORCH;
@@ -596,8 +596,8 @@ class UIOperator {
 
             // region: parameters controlled by aeMode
             if (
-                       (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_exposureTime)
-                    || (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_sensitivity)
+                       (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_exposureTime)
+                    || (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_sensitivity)
             ) {
                 if (Activity_Camera.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
                     rangeControlBottomSheet_setAutoCheckBoxChecked(false);
@@ -620,7 +620,7 @@ class UIOperator {
                     }
                 });
 
-                if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_exposureTime) {
+                if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_exposureTime) {
                     viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_EXPOSURE_TIME;
 
                     titleTextView_range_control.setText(R.string.textView_range_control_title_exposureTime);
@@ -688,7 +688,7 @@ class UIOperator {
                     });
                 }
 
-                else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_sensitivity) {
+                else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_sensitivity) {
                     viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_SENSITIVITY;
 
                     titleTextView_range_control.setText(R.string.textView_range_control_title_sensitivity);
@@ -759,7 +759,7 @@ class UIOperator {
             // endregion: parameters controlled by aeMode
 
             // region: parameters controlled by afMode
-            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_focusDistance) {
+            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_focusDistance) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_FOCUS_DISTANCE;
 
                 if (Activity_Camera.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
@@ -1511,7 +1511,7 @@ class UIOperator {
             final int[] radioButtonIdArray;
 
             // region: parameters controlled by aeMode
-            if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_aperture) {
+            if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_aperture) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_APERTURE;
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_aperture);
@@ -1560,7 +1560,7 @@ class UIOperator {
             }
             // endregion: parameters controlled by aeMode
 
-            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_whiteBalance) {
+            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_whiteBalance) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES;
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_autoWhiteBalance);
@@ -1598,7 +1598,7 @@ class UIOperator {
                 });
             }
 
-            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_opticalImageStabilization) {
+            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_opticalImageStabilization) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES;
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_opticalStabilization);
@@ -1636,7 +1636,7 @@ class UIOperator {
                 });
             }
 
-            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_focalLength) {
+            else if (((MaterialButton) view).getId() == R.id.fragment_parameters_indicator_button_focalLength) {
                 viewingControlBottomSheet = CONTROL_BOTTOM_SHEET_TYPE_FOCAL_LENGTH;
 
                 titleTextView_list_control.setText(R.string.textView_list_control_title_focalLength);

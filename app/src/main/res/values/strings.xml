@@ -11,14 +11,14 @@
     <string name="button_camera_control_settings">Settings</string>
 
     <!-- content capture parameters indicator -->
-    <string name="fragment_parameters_indicator_exposureTime">S.S.\n%.1f%s</string>
-    <string name="fragment_parameters_indicator_sensitivity">ISO\n%d</string>
-    <string name="fragment_parameters_indicator_aperture">f\nf/%.1f</string>
-    <string name="fragment_parameters_indicator_flash">Fl.\n%s</string>
-    <string name="fragment_parameters_indicator_whiteBalance">W.B.\n%s</string>
-    <string name="fragment_parameters_indicator_opticalImageStabilization">OIS\n%s</string>
-    <string name="fragment_parameters_indicator_focalLength">F.L.\n%.2fmm</string>
-    <string name="fragment_parameters_indicator_focusDistance">F.D.\n%.2fm</string>
+    <string name="fragment_parameters_indicator_button_exposureTime">S.S.\n%.1f%s</string>
+    <string name="fragment_parameters_indicator_button_sensitivity">ISO\n%d</string>
+    <string name="fragment_parameters_indicator_button_aperture">f\nf/%.1f</string>
+    <string name="fragment_parameters_indicator_button_flash">Fl.\n%s</string>
+    <string name="fragment_parameters_indicator_button_whiteBalance">W.B.\n%s</string>
+    <string name="fragment_parameters_indicator_button_opticalImageStabilization">OIS\n%s</string>
+    <string name="fragment_parameters_indicator_button_focalLength">F.L.\n%.2fmm</string>
+    <string name="fragment_parameters_indicator_button_focusDistance">F.D.\n%.2fm</string>
 
     <!-- content capture parameter range control -->
     <string name="textView_range_control_title">Range Control Title</string>

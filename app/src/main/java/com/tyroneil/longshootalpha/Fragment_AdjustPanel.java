@@ -82,20 +82,22 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
         this.getDialog().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         switch (Integer.valueOf(getTag())) {
-            case R.id.fragment_parameters_indicator_exposureTime:
-            case R.id.fragment_parameters_indicator_sensitivity:
-            case R.id.fragment_parameters_indicator_focusDistance:
+            case R.id.fragment_parameters_indicator_button_exposureTime:
+            case R.id.fragment_parameters_indicator_button_sensitivity:
+            case R.id.fragment_parameters_indicator_button_focusDistance:
                 layout_adjustPanel = inflater.inflate(R.layout.reuse_content_capture_parameter_range_control, container, false);
+                // TODO: initiate layout here
                 break;
 
-            case R.id.fragment_parameters_indicator_aperture:
-            case R.id.fragment_parameters_indicator_opticalImageStabilization:
-            case R.id.fragment_parameters_indicator_focalLength:
-            case R.id.fragment_parameters_indicator_whiteBalance:
+            case R.id.fragment_parameters_indicator_button_aperture:
+            case R.id.fragment_parameters_indicator_button_opticalImageStabilization:
+            case R.id.fragment_parameters_indicator_button_focalLength:
+            case R.id.fragment_parameters_indicator_button_whiteBalance:
                 layout_adjustPanel = inflater.inflate(R.layout.reuse_content_capture_parameter_list_control, container, false);
+                // TODO: initiate layout here
                 break;
 
-            case R.id.fragment_parameters_indicator_flash:
+            case R.id.fragment_parameters_indicator_button_flash:
         }
 
         adjustPanelCallback.onAdjustPanelStateChanged(this, Integer.valueOf(getTag()));

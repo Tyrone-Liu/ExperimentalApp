@@ -77,14 +77,14 @@ public class Fragment_ParametersIndicator extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout_parametersIndicator = inflater.inflate(R.layout.fragment_parameters_indicator, container, false);
 
-        button_exposureTime = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_exposureTime);
-        button_sensitivity = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_sensitivity);
-        button_aperture = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_aperture);
-        button_flash = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_flash);
-        button_whiteBalance = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_whiteBalance);
-        button_opticalImageStabilization = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_opticalImageStabilization);
-        button_focalLength = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_focalLength);
-        button_focusDistance = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_focusDistance);
+        button_exposureTime = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_exposureTime);
+        button_sensitivity = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_sensitivity);
+        button_aperture = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_aperture);
+        button_flash = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_flash);
+        button_whiteBalance = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_whiteBalance);
+        button_opticalImageStabilization = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_opticalImageStabilization);
+        button_focalLength = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_focalLength);
+        button_focusDistance = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_focusDistance);
 
         button_exposureTime.setOnClickListener(onClickListener);
         button_sensitivity.setOnClickListener(onClickListener);

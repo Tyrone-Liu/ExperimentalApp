@@ -6,83 +6,83 @@
 
     <!-- Row #1 -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_exposureTime"
+        android:id="@+id/fragment_parameters_indicator_button_exposureTime"
         style="@style/CameraTheme.Indicator"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/fragment_parameters_indicator_exposureTime"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_parameters_indicator_whiteBalance"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_sensitivity"
+        android:text="@string/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_parameters_indicator_button_whiteBalance"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_sensitivity"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_sensitivity"
+        android:id="@+id/fragment_parameters_indicator_button_sensitivity"
         style="@style/CameraTheme.Indicator"
-        android:text="@string/fragment_parameters_indicator_sensitivity"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_exposureTime"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_aperture"
-        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_exposureTime"
-        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_exposureTime" />
+        android:text="@string/fragment_parameters_indicator_button_sensitivity"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_aperture"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_exposureTime" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_aperture"
+        android:id="@+id/fragment_parameters_indicator_button_aperture"
         style="@style/CameraTheme.Indicator"
-        android:text="@string/fragment_parameters_indicator_aperture"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_exposureTime"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_flash"
-        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_sensitivity"
-        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_exposureTime" />
+        android:text="@string/fragment_parameters_indicator_button_aperture"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_flash"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_sensitivity"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_exposureTime" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_flash"
+        android:id="@+id/fragment_parameters_indicator_button_flash"
         style="@style/CameraTheme.Indicator"
         android:layout_marginEnd="8dp"
-        android:text="@string/fragment_parameters_indicator_flash"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_exposureTime"
+        android:text="@string/fragment_parameters_indicator_button_flash"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_exposureTime"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_aperture"
-        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_exposureTime" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_aperture"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_exposureTime" />
 
     <!-- Row #2 -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_whiteBalance"
+        android:id="@+id/fragment_parameters_indicator_button_whiteBalance"
         style="@style/CameraTheme.Indicator"
         android:layout_marginBottom="4dp"
-        android:text="@string/fragment_parameters_indicator_whiteBalance"
+        android:text="@string/fragment_parameters_indicator_button_whiteBalance"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_opticalImageStabilization"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_opticalImageStabilization"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/fragment_parameters_indicator_exposureTime"
-        app:layout_constraintTop_toBottomOf="@id/fragment_parameters_indicator_exposureTime" />
+        app:layout_constraintStart_toStartOf="@id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintTop_toBottomOf="@id/fragment_parameters_indicator_button_exposureTime" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_opticalImageStabilization"
+        android:id="@+id/fragment_parameters_indicator_button_opticalImageStabilization"
         style="@style/CameraTheme.Indicator"
-        android:text="@string/fragment_parameters_indicator_opticalImageStabilization"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_whiteBalance"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_focalLength"
-        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_whiteBalance"
-        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_whiteBalance" />
+        android:text="@string/fragment_parameters_indicator_button_opticalImageStabilization"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_whiteBalance"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_focalLength"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_whiteBalance"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_whiteBalance" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_focalLength"
+        android:id="@+id/fragment_parameters_indicator_button_focalLength"
         style="@style/CameraTheme.Indicator"
-        android:text="@string/fragment_parameters_indicator_focalLength"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_whiteBalance"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_focusDistance"
-        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_opticalImageStabilization"
-        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_whiteBalance" />
+        android:text="@string/fragment_parameters_indicator_button_focalLength"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_whiteBalance"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_focusDistance"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_opticalImageStabilization"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_whiteBalance" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/fragment_parameters_indicator_focusDistance"
+        android:id="@+id/fragment_parameters_indicator_button_focusDistance"
         style="@style/CameraTheme.Indicator"
-        android:text="@string/fragment_parameters_indicator_focusDistance"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_whiteBalance"
-        app:layout_constraintEnd_toEndOf="@id/fragment_parameters_indicator_flash"
-        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_focalLength"
-        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_whiteBalance" />
+        android:text="@string/fragment_parameters_indicator_button_focusDistance"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_whiteBalance"
+        app:layout_constraintEnd_toEndOf="@id/fragment_parameters_indicator_button_flash"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_focalLength"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_whiteBalance" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
