@@ -5,10 +5,12 @@
     <string name="title_activity_sequence">Capture Sequence</string>
 
     <!-- content camera control -->
-    <string name="button_camera_control_sequence">Sequence</string>
-    <string name="button_camera_control_capture">CAPTURE</string>
-    <string name="button_camera_control_capture_sequencing">&#8230;STOP</string>
-    <string name="button_camera_control_settings">Settings</string>
+    <string name="fragment_camera_control_button_sequence">Sequence</string>
+    <string name="fragment_camera_control_button_settings">Settings</string>
+    <string name="fragment_camera_control_button_sequence_compact">Seq.</string>
+    <string name="fragment_camera_control_button_settings_compact">Set.</string>
+    <string name="fragment_camera_control_button_capture">CAPTURE</string>
+    <string name="fragment_camera_control_button_capture_sequencing">&#8230;STOP</string>
 
     <!-- content capture parameters indicator -->
     <string name="fragment_parameters_indicator_button_exposureTime">S.S.\n%.1f%s</string>

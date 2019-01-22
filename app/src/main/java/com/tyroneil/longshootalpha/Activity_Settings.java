@@ -15,14 +15,14 @@ public class Activity_Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         // setup ActionBar
-        Toolbar toolbar_activity_settings = (Toolbar) findViewById(R.id.toolbar_activity_settings);
-        setSupportActionBar(toolbar_activity_settings);
+        Toolbar toolbar_actionBar = (Toolbar) findViewById(R.id.activity_settings_toolbar_actionBar);
+        setSupportActionBar(toolbar_actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // setup preference content
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.preference_content, new Fragment_Settings())
+                .replace(R.id.activity_settings_container_settings, new Fragment_Settings())
                 .commit();
     }
 

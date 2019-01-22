@@ -18,6 +18,19 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
     // region: interface
     public interface AdjustPanelCallback {
         /**
+         * {@param parametersMap} new value of changed parameters
+         *
+         *
+         * The {@param parametersMap} will be used to update the original
+         * {@link Fragment_ParametersIndicator}.  Hopefully it will be faster then read from
+         * {@link CaptureRequest.Builder}.
+         *
+         * In {@link Activity_Camera}, the additional job is to restart the preview request and
+         * synchronize all parameters with {@code captureRequestBuilder}.
+         */
+        public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap);
+
+        /**
          * {@param adjustPanel}: Fragment_AdjustPanel.this
          * {@param typeTag}: tag of this fragment, corresponding {@link R.id} of indicator button
          *
@@ -35,19 +48,6 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
          * {@code currentParametersIndicator} will also be set to {@code null}.
          */
         public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag);
-
-        /**
-         * {@param parametersMap} new value of changed parameters
-         *
-         *
-         * The {@param parametersMap} will be used to update the original
-         * {@link Fragment_ParametersIndicator}.  Hopefully it will be faster then read from
-         * {@link CaptureRequest.Builder}.
-         *
-         * In {@link Activity_Camera}, the additional job is to restart the preview request and
-         * synchronize all parameters with {@code captureRequestBuilder}.
-         */
-        public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap);
     }
     AdjustPanelCallback adjustPanelCallback;
 
@@ -71,8 +71,11 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
     }
     // endregion: interface
 
-    // region: variables
+    // region: variables: public changeable
     private CaptureRequest.Builder requestBuilder;
+    // endregion: variables: public changeable
+
+    // region: variables
     private View layout_adjustPanel;
     // endregion: variables
 
@@ -85,7 +88,7 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
             case R.id.fragment_parameters_indicator_button_exposureTime:
             case R.id.fragment_parameters_indicator_button_sensitivity:
             case R.id.fragment_parameters_indicator_button_focusDistance:
-                layout_adjustPanel = inflater.inflate(R.layout.reuse_content_capture_parameter_range_control, container, false);
+                layout_adjustPanel = inflater.inflate(R.layout., container, false);
                 // TODO: initiate layout here
                 break;
 
@@ -93,7 +96,7 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
             case R.id.fragment_parameters_indicator_button_opticalImageStabilization:
             case R.id.fragment_parameters_indicator_button_focalLength:
             case R.id.fragment_parameters_indicator_button_whiteBalance:
-                layout_adjustPanel = inflater.inflate(R.layout.reuse_content_capture_parameter_list_control, container, false);
+                layout_adjustPanel = inflater.inflate(R.layout., container, false);
                 // TODO: initiate layout here
                 break;
 
@@ -112,6 +115,7 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
     }
     // endregion: fragment lifecycle
 
+    // region: set, is, get methods
     public Fragment_AdjustPanel setRequestBuilder(CaptureRequest.Builder requestBuilder) {
         this.requestBuilder = requestBuilder;
         return this;
@@ -119,5 +123,6 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
     public CaptureRequest.Builder getRequestBuilder() {
         return requestBuilder;
     }
+    // endregion: set, is, get methods
 
 }

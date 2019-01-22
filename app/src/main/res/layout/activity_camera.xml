@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,20 +7,36 @@
     android:keepScreenOn="true"
     tools:context=".Activity_Camera">
 
-    <!-- camera control -->
-    <include layout="@layout/content_camera_control" />
+    <com.tyroneil.longshootalpha.Support_FlexibleRatioTextureView
+        android:id="@+id/activity_camera_fRTV_cameraPreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- capture parameter range control -->
-    <include layout="@layout/content_capture_parameter_range_control" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/activity_camera_imageView_focusAssistantIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/asset_camera_crosshair" />
 
-    <!-- capture parameter list control -->
-    <include layout="@layout/content_capture_parameter_list_control" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/activity_camera_container_cameraControl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:theme="@style/CameraTheme.InformationLog">
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/CameraTheme.InformationLog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView_errorMessage"
@@ -46,4 +62,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -101,23 +101,23 @@ class UIOperator {
 
     // region: initiate layouts (camera_control, range_control, list_control)
     static void initiateContentCameraControl() {
-        focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) Activity_Camera.activity.findViewById(R.id.imageView_camera_control_focusAssistantIndicator);
+        focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) Activity_Camera.activity.findViewById(R.id.activity_camera_imageView_focusAssistantIndicator);
         previewFRTV_camera_control = (Support_FlexibleRatioTextureView) Activity_Camera.activity.findViewById(R.id.activity_camera_fRTV_cameraPreview);
-        sequenceButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_sequence);
-        captureButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_capture);
-        settingsButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_camera_control_settings);
-        capturingProgressBar_camera_control = (ProgressBar) Activity_Camera.activity.findViewById(R.id.progressBar_camera_control_capturing);
+        sequenceButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_button_sequence);
+        captureButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_button_capture);
+        settingsButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_button_settings);
+        capturingProgressBar_camera_control = (ProgressBar) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_progressBar_capturing);
 
         // content parameters indicator
         indicatorConstraintLayout = (ConstraintLayout) Activity_Camera.activity.findViewById(R.id.constrainLayout_capture_parameters_indicator);
-        setExposureTimeButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setExposureTime);
-        setSensitivityButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setSensitivity);
-        setApertureButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setAperture);
-        setTorchButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setTorch);
-        setAutoWhiteBalance_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setAutoWhiteBalance);
-        setOpticalStabilization_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setOpticalStabilization);
-        setFocalLengthButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setFocalLength);
-        setFocusDistanceButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.button_parameters_indicator_setFocusDistance);
+        setExposureTimeButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_exposureTime);
+        setSensitivityButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_sensitivity);
+        setApertureButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_aperture);
+        setTorchButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_flash);
+        setAutoWhiteBalance_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_whiteBalance);
+        setOpticalStabilization_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_opticalImageStabilization);
+        setFocalLengthButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_focalLength);
+        setFocusDistanceButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_focusDistance);
 
         /**
          * The {@link AlphaAnimation} starts form {@value 15.00f} will make the view fully visible
@@ -342,34 +342,34 @@ class UIOperator {
             } else if (Activity_Camera.exposureTime < 1E6) {
                 setExposureTimeButton_parameters_indicator.setText(
                         Activity_Camera.activity.getString(
-                                R.string.button_parameters_indicator_setExposureTime,
+                                R.string.fragment_parameters_indicator_button_exposureTime,
                                 (double) (Activity_Camera.exposureTime / 1E1) / 1E2, "µs"
                         )
                 );
             } else if (Activity_Camera.exposureTime < 1E9) {
                 setExposureTimeButton_parameters_indicator.setText(
                         Activity_Camera.activity.getString(
-                                R.string.button_parameters_indicator_setExposureTime,
+                                R.string.fragment_parameters_indicator_button_exposureTime,
                                 (double) (Activity_Camera.exposureTime / 1E4) / 1E2, "ms"
                         )
                 );
             } else {
                 setExposureTimeButton_parameters_indicator.setText(
                         Activity_Camera.activity.getString(
-                                R.string.button_parameters_indicator_setExposureTime,
+                                R.string.fragment_parameters_indicator_button_exposureTime,
                                 (double) (Activity_Camera.exposureTime / 1E7) / 1E2, "s"
                         )
                 );
             }
             setSensitivityButton_parameters_indicator.setText(
                     Activity_Camera.activity.getString(
-                            R.string.button_parameters_indicator_setSensitivity,
+                            R.string.fragment_parameters_indicator_button_sensitivity,
                             Activity_Camera.sensitivity
                     )
             );
             setApertureButton_parameters_indicator.setText(
                     Activity_Camera.activity.getString(
-                            R.string.button_parameters_indicator_setAperture,
+                            R.string.fragment_parameters_indicator_button_aperture,
                             Activity_Camera.aperture
                     )
             );
@@ -380,25 +380,25 @@ class UIOperator {
         }
         setTorchButton_parameters_indicator.setText(
                 Activity_Camera.activity.getString(
-                        R.string.button_parameters_indicator_setTorch,
+                        R.string.fragment_parameters_indicator_button_flash,
                         listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_TORCH, Activity_Camera.flashMode, true)
                 )
         );
         setAutoWhiteBalance_parameters_indicator.setText(
                 Activity_Camera.activity.getString(
-                        R.string.button_parameters_indicator_setAutoWhiteBalance,
+                        R.string.fragment_parameters_indicator_button_whiteBalance,
                         listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, Activity_Camera.awbMode, true)
                 )
         );
         setOpticalStabilization_parameters_indicator.setText(
                 Activity_Camera.activity.getString(
-                        R.string.button_parameters_indicator_setOpticalStabilization,
+                        R.string.fragment_parameters_indicator_button_opticalImageStabilization,
                         listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, Activity_Camera.opticalStabilizationMode, true)
                 )
         );
         setFocalLengthButton_parameters_indicator.setText(
                 Activity_Camera.activity.getString(
-                        R.string.button_parameters_indicator_setFocalLength,
+                        R.string.fragment_parameters_indicator_button_focalLength,
                         Activity_Camera.focalLength
                 )
         );
@@ -409,7 +409,7 @@ class UIOperator {
             } else {
                 setFocusDistanceButton_parameters_indicator.setText(
                         Activity_Camera.activity.getString(
-                                R.string.button_parameters_indicator_setFocusDistance,
+                                R.string.fragment_parameters_indicator_button_focusDistance,
                                 1f / Activity_Camera.focusDistance
                         )
                 );
@@ -512,12 +512,12 @@ class UIOperator {
     static View.OnClickListener onClickListener_camera_control = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (((MaterialButton) view).getId() == R.id.button_camera_control_sequence) {
+            if (((MaterialButton) view).getId() == R.id.fragment_camera_control_button_sequence) {
                 Intent openSequence = new Intent(Activity_Camera.context, Activity_Sequence.class);
                 Activity_Camera.activity.startActivity(openSequence);
             }
 
-            else if (((MaterialButton) view).getId() == R.id.button_camera_control_capture) {
+            else if (((MaterialButton) view).getId() == R.id.fragment_camera_control_button_capture) {
                 if (captureButtonState == CAPTURE_BUTTON_STATE_NORMAL) {
                     Activity_Camera.takePhoto();
                 } else if (captureButtonState == CAPTURE_BUTTON_STATE_SEQUENCING) {
@@ -525,7 +525,7 @@ class UIOperator {
                 }
             }
 
-            else if (((MaterialButton) view).getId() == R.id.button_camera_control_settings) {
+            else if (((MaterialButton) view).getId() == R.id.fragment_camera_control_button_settings) {
                 Intent openSettings = new Intent(Activity_Camera.activity, Activity_Settings.class);
                 Activity_Camera.activity.startActivity(openSettings);
             }
@@ -540,7 +540,7 @@ class UIOperator {
 
         switch (state) {
             case CAPTURE_BUTTON_STATE_NORMAL:
-                captureButton_camera_control.setText(R.string.button_camera_control_capture);
+                captureButton_camera_control.setText(R.string.fragment_camera_control_button_capture);
                 captureButton_camera_control.setEnabled(true);
                 capturingProgressBar_camera_control.setElevation(0f);
                 break;
@@ -554,7 +554,7 @@ class UIOperator {
                 break;
 
             case CAPTURE_BUTTON_STATE_SEQUENCING:
-                captureButton_camera_control.setText(R.string.button_camera_control_capture_sequencing);
+                captureButton_camera_control.setText(R.string.fragment_camera_control_button_capture_sequencing);
                 // TODO: replace the parameter control area
                 break;
         }
@@ -1591,7 +1591,7 @@ class UIOperator {
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
                             Activity_Camera.awbMode = Activity_Camera.CONTROL_AWB_AVAILABLE_MODES[Support_Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
-//                            updateCaptureParametersIndicator();
+                            updateCaptureParametersIndicator();
                             updatePreviewParameters();
                         }
                     }
@@ -1629,7 +1629,7 @@ class UIOperator {
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (((MaterialRadioButton) group.findViewById(checkedId)).isPressed()) {
                             Activity_Camera.opticalStabilizationMode = Activity_Camera.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION[Support_Utility.arrayIndexOf(radioButtonIdArray, checkedId)];
-//                            updateCaptureParametersIndicator();
+                            updateCaptureParametersIndicator();
                             updatePreviewParameters();
                         }
                     }

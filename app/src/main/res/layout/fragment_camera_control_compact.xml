@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackgroundTransparent">
+
+    <!-- Parameters Indicator Row #1 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_parameters_indicator_button_exposureTime"
+        style="@style/CameraTheme.Indicator"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_camera_control_button_capture"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_sensitivity"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_parameters_indicator_button_flash"
+        style="@style/CameraTheme.Indicator"
+        android:layout_marginEnd="8dp"
+        android:text="@string/fragment_parameters_indicator_button_flash"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_opticalImageStabilization"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_exposureTime" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_parameters_indicator_button_sensitivity"
+        style="@style/CameraTheme.Indicator"
+        android:text="@string/fragment_parameters_indicator_button_sensitivity"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_opticalImageStabilization"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_exposureTime" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_parameters_indicator_button_opticalImageStabilization"
+        style="@style/CameraTheme.Indicator"
+        android:text="@string/fragment_parameters_indicator_button_opticalImageStabilization"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_parameters_indicator_button_flash"
+        app:layout_constraintStart_toEndOf="@+id/fragment_parameters_indicator_button_sensitivity"
+        app:layout_constraintTop_toTopOf="@+id/fragment_parameters_indicator_button_exposureTime" />
+    <!-- Parameters Indicator Row #1 -->
+
+    <!-- Material Version of ProgressBar not finished -->
+    <ProgressBar
+        android:id="@+id/fragment_camera_control_progressBar_capturing"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorBackground"
+        android:maxWidth="16dp"
+        android:maxHeight="16dp"
+        android:minWidth="16dp"
+        android:minHeight="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_camera_control_button_capture"
+        app:layout_constraintStart_toStartOf="@+id/fragment_camera_control_button_capture"
+        app:layout_constraintTop_toTopOf="@+id/fragment_camera_control_button_capture" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_camera_control_button_capture"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/fragment_camera_control_button_capture"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:rippleColor="@color/colorSecondary" />
+
+    <!-- Parameters Indicator Row #2 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_parameters_indicator_button_focusDistance"
+        style="@style/CameraTheme.Indicator"
+        android:text="@string/fragment_parameters_indicator_button_focusDistance"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_parameters_indicator_button_flash"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_parameters_indicator_button_flash" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_parameters_indicator_button_whiteBalance"
+        style="@style/CameraTheme.Indicator"
+        android:text="@string/fragment_parameters_indicator_button_whiteBalance"
+        app:layout_constraintStart_toStartOf="@+id/fragment_parameters_indicator_button_exposureTime"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_parameters_indicator_button_exposureTime" />
+    <!-- Parameters Indicator Row #2 -->
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_camera_control_button_sequence"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:minWidth="0dp"
+        android:text="@string/fragment_camera_control_button_sequence_compact"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_camera_control_button_capture"
+        app:rippleColor="@color/colorSecondaryDown" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fragment_camera_control_button_settings"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:minWidth="0dp"
+        android:text="@string/fragment_camera_control_button_settings_compact"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_camera_control_button_capture"
+        app:rippleColor="@color/colorSecondaryDown" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

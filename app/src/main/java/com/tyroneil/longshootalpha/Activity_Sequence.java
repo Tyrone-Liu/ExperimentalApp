@@ -4,16 +4,15 @@ import android.hardware.camera2.CaptureRequest;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
-
-import java.util.HashMap;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
+import java.util.HashMap;
+
 public class Activity_Sequence extends AppCompatActivity implements
-        Fragment_ParametersIndicator.OnIndicatorPressedListener,
+        Fragment_ParametersIndicator.ParametersIndicatorCallback,
         Fragment_AdjustPanel.AdjustPanelCallback
 {
 
@@ -21,8 +20,6 @@ public class Activity_Sequence extends AppCompatActivity implements
     private static FragmentManager fragmentManager;
 
     private Fragment_ParametersIndicator currentParametersIndicator;
-    private Fragment_AdjustPanel currentAdjustPanel;
-    private int currentAdjustPanelState;
     // region: variables: shared
 
     // region: activity lifecycle
@@ -33,8 +30,8 @@ public class Activity_Sequence extends AppCompatActivity implements
 
         fragmentManager = getSupportFragmentManager();
 
-        Toolbar toolbar_activity_sequence = (Toolbar) findViewById(R.id.toolbar_activity_sequence);
-        setSupportActionBar(toolbar_activity_sequence);
+        Toolbar toolbar_actionBar = (Toolbar) findViewById(R.id.activity_sequence_toolbar_actionBar);
+        setSupportActionBar(toolbar_actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
     // endregion: activity lifecycle
@@ -73,28 +70,26 @@ public class Activity_Sequence extends AppCompatActivity implements
     public void onIndicatorPressed(
             Fragment_ParametersIndicator parametersIndicator,
             CaptureRequest.Builder requestBuilder,
-            int typeTag
+            int indicatorId
     ) {
         currentParametersIndicator = parametersIndicator;
 
         Fragment_AdjustPanel fragment_adjustPanel = new Fragment_AdjustPanel();
         fragment_adjustPanel
                 .setRequestBuilder(requestBuilder)
-                .showNow(fragmentManager, String.valueOf(typeTag));
-    }
-
-    @Override
-    public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag) {
-        currentAdjustPanel = adjustPanel;
-        currentAdjustPanelState = typeTag;
-
-        if (currentAdjustPanel == null) {
-            currentParametersIndicator = null;
-        }
+                .showNow(fragmentManager, String.valueOf(indicatorId));
     }
 
     @Override
     public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap) {
+        // TODO: update parameters indicator
+    }
+
+    @Override
+    public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag) {
+        if (adjustPanel == null) {
+            currentParametersIndicator = null;
+        }
     }
     // endregion: override interface methods
 

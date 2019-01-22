@@ -1,8 +1,8 @@
 package com.tyroneil.longshootalpha;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
@@ -40,9 +40,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.exifinterface.media.ExifInterface;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.io.File;
@@ -58,7 +56,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class Activity_Camera extends AppCompatActivity implements
-        Fragment_ParametersIndicator.OnIndicatorPressedListener,
+        Fragment_CameraControl.CameraControlCallback,
         Fragment_AdjustPanel.AdjustPanelCallback
 {
 
@@ -276,7 +274,7 @@ public class Activity_Camera extends AppCompatActivity implements
         context = getApplicationContext();
         activity = this;
 
-        PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
+        PreferenceManager.setDefaultValues(context, R.xml.xml_fragment_settings, false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         scale = getResources().getDisplayMetrics().density;
 
@@ -441,15 +439,16 @@ public class Activity_Camera extends AppCompatActivity implements
 
     // region: override interface methods
     @Override
-    public void onIndicatorPressed(
-            Fragment_ParametersIndicator parametersIndicator,
-            CaptureRequest.Builder requestBuilder,
-            int typeTag
-    ) {
+    public void onCameraControlPressed(int cameraControlId) {
+        // TODO: do activity switch, trigger capture, disable parameters indicator
+    }
+
+    @Override
+    public void onIndicatorPressed(CaptureRequest.Builder requestBuilder, int indicatorId) {
         Fragment_AdjustPanel fragment_adjustPanel = new Fragment_AdjustPanel();
         fragment_adjustPanel
                 .setRequestBuilder(requestBuilder)
-                .showNow(fragmentManager, String.valueOf(typeTag));
+                .showNow(fragmentManager, String.valueOf(indicatorId));
         fragment_adjustPanel
                 .getDialog()
                 .getWindow()
@@ -457,13 +456,14 @@ public class Activity_Camera extends AppCompatActivity implements
     }
 
     @Override
-    public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag) {
-        currentAdjustPanel = adjustPanel;
-        currentAdjustPanelState = typeTag;
+    public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap) {
+        // TODO: update parameters indicator, refresh preview, synchronize preview and capture request builder
     }
 
     @Override
-    public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap) {
+    public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag) {
+        currentAdjustPanel = adjustPanel;
+        currentAdjustPanelState = typeTag;
     }
     // endregion: override interface methods
 
