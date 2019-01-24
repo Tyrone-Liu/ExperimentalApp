@@ -1,6 +1,7 @@
 package com.tyroneil.longshootalpha;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.graphics.ImageFormat;
@@ -76,7 +77,7 @@ public class Activity_Camera extends AppCompatActivity implements
     // region: variables: shared
     private static FragmentManager fragmentManager;
 
-    private Fragment_ParametersIndicator currentParametersIndicator;
+    private Fragment_CameraControl fragmentCameraControl;
     private Fragment_AdjustPanel currentAdjustPanel;
     private Integer currentAdjustPanelState;
 
@@ -126,8 +127,11 @@ public class Activity_Camera extends AppCompatActivity implements
     private static Location captureLocation;
 
     private static int captureFormat;
-    private static CaptureRequest.Builder captureRequestBuilder;
     private static Size captureSize;
+
+    private static CaptureRequest.Builder captureRequestBuilder;
+    private enum CAPTURE_REQUEST_TAG {PREVIEW, CAPTURE, SEQUENCE}
+    private CAPTURE_REQUEST_TAG captureRequestTag;
 
     private static ImageReader imageReader;
     private static TotalCaptureResult totalCaptureResult;
@@ -279,7 +283,6 @@ public class Activity_Camera extends AppCompatActivity implements
         scale = getResources().getDisplayMetrics().density;
 
         fragmentManager = getSupportFragmentManager();
-        currentParametersIndicator = (Fragment_ParametersIndicator) fragmentManager.findFragmentById(R.id.fragment_parameters_indicator);
 
         errorMessageTextView = (TextView) findViewById(R.id.textView_errorMessage);
         debugMessage0TextView = (TextView) findViewById(R.id.textView_debugMessage_0);  // debug
@@ -332,15 +335,7 @@ public class Activity_Camera extends AppCompatActivity implements
                         break;
                     case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                         if (grantResults[Support_Utility.arrayIndexOf(permissions, permission)] != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: warn user they can not save the capture image
-                            if (UIOperator.captureButton_camera_control != null) {
-                                activity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_PROCESSING);
-                                    }
-                                });
-                            }
+                            // TODO: disable capture function, warn user they can not save the capture image
                         }
                         break;
 
@@ -440,7 +435,29 @@ public class Activity_Camera extends AppCompatActivity implements
     // region: override interface methods
     @Override
     public void onCameraControlPressed(int cameraControlId) {
-        // TODO: do activity switch, trigger capture, disable parameters indicator
+        switch (cameraControlId) {
+            case R.id.fragment_camera_control_button_sequence:
+                Intent openSequence = new Intent(this, Activity_Sequence.class);
+                startActivity(openSequence);
+                break;
+
+            case R.id.fragment_camera_control_button_settings:
+                Intent openSettings = new Intent(this, Activity_Settings.class);
+                startActivity(openSettings);
+                break;
+
+            case R.id.fragment_camera_control_button_capture:
+                switch (captureRequestTag) {
+                    case PREVIEW:
+                        takePhoto();
+                        break;
+
+                    case SEQUENCE:
+                        stopRepeatCapture();
+                        break;
+                }
+                break;
+        }
     }
 
     @Override
@@ -516,7 +533,7 @@ public class Activity_Camera extends AppCompatActivity implements
                 }
                 cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
                 initiateCaptureParameters(cameraCharacteristics);
-                UIOperator.updateCaptureParametersIndicator();
+//                UIOperator.updateCaptureParametersIndicator();
             } catch (CameraAccessException e) {
                 displayErrorMessage(e);
             }
@@ -593,6 +610,8 @@ public class Activity_Camera extends AppCompatActivity implements
                 } else {
                     previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
                 }
+
+                previewRequestBuilder.setTag(CAPTURE_REQUEST_TAG.PREVIEW);
                 previewRequestBuilder.addTarget(previewSurface);
                 // endregion: setup preview request builder
 
@@ -881,6 +900,8 @@ public class Activity_Camera extends AppCompatActivity implements
                 }
             });
             // endregion: debug in captureCallback
+            captureRequestTag = (CAPTURE_REQUEST_TAG) request.getTag();
+
             if (! (aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || autoMode == CaptureRequest.CONTROL_MODE_OFF)) {
                 exposureTime = result.get(CaptureResult.SENSOR_EXPOSURE_TIME);
                 sensitivity = result.get(CaptureResult.SENSOR_SENSITIVITY);
@@ -928,7 +949,7 @@ public class Activity_Camera extends AppCompatActivity implements
 
 
     // region: process of taking photo(s)
-    static void takePhoto() {
+    private void takePhoto() {
         try {
             // TODO: make captureRequest template changeable between 'TEMPLATE_MANUAL' and 'TEMPLATE_STILL_CAPTURE' in settings.
             // 'TEMPLATE_MANUAL' has the least preset parameters, user
@@ -973,14 +994,17 @@ public class Activity_Camera extends AppCompatActivity implements
             } else {
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
             }
+
             captureRequestBuilder.addTarget(imageReader.getSurface());
             // endregion: setup capture request builder
 
             if (sharedPreferences.getBoolean("preference_consecutive_capture", false)) {
+                captureRequestBuilder.setTag(CAPTURE_REQUEST_TAG.SEQUENCE);
                 startRepeatCapture();
             } else {
+                captureRequestBuilder.setTag(CAPTURE_REQUEST_TAG.CAPTURE);
                 captureSession.capture(captureRequestBuilder.build(), captureCallback, cameraBackgroundHandler);
-                UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_PROCESSING);
+                fragmentCameraControl.setButtonCaptureState(Fragment_CameraControl.BUTTON_CAPTURE_STATE.CAPTURING);
             }
 //            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " capture request submitted");  // debug
         } catch (CameraAccessException e) {
@@ -988,7 +1012,7 @@ public class Activity_Camera extends AppCompatActivity implements
         }
     }
 
-    private static void startRepeatCapture() {
+    private void startRepeatCapture() {
         if (sharedPreferences.getBoolean("preference_consecutive_capture_interval", false)) {
             repeatCaptureRunnable = new Runnable() {
                 @Override
@@ -1013,13 +1037,10 @@ public class Activity_Camera extends AppCompatActivity implements
                 displayErrorMessage(e);
             }
         }
-        for (int i = 0; i < UIOperator.indicatorConstraintLayout.getChildCount(); i ++) {
-            (UIOperator.indicatorConstraintLayout.getChildAt(i)).setEnabled(false);
-        }
-        UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_SEQUENCING);
+        fragmentCameraControl.setButtonCaptureState(Fragment_CameraControl.BUTTON_CAPTURE_STATE.SEQUENCING);
     }
 
-    static void stopRepeatCapture() {
+    private void stopRepeatCapture() {
         if (sharedPreferences.getBoolean("preference_consecutive_capture_interval", false)) {
             cameraBackgroundHandler.removeCallbacks(repeatCaptureRunnable);
         } else {
@@ -1030,13 +1051,10 @@ public class Activity_Camera extends AppCompatActivity implements
                 displayErrorMessage(e);
             }
         }
-        for (int i = 0; i < UIOperator.indicatorConstraintLayout.getChildCount(); i ++) {
-            (UIOperator.indicatorConstraintLayout.getChildAt(i)).setEnabled(true);
-        }
-        UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
+        fragmentCameraControl.setButtonCaptureState(Fragment_CameraControl.BUTTON_CAPTURE_STATE.NORMAL);
     }
 
-    private static ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
+    private ImageReader.OnImageAvailableListener onImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
 //            Log.d(LOG_TAG_LSA_CAPTURE_LAG, "  #" + debugDateFormat.format(new Date()) + " image available");  // debug
@@ -1081,7 +1099,7 @@ public class Activity_Camera extends AppCompatActivity implements
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
+                                    fragmentCameraControl.setButtonCaptureState(Fragment_CameraControl.BUTTON_CAPTURE_STATE.NORMAL);
                                 }
                             });
                         }
@@ -1139,7 +1157,7 @@ public class Activity_Camera extends AppCompatActivity implements
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    UIOperator.cameraControl_setCaptureButtonState(UIOperator.CAPTURE_BUTTON_STATE_NORMAL);
+                                    fragmentCameraControl.setButtonCaptureState(Fragment_CameraControl.BUTTON_CAPTURE_STATE.NORMAL);
                                 }
                             });
                         }
@@ -1165,6 +1183,8 @@ public class Activity_Camera extends AppCompatActivity implements
                 }
             });
             // endregion: debug in captureCallback
+            captureRequestTag = (CAPTURE_REQUEST_TAG) request.getTag();
+
             if (cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE) == CameraCharacteristics.SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN) {
                 imageRealtimeStamp = new Date();
             } else {

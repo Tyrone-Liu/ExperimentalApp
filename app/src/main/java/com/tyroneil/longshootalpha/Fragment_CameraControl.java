@@ -62,7 +62,7 @@ public class Fragment_CameraControl extends Fragment {
     // region: variables: public changeable
     private CaptureRequest.Builder requestBuilder;
     private boolean compact;
-    // region: variables: public changeable
+    // endregion: variables: public changeable
 
     // region: variables
     private View layout_cameraControl;
@@ -80,9 +80,9 @@ public class Fragment_CameraControl extends Fragment {
             button_focalLength;
 
     private ProgressBar progressBar_capturing;
-    private MaterialButton button_capture;
-    private MaterialButton button_sequence;
-    private MaterialButton button_settings;
+    private MaterialButton button_capture, button_sequence, button_settings;
+
+    public enum BUTTON_CAPTURE_STATE {NORMAL, CAPTURING, SEQUENCING}
     // endregion: variables
 
     // region: fragment lifecycle
@@ -161,7 +161,35 @@ public class Fragment_CameraControl extends Fragment {
     };
     // endregion: initiate layout
 
-    public void setParametersIndicatorEnabled(boolean enabled) {
+    public void setButtonCaptureState(BUTTON_CAPTURE_STATE buttonCaptureState) {
+        button_capture.setWidth(button_capture.getWidth());
+        button_capture.setHeight(button_capture.getHeight());
+
+        if (buttonCaptureState == BUTTON_CAPTURE_STATE.NORMAL) {
+            setParametersIndicatorClickable(true);
+
+            button_capture.setText(R.string.fragment_camera_control_button_capture);
+            button_capture.setEnabled(true);
+            progressBar_capturing.setElevation(0f);
+        } else {
+            setParametersIndicatorClickable(false);
+
+            if (buttonCaptureState == BUTTON_CAPTURE_STATE.CAPTURING) {
+                // from the material design documents, the elevation of a button is within [2dp, 8dp]
+                // therefore, set the elevation of a progressBar to 8dp will bring it to front
+                button_capture.setText(R.string.fragment_camera_control_button_capture_capturing);
+                button_capture.setEnabled(false);
+                progressBar_capturing.setElevation(8f * Activity_Camera.scale);
+            }
+
+            else if (buttonCaptureState == BUTTON_CAPTURE_STATE.SEQUENCING) {
+                button_capture.setText(R.string.fragment_camera_control_button_capture_sequencing);
+                // TODO: replace the parameter control area to progress indicator
+            }
+        }
+    }
+
+    private void setParametersIndicatorClickable(boolean enabled) {
         for (MaterialButton button_indicator : buttonsList_parametersIndicator) {
             button_indicator.setEnabled(enabled);
         }

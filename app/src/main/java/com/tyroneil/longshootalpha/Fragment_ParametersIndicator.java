@@ -58,7 +58,7 @@ public class Fragment_ParametersIndicator extends Fragment {
 
     // region: variables: public changeable
     private CaptureRequest.Builder requestBuilder;
-    // region: variables: public changeable
+    // endregion: variables: public changeable
 
     // region: variables
     private View layout_parametersIndicator;
@@ -78,8 +78,14 @@ public class Fragment_ParametersIndicator extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout_parametersIndicator = inflater.inflate(R.layout.fragment_parameters_indicator, container, false);
+        initiateLayout();
 
-        // region: initiate layout
+        return layout_parametersIndicator;
+    }
+    // endregion: fragment lifecycle
+
+    // region: initiate layout
+    private void initiateLayout() {
         button_exposureTime = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_exposureTime);
         button_sensitivity = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_sensitivity);
         button_aperture = (MaterialButton) layout_parametersIndicator.findViewById(R.id.fragment_parameters_indicator_button_aperture);
@@ -97,11 +103,7 @@ public class Fragment_ParametersIndicator extends Fragment {
         button_opticalImageStabilization.setOnClickListener(onClickListener_parametersIndicator);
         button_focalLength.setOnClickListener(onClickListener_parametersIndicator);
         button_focusDistance.setOnClickListener(onClickListener_parametersIndicator);
-        // endregion: initiate layout
-
-        return layout_parametersIndicator;
     }
-    // endregion: fragment lifecycle
 
     private View.OnClickListener onClickListener_parametersIndicator = new View.OnClickListener() {
         @Override
@@ -109,6 +111,7 @@ public class Fragment_ParametersIndicator extends Fragment {
             parametersIndicatorCallback.onIndicatorPressed(Fragment_ParametersIndicator.this, requestBuilder, view.getId());
         }
     };
+    // endregion: initiate layout
 
     // region: updateParametersIndicator()
     private void updateParametersIndicator() {

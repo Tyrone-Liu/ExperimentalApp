@@ -10,6 +10,7 @@
     <string name="fragment_camera_control_button_sequence_compact">Seq.</string>
     <string name="fragment_camera_control_button_settings_compact">Set.</string>
     <string name="fragment_camera_control_button_capture">CAPTURE</string>
+    <string name="fragment_camera_control_button_capture_capturing">&#8230;</string>
     <string name="fragment_camera_control_button_capture_sequencing">&#8230;STOP</string>
 
     <!-- content capture parameters indicator -->

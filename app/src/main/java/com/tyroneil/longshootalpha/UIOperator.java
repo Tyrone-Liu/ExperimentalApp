@@ -36,19 +36,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Locale;
 
 class UIOperator {
-    // region: content camera control
+    // region: content camera
     static Animation focusAssistantIndicatorFadeOut;
     static Animation focusAssistantIndicatorFadeIn;
     static AppCompatImageView focusAssistantIndicatorImageView_camera_control;
     static Support_FlexibleRatioTextureView previewFRTV_camera_control;
-    static MaterialButton sequenceButton_camera_control, captureButton_camera_control, settingsButton_camera_control;
-    static ProgressBar capturingProgressBar_camera_control;
-
-    static final int CAPTURE_BUTTON_STATE_NORMAL = 1;
-    static final int CAPTURE_BUTTON_STATE_PROCESSING = 2;
-    static final int CAPTURE_BUTTON_STATE_SEQUENCING = 3;
-    static int captureButtonState = CAPTURE_BUTTON_STATE_NORMAL;
-    // endregion: content camera control
+    // endregion: content camera
 
     // region: content capture parameters indicator
     static ConstraintLayout indicatorConstraintLayout;
@@ -103,13 +96,8 @@ class UIOperator {
     static void initiateContentCameraControl() {
         focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) Activity_Camera.activity.findViewById(R.id.activity_camera_imageView_focusAssistantIndicator);
         previewFRTV_camera_control = (Support_FlexibleRatioTextureView) Activity_Camera.activity.findViewById(R.id.activity_camera_fRTV_cameraPreview);
-        sequenceButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_button_sequence);
-        captureButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_button_capture);
-        settingsButton_camera_control = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_button_settings);
-        capturingProgressBar_camera_control = (ProgressBar) Activity_Camera.activity.findViewById(R.id.fragment_camera_control_progressBar_capturing);
 
         // content parameters indicator
-        indicatorConstraintLayout = (ConstraintLayout) Activity_Camera.activity.findViewById(R.id.constrainLayout_capture_parameters_indicator);
         setExposureTimeButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_exposureTime);
         setSensitivityButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_sensitivity);
         setApertureButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_aperture);
@@ -243,10 +231,6 @@ class UIOperator {
                 return true;  // QUESTION: why this needs to be true to prevent weird problems?
             }
         });
-
-        sequenceButton_camera_control.setOnClickListener(onClickListener_camera_control);
-        captureButton_camera_control.setOnClickListener(onClickListener_camera_control);
-        settingsButton_camera_control.setOnClickListener(onClickListener_camera_control);
 
         setExposureTimeButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
         setSensitivityButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
@@ -507,59 +491,6 @@ class UIOperator {
             }
         }
     }
-
-    // region: onClickListener, content_camera_control
-    static View.OnClickListener onClickListener_camera_control = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (((MaterialButton) view).getId() == R.id.fragment_camera_control_button_sequence) {
-                Intent openSequence = new Intent(Activity_Camera.context, Activity_Sequence.class);
-                Activity_Camera.activity.startActivity(openSequence);
-            }
-
-            else if (((MaterialButton) view).getId() == R.id.fragment_camera_control_button_capture) {
-                if (captureButtonState == CAPTURE_BUTTON_STATE_NORMAL) {
-                    Activity_Camera.takePhoto();
-                } else if (captureButtonState == CAPTURE_BUTTON_STATE_SEQUENCING) {
-                    Activity_Camera.stopRepeatCapture();
-                }
-            }
-
-            else if (((MaterialButton) view).getId() == R.id.fragment_camera_control_button_settings) {
-                Intent openSettings = new Intent(Activity_Camera.activity, Activity_Settings.class);
-                Activity_Camera.activity.startActivity(openSettings);
-            }
-        }
-    };
-
-    static void cameraControl_setCaptureButtonState(int state) {
-        captureButtonState = state;
-
-        captureButton_camera_control.setWidth(captureButton_camera_control.getWidth());
-        captureButton_camera_control.setHeight(captureButton_camera_control.getHeight());
-
-        switch (state) {
-            case CAPTURE_BUTTON_STATE_NORMAL:
-                captureButton_camera_control.setText(R.string.fragment_camera_control_button_capture);
-                captureButton_camera_control.setEnabled(true);
-                capturingProgressBar_camera_control.setElevation(0f);
-                break;
-
-            case CAPTURE_BUTTON_STATE_PROCESSING:
-                // from the material design documents, the elevation of a button is within [2dp, 8dp]
-                // therefore, set the elevation of a progressBar to 8dp will bring it to front
-                captureButton_camera_control.setText("");
-                captureButton_camera_control.setEnabled(false);
-                capturingProgressBar_camera_control.setElevation(8f * Activity_Camera.scale);
-                break;
-
-            case CAPTURE_BUTTON_STATE_SEQUENCING:
-                captureButton_camera_control.setText(R.string.fragment_camera_control_button_capture_sequencing);
-                // TODO: replace the parameter control area
-                break;
-        }
-    }
-    // endregion: onClickListener, content_camera_control
 
     // region: onClickListener, type toggle_control
     static View.OnClickListener onClickListener_parameters_indicator_toggle_control = new View.OnClickListener() {
