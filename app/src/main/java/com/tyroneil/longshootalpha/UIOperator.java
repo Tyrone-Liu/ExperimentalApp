@@ -43,19 +43,6 @@ class UIOperator {
     static Support_FlexibleRatioTextureView previewFRTV_camera_control;
     // endregion: content camera
 
-    // region: content capture parameters indicator
-    static ConstraintLayout indicatorConstraintLayout;
-    static MaterialButton
-            setExposureTimeButton_parameters_indicator,
-            setSensitivityButton_parameters_indicator,
-            setApertureButton_parameters_indicator,
-            setTorchButton_parameters_indicator,
-            setAutoWhiteBalance_parameters_indicator,
-            setOpticalStabilization_parameters_indicator,
-            setFocalLengthButton_parameters_indicator,
-            setFocusDistanceButton_parameters_indicator;
-    // endregion: content capture parameters indicator
-
     // region: content capture parameter range control
     static ConstraintLayout rangeControlConstraintLayout;
     static BottomSheetBehavior rangeControlBottomSheet;
@@ -96,16 +83,6 @@ class UIOperator {
     static void initiateContentCameraControl() {
         focusAssistantIndicatorImageView_camera_control = (AppCompatImageView) Activity_Camera.activity.findViewById(R.id.activity_camera_imageView_focusAssistantIndicator);
         previewFRTV_camera_control = (Support_FlexibleRatioTextureView) Activity_Camera.activity.findViewById(R.id.activity_camera_fRTV_cameraPreview);
-
-        // content parameters indicator
-        setExposureTimeButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_exposureTime);
-        setSensitivityButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_sensitivity);
-        setApertureButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_aperture);
-        setTorchButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_flash);
-        setAutoWhiteBalance_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_whiteBalance);
-        setOpticalStabilization_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_opticalImageStabilization);
-        setFocalLengthButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_focalLength);
-        setFocusDistanceButton_parameters_indicator = (MaterialButton) Activity_Camera.activity.findViewById(R.id.fragment_parameters_indicator_button_focusDistance);
 
         /**
          * The {@link AlphaAnimation} starts form {@value 15.00f} will make the view fully visible
@@ -231,15 +208,6 @@ class UIOperator {
                 return true;  // QUESTION: why this needs to be true to prevent weird problems?
             }
         });
-
-        setExposureTimeButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
-        setSensitivityButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
-        setApertureButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
-        setTorchButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_toggle_control);
-        setAutoWhiteBalance_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
-        setOpticalStabilization_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
-        setFocalLengthButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_list_control);
-        setFocusDistanceButton_parameters_indicator.setOnClickListener(onClickListener_parameters_indicator_range_control);
     }
 
     static void initiateContentRangeControl() {
@@ -318,89 +286,6 @@ class UIOperator {
     // endregion: initiate layouts (camera_control, range_control, list_control)
 
     static void updateCaptureParametersIndicator() {
-        if (Activity_Camera.aeMode == CaptureRequest.CONTROL_AE_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-            if (Activity_Camera.exposureTime < 1E3) {
-                setExposureTimeButton_parameters_indicator.setText(
-                        String.format(Locale.getDefault(), "S.S.\n%dns", Activity_Camera.exposureTime)
-                );
-            } else if (Activity_Camera.exposureTime < 1E6) {
-                setExposureTimeButton_parameters_indicator.setText(
-                        Activity_Camera.activity.getString(
-                                R.string.fragment_parameters_indicator_button_exposureTime,
-                                (double) (Activity_Camera.exposureTime / 1E1) / 1E2, "µs"
-                        )
-                );
-            } else if (Activity_Camera.exposureTime < 1E9) {
-                setExposureTimeButton_parameters_indicator.setText(
-                        Activity_Camera.activity.getString(
-                                R.string.fragment_parameters_indicator_button_exposureTime,
-                                (double) (Activity_Camera.exposureTime / 1E4) / 1E2, "ms"
-                        )
-                );
-            } else {
-                setExposureTimeButton_parameters_indicator.setText(
-                        Activity_Camera.activity.getString(
-                                R.string.fragment_parameters_indicator_button_exposureTime,
-                                (double) (Activity_Camera.exposureTime / 1E7) / 1E2, "s"
-                        )
-                );
-            }
-            setSensitivityButton_parameters_indicator.setText(
-                    Activity_Camera.activity.getString(
-                            R.string.fragment_parameters_indicator_button_sensitivity,
-                            Activity_Camera.sensitivity
-                    )
-            );
-            setApertureButton_parameters_indicator.setText(
-                    Activity_Camera.activity.getString(
-                            R.string.fragment_parameters_indicator_button_aperture,
-                            Activity_Camera.aperture
-                    )
-            );
-        } else {
-            setExposureTimeButton_parameters_indicator.setText("S.S.\nAUTO");
-            setSensitivityButton_parameters_indicator.setText("ISO\nAUTO");
-            setApertureButton_parameters_indicator.setText("APE\nAUTO");
-        }
-        setTorchButton_parameters_indicator.setText(
-                Activity_Camera.activity.getString(
-                        R.string.fragment_parameters_indicator_button_flash,
-                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_TORCH, Activity_Camera.flashMode, true)
-                )
-        );
-        setAutoWhiteBalance_parameters_indicator.setText(
-                Activity_Camera.activity.getString(
-                        R.string.fragment_parameters_indicator_button_whiteBalance,
-                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES, Activity_Camera.awbMode, true)
-                )
-        );
-        setOpticalStabilization_parameters_indicator.setText(
-                Activity_Camera.activity.getString(
-                        R.string.fragment_parameters_indicator_button_opticalImageStabilization,
-                        listControlBottomSheet_intValueToString(CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES, Activity_Camera.opticalStabilizationMode, true)
-                )
-        );
-        setFocalLengthButton_parameters_indicator.setText(
-                Activity_Camera.activity.getString(
-                        R.string.fragment_parameters_indicator_button_focalLength,
-                        Activity_Camera.focalLength
-                )
-        );
-
-        if (Activity_Camera.afMode == CaptureRequest.CONTROL_AF_MODE_OFF || Activity_Camera.autoMode == CaptureRequest.CONTROL_MODE_OFF) {
-            if (Activity_Camera.focusDistance == 0.0f) {
-                setFocusDistanceButton_parameters_indicator.setText("F.D.\nInf.");
-            } else {
-                setFocusDistanceButton_parameters_indicator.setText(
-                        Activity_Camera.activity.getString(
-                                R.string.fragment_parameters_indicator_button_focusDistance,
-                                1f / Activity_Camera.focusDistance
-                        )
-                );
-            }
-        } else {
-            setFocusDistanceButton_parameters_indicator.setText("F.D.\nAUTO");
-        }
     }
 
     static void updatePreviewParameters() {
@@ -1417,15 +1302,9 @@ class UIOperator {
     // endregion: rangeControlBottomSheet_setupRangeSeekBarProgress
 
     static String rangeControlBottomSheet_formatTimeString(long time) {
-        if (time < 1E3) {
-            return time + " ns";
-        } else if (time < 1E6) {
-            return String.format(Locale.getDefault(), "%.2f µs", (double) (time / 1E0) / 1E3);
-        } else if (time < 1E9) {
-            return String.format(Locale.getDefault(), "%.2f ms", (double) (time / 1E3) / 1E3);
-        } else {
-            return String.format(Locale.getDefault(), "%.2f s", (double) (time / 1E6) / 1E3);
-        }
+        /**
+         * replaced by method in {@link Support_Utility}
+         */
     }
     // endregion: onClickListener, type range_control
 
@@ -1608,33 +1487,9 @@ class UIOperator {
     };
 
     static String listControlBottomSheet_intValueToString(int intValueType, int intValue, boolean shortString) {
-        String string = "";
-
-        if (intValueType == CONTROL_BOTTOM_SHEET_TYPE_TORCH) {
-            switch (intValue) {
-                case 0: string = "OFF"; break;
-                case 2: string = "ON"; break;
-            }
-        } else if (intValueType == CONTROL_BOTTOM_SHEET_TYPE_AWB_MODES) {
-            switch (intValue) {
-                case 0: string = (shortString? "OFF" : "OFF"); break;
-                case 1: string = (shortString? "AUTO" : "AUTO"); break;
-                case 2: string = (shortString? "INC." : "Incandescent"); break;
-                case 3: string = (shortString? "FLU." : "Fluorescent"); break;
-                case 4: string = (shortString? "FLU.W." : "Fluorescent (Warm)"); break;
-                case 5: string = (shortString? "DAY." : "Daylight"); break;
-                case 6: string = (shortString? "DAY.C." : "Daylight (Cloudy)"); break;
-                case 7: string = (shortString? "TWI." : "Twilight"); break;
-                case 8: string = (shortString? "SHA." : "Shade"); break;
-            }
-        } else if (intValueType == CONTROL_BOTTOM_SHEET_TYPE_OIS_MODES) {
-            switch (intValue) {
-                case 0: string = "OFF"; break;
-                case 1: string = "ON"; break;
-            }
-        }
-
-        return string;
+        /**
+         * replaced by method in {@link Support_Utility}
+         */
     }
     // endregion: onClickListener, type list_control
 

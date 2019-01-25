@@ -80,6 +80,8 @@ public class Fragment_ParametersIndicator extends Fragment {
         layout_parametersIndicator = inflater.inflate(R.layout.fragment_parameters_indicator, container, false);
         initiateLayout();
 
+        updateParametersIndicator();
+
         return layout_parametersIndicator;
     }
     // endregion: fragment lifecycle
@@ -113,15 +115,79 @@ public class Fragment_ParametersIndicator extends Fragment {
     };
     // endregion: initiate layout
 
-    // region: updateParametersIndicator()
     private void updateParametersIndicator() {
-    }
+        if (
+                requestBuilder.get(CaptureRequest.CONTROL_AE_MODE) == CaptureRequest.CONTROL_AE_MODE_OFF
+                || requestBuilder.get(CaptureRequest.CONTROL_MODE) == CaptureRequest.CONTROL_MODE_OFF
+        ) {
+            button_exposureTime.setText(getString(
+                    R.string.fragment_parameters_indicator_button_exposureTime,
+                    Support_Utility.formatCaptureRequestKeyValue(
+                            CaptureRequest.SENSOR_EXPOSURE_TIME,
+                            requestBuilder.get(CaptureRequest.SENSOR_EXPOSURE_TIME),
+                            true
+                    )
+            ));
+            button_sensitivity.setText(getString(
+                    R.string.fragment_parameters_indicator_button_sensitivity,
+                    requestBuilder.get(CaptureRequest.SENSOR_SENSITIVITY)
+            ));
 
-    private void updateParametersIndicator(HashMap<CaptureRequest.Key, Object> parametersMap) {
-        for (CaptureRequest.Key parameter : parametersMap.keySet()) {
+            button_aperture.setText(getString(
+                    R.string.fragment_parameters_indicator_button_aperture,
+                    requestBuilder.get(CaptureRequest.LENS_APERTURE)
+            ));
+        } else {
+            button_exposureTime.setText(getText(R.string.fragment_parameters_indicator_button_exposureTime_auto));
+            button_sensitivity.setText(getText(R.string.fragment_parameters_indicator_button_sensitivity_auto));
+            button_aperture.setText(getText(R.string.fragment_parameters_indicator_button_aperture_auto));
+        }
+
+        button_flash.setText(getString(
+                R.string.fragment_parameters_indicator_button_flash,
+                Support_Utility.formatCaptureRequestKeyValue(
+                        CaptureRequest.FLASH_MODE,
+                        requestBuilder.get(CaptureRequest.FLASH_MODE),
+                        true
+                )
+        ));
+        button_whiteBalance.setText(getString(
+                R.string.fragment_parameters_indicator_button_whiteBalance,
+                Support_Utility.formatCaptureRequestKeyValue(
+                        CaptureRequest.CONTROL_AWB_MODE,
+                        requestBuilder.get(CaptureRequest.CONTROL_AWB_MODE),
+                        true
+                )
+        ));
+        button_opticalImageStabilization.setText(getString(
+                R.string.fragment_parameters_indicator_button_opticalImageStabilization,
+                Support_Utility.formatCaptureRequestKeyValue(
+                        CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE,
+                        requestBuilder.get(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE),
+                        true
+                )
+        ));
+        button_focalLength.setText(getString(
+                 R.string.fragment_parameters_indicator_button_focalLength,
+                 requestBuilder.get(CaptureRequest.LENS_FOCAL_LENGTH)
+        ));
+
+        if (
+                requestBuilder.get(CaptureRequest.CONTROL_AF_MODE) == CaptureRequest.CONTROL_AF_MODE_OFF
+                || requestBuilder.get(CaptureRequest.CONTROL_MODE) == CaptureRequest.CONTROL_MODE_OFF
+        ) {
+            button_focusDistance.setText(getString(
+                    R.string.fragment_parameters_indicator_button_focusDistance,
+                    Support_Utility.formatCaptureRequestKeyValue(
+                            CaptureRequest.LENS_FOCUS_DISTANCE,
+                            requestBuilder.get(CaptureRequest.LENS_FOCUS_DISTANCE),
+                            true
+                    )
+            ));
+        } else {
+            button_focusDistance.setText(getText(R.string.fragment_parameters_indicator_button_focusDistance_auto));
         }
     }
-    // endregion: updateParametersIndicator()
 
     // region: set, is, get methods
     public Fragment_ParametersIndicator setRequestBuilder(CaptureRequest.Builder requestBuilder) {
