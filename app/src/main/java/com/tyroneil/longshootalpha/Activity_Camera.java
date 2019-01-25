@@ -473,14 +473,21 @@ public class Activity_Camera extends AppCompatActivity implements
     }
 
     @Override
-    public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap) {
-        // TODO: update parameters indicator, refresh preview, synchronize preview and capture request builder
+    public void onAdjustPanelParametersChanged() {
+        // TODO: refresh preview, synchronize preview and capture request builder
     }
 
     @Override
     public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag) {
         currentAdjustPanel = adjustPanel;
         currentAdjustPanelState = typeTag;
+        if (adjustPanel == null) {
+            /**
+             * Only update {@link Fragment_ParametersIndicator} when {@link Fragment_AdjustPanel}
+             * is closed, for better performance in live preview.
+             */
+            // TODO: update parameters indicator
+        }
     }
     // endregion: override interface methods
 

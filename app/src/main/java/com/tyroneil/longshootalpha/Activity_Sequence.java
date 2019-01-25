@@ -81,7 +81,12 @@ public class Activity_Sequence extends AppCompatActivity implements
     }
 
     @Override
-    public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap) {
+    public void onAdjustPanelParametersChanged() {
+        /**
+         * Update {@link Fragment_ParametersIndicator} whenever {@link Fragment_AdjustPanel}
+         * is changed, because there is no live preview and {@link Fragment_ParametersIndicator}
+         * is visible behind the  {@link Fragment_AdjustPanel}.
+         */
         // TODO: update parameters indicator
     }
 

@@ -18,17 +18,14 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
     // region: interface
     public interface AdjustPanelCallback {
         /**
-         * {@param parametersMap} new value of changed parameters
-         *
-         *
-         * The {@param parametersMap} will be used to update the original
-         * {@link Fragment_ParametersIndicator}.  Hopefully it will be faster then read from
-         * {@link CaptureRequest.Builder}.
+         * This method will be called when parameters have been changed using
+         * {@link Fragment_AdjustPanel}.  Then the host activity will update the original
+         * {@link Fragment_ParametersIndicator}.
          *
          * In {@link Activity_Camera}, the additional job is to restart the preview request and
          * synchronize all parameters with {@code captureRequestBuilder}.
          */
-        public void onAdjustPanelParametersChanged(HashMap<CaptureRequest.Key, Object> parametersMap);
+        public void onAdjustPanelParametersChanged();
 
         /**
          * {@param adjustPanel}: Fragment_AdjustPanel.this
