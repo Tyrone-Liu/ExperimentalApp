@@ -462,7 +462,28 @@ public class Activity_Camera extends AppCompatActivity implements
 
     @Override
     public void onIndicatorPressed(CaptureRequest.Builder requestBuilder, int indicatorId) {
-        Fragment_AdjustPanel fragment_adjustPanel = new Fragment_AdjustPanel();
+        Fragment_AdjustPanel fragment_adjustPanel = null;
+
+        switch (indicatorId) {
+            case R.id.fragment_parameters_indicator_button_exposureTime:
+            case R.id.fragment_parameters_indicator_button_sensitivity:
+            case R.id.fragment_parameters_indicator_button_focusDistance:
+                fragment_adjustPanel = new Fragment_RangePanel();
+                break;
+
+            case R.id.fragment_parameters_indicator_button_aperture:
+            case R.id.fragment_parameters_indicator_button_opticalImageStabilization:
+            case R.id.fragment_parameters_indicator_button_focalLength:
+                fragment_adjustPanel = new Fragment_ListPanel();
+                break;
+
+            case R.id.fragment_parameters_indicator_button_whiteBalance:
+                fragment_adjustPanel = new Fragment_MixturePanel();
+                break;
+
+            case R.id.fragment_parameters_indicator_button_flash:
+        }
+
         fragment_adjustPanel
                 .setRequestBuilder(requestBuilder)
                 .showNow(fragmentManager, String.valueOf(indicatorId));

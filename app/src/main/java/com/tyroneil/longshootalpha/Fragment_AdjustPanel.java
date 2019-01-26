@@ -2,18 +2,13 @@ package com.tyroneil.longshootalpha;
 
 import android.content.Context;
 import android.hardware.camera2.CaptureRequest;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.HashMap;
 import java.util.Locale;
 
-public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
+public abstract class Fragment_AdjustPanel extends BottomSheetDialogFragment {
 
     // region: interface
     public interface AdjustPanelCallback {
@@ -46,7 +41,7 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
          */
         public void onAdjustPanelStateChanged(Fragment_AdjustPanel adjustPanel, Integer typeTag);
     }
-    AdjustPanelCallback adjustPanelCallback;
+    protected AdjustPanelCallback adjustPanelCallback;
 
     @Override
     public void onAttach(Context context) {
@@ -69,41 +64,14 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
     // endregion: interface
 
     // region: variables: public changeable
-    private CaptureRequest.Builder requestBuilder;
+    protected CaptureRequest.Builder requestBuilder;
     // endregion: variables: public changeable
 
     // region: variables
-    private View layout_adjustPanel;
+    protected View layout_adjustPanel;
     // endregion: variables
 
     // region: fragment lifecycle
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.getDialog().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        switch (Integer.valueOf(getTag())) {
-            case R.id.fragment_parameters_indicator_button_exposureTime:
-            case R.id.fragment_parameters_indicator_button_sensitivity:
-            case R.id.fragment_parameters_indicator_button_focusDistance:
-                layout_adjustPanel = inflater.inflate(R.layout., container, false);
-                // TODO: initiate layout here
-                break;
-
-            case R.id.fragment_parameters_indicator_button_aperture:
-            case R.id.fragment_parameters_indicator_button_opticalImageStabilization:
-            case R.id.fragment_parameters_indicator_button_focalLength:
-            case R.id.fragment_parameters_indicator_button_whiteBalance:
-                layout_adjustPanel = inflater.inflate(R.layout., container, false);
-                // TODO: initiate layout here
-                break;
-
-            case R.id.fragment_parameters_indicator_button_flash:
-        }
-
-        adjustPanelCallback.onAdjustPanelStateChanged(this, Integer.valueOf(getTag()));
-        return layout_adjustPanel;
-    }
-
     @Override
     public void onDestroyView() {
         adjustPanelCallback.onAdjustPanelStateChanged(null, null);
@@ -111,6 +79,8 @@ public class Fragment_AdjustPanel extends BottomSheetDialogFragment {
         super.onDestroyView();
     }
     // endregion: fragment lifecycle
+
+    public abstract void updateAdjustPanel();
 
     // region: set, is, get methods
     public Fragment_AdjustPanel setRequestBuilder(CaptureRequest.Builder requestBuilder) {
