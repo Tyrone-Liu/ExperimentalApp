@@ -8,13 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.google.android.material.button.MaterialButton;
-
 import androidx.fragment.app.Fragment;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
 
 public class Fragment_CameraControl extends Fragment {
@@ -25,7 +23,7 @@ public class Fragment_CameraControl extends Fragment {
          * {@param cameraControlId}: {@link R.id} of the corresponding camera control button.
          *
          *
-         * This method will inform {@link Activity_Camera} which control button been pressed.
+         * This method will inform {@link Activity_Camera} which control button has been pressed.
          */
         public void onCameraControlPressed(int cameraControlId);
 
@@ -37,12 +35,12 @@ public class Fragment_CameraControl extends Fragment {
          * The {@param requestBuilder} is going to be passed to {@link Fragment_AdjustPanel}.
          *
          * The {@param indicatorId} will be used as a fragment tag for {@link Fragment_AdjustPanel},
-         * to indicate the type of parameters adjustment it will be set to.  Then it can apply the
-         * appropriate layout.
+         * to indicate the type of parameters adjustment.  It will also be used in
+         * {@link Activity_Camera} to determine what type of {@link Fragment_AdjustPanel} to open.
          */
         public void onIndicatorPressed(CaptureRequest.Builder requestBuilder, int indicatorId);
     }
-    CameraControlCallback cameraControlCallback;
+    private CameraControlCallback cameraControlCallback;
 
     @Override
     public void onAttach(Context context) {
@@ -93,7 +91,6 @@ public class Fragment_CameraControl extends Fragment {
             layout_cameraControl = inflater.inflate(R.layout.fragment_camera_control, container, false);
         }
         initiateLayout(compact);
-
         updateParametersIndicator();
 
         return layout_cameraControl;
@@ -197,7 +194,7 @@ public class Fragment_CameraControl extends Fragment {
         }
     }
 
-    private void updateParametersIndicator() {
+    public void updateParametersIndicator() {
         if (
                 requestBuilder.get(CaptureRequest.CONTROL_AE_MODE) == CaptureRequest.CONTROL_AE_MODE_OFF
                 || requestBuilder.get(CaptureRequest.CONTROL_MODE) == CaptureRequest.CONTROL_MODE_OFF

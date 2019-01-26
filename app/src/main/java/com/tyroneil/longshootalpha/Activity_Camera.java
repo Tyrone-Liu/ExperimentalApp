@@ -486,7 +486,7 @@ public class Activity_Camera extends AppCompatActivity implements
              * Only update {@link Fragment_ParametersIndicator} when {@link Fragment_AdjustPanel}
              * is closed, for better performance in live preview.
              */
-            // TODO: update parameters indicator
+            fragmentCameraControl.updateParametersIndicator();
         }
     }
     // endregion: override interface methods

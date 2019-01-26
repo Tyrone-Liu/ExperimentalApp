@@ -7,11 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.HashMap;
 import java.util.Locale;
 
 public class Fragment_ParametersIndicator extends Fragment {
@@ -30,8 +28,8 @@ public class Fragment_ParametersIndicator extends Fragment {
          * The {@param requestBuilder} is going to be passed to {@link Fragment_AdjustPanel}.
          *
          * The {@param indicatorId} will be used as a fragment tag for {@link Fragment_AdjustPanel},
-         * to indicate the type of parameters adjustment it will be set to.  Then it can apply the
-         * appropriate layout.
+         * to indicate the type of parameters adjustment.  It will also be used in
+         * {@link Activity_Sequence} to determine what type of {@link Fragment_AdjustPanel} to open.
          */
         public void onIndicatorPressed(
                 Fragment_ParametersIndicator parametersIndicator,
@@ -39,7 +37,7 @@ public class Fragment_ParametersIndicator extends Fragment {
                 int indicatorId
         );
     }
-    ParametersIndicatorCallback parametersIndicatorCallback;
+    private ParametersIndicatorCallback parametersIndicatorCallback;
 
     @Override
     public void onAttach(Context context) {
@@ -79,7 +77,6 @@ public class Fragment_ParametersIndicator extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout_parametersIndicator = inflater.inflate(R.layout.fragment_parameters_indicator, container, false);
         initiateLayout();
-
         updateParametersIndicator();
 
         return layout_parametersIndicator;
@@ -115,7 +112,7 @@ public class Fragment_ParametersIndicator extends Fragment {
     };
     // endregion: initiate layout
 
-    private void updateParametersIndicator() {
+    public void updateParametersIndicator() {
         if (
                 requestBuilder.get(CaptureRequest.CONTROL_AE_MODE) == CaptureRequest.CONTROL_AE_MODE_OFF
                 || requestBuilder.get(CaptureRequest.CONTROL_MODE) == CaptureRequest.CONTROL_MODE_OFF
