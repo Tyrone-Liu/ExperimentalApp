@@ -1,9 +1,25 @@
 # Long Shoot (alpha) - Camera for Stack Photography, Time Lapse and Long Exposure
+
+---
+
+## Announcement
+
+As you probably already seen, this project has not been updated in quite a long time, which has various reasons.
+
+Not long after I finished the fundamental operations of some of the advanced functions, I realized that **in order to achieve all the functions I want in an efficient yet elegant way, the basic framework of this project needs to be rewrite from the start**.  Because this is literally the first Android project I wrote, though I have some idea for maintainability from the beginning, I can see it will soon turn into a nightmare.  **However, now that I have experience of how the `camera2` API works, I can construct a much better framework for this project.**
+
+The problem is when will I actually do it.  It has been a tough time for me in the past year and I do not know how long it will last.  I do have a strong intention to finish this project as the thing I initially planed, but it has to wait until I solve some much bigger problems.
+
+No mater weather I eventually did it or not, the current state of this project probably still has some value in it.  _If you want to figure out how to use the `camera2` API to capture photo, and what kinds of details should go into it, check the source code and comments in it._
+
+---
+
 [**Long Shoot**](https://github.com/Tyrone-Liu/LongShoot) is an Android camera application (app) using the [`camera2`](https://developer.android.com/reference/android/hardware/camera2/package-summary) API.  It will give you the ability to manually control every parameters of the camera on your phone.  With the *Capture Sequence* function and RAW support, it can produce photos for advanced *stack photography* and *time lapse*.
 
 If you think the photo taken by this app is too flat, or wonder what is the point of this app when you have Google Camera or any other fancy camera that can provide you a good-looking photo straight out, please check out [this part](#q-what-is-the-point-of-this-app-compare-to-something-like-google-camera) of the FAQ section.
 
 **Before you try to install, please check the [Requirements](#requirements) section.  Be aware that this is still alpha stage software.**
+
 - **Latest signed APK file(s): [GitHub Release Page](https://github.com/Tyrone-Liu/LongShootAlpha/releases/latest) (do not try any `pre-release` build if you do not know what it is)**
 - **Telegram group for discussion and technical support: [Long Shoot - Development](https://t.me/LongShootDev)**
 - **Telegram channel for release news: [Long Shoot - Distribution](https://t.me/LongShootDist)**
@@ -11,6 +27,7 @@ If you think the photo taken by this app is too flat, or wonder what is the poin
 If you want to request a feature or report a bug, you can [create an issue](https://github.com/Tyrone-Liu/LongShootAlpha/issues/new/choose), then please follow the corresponding issue template to provide information.  Also check the [Frequently Asked Questions](#frequently-asked-questions) and [Known Bugs](#known-bugs) section first.
 
 ## Content
+
 - [Requirements](#requirements)
 - [Features](#features)
 - [TODO List](#todo-list)
@@ -20,6 +37,7 @@ If you want to request a feature or report a bug, you can [create an issue](http
 
 
 ## Requirements
+
 These requirements can be checked using another app [Camera Characteristics](https://github.com/Tyrone-Liu/CameraCharacteristics).
 - Mandatory
     - Android API Level `>=` `26` (`>=` `28` will enable more feature)
@@ -33,6 +51,7 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 
 
 ## Features
+
 - Full control of shutter parameters
     - Focus
         - [x] Auto focus
@@ -47,7 +66,8 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
         - Range
             - [x] Within device limit
             - [x] Bypass device limit
-            - [ ] Simulate long exposure (much longer then device upper limit)
+            - [ ] Simulate long exposure (Accumulate, like a normal long exposure)
+            - [ ] Simulate long exposure (Average, like long exposure under neutral-density filter)
     - [x] ISO
     - White balance
         - [x] Auto White Balance
@@ -85,7 +105,7 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
     - [x] Optical Stabilization
     - [x] Focal Length
     - [x] Focus Distance
-- [x] Handle App sent to background, closed, killed or camera crashed
+- [ ] Handle app lifecycle
 - [x] Capture and store the photo
 - [ ] Controller in UI for:
     - [ ] Switch camera
@@ -98,6 +118,8 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 - [ ] Different capture sequences for stacking or time-lapse
 - [ ] More miscellaneous settings in setting interface
 - [ ] Better handle of auto capture mode capture parameters
+- [ ] `Simulate long exposure` under RAW format
+- [ ] Shutter / Aperture priority
 - [x] Handle Android permission request
 - [ ] Redo the Icon (not a camera! should be a phone.)
 
@@ -126,6 +148,9 @@ I personally have Nexus 6P and OnePlus 6 to test on, can not guarantee to be ful
 
 #### **Q:** In china, the GPS location information is not correct.
 **A:** The GPS coordinate gets from a standard Android system should be in `WGS84` format, and this app will only store it as the way it is.  However, every map provider in China use the `GCJ02` format, try to directly overlay `WGS84` cooridinate onto `GCJ02` map will result incorrectly.
+
+#### **Q:** What is the point of this app compare to something like Google Camera?
+**A:** 
 
 
 ## Known Bugs
